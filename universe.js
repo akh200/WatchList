@@ -14,14 +14,17 @@
 
 
   if (!universe) {
+
     window.location.href = "index.html";
+
     return;
+
   }
 
 
-  /* -----------------------------------------
-     LOAD SAVED PROGRESS
-  ----------------------------------------- */
+  /* =========================================
+     LOAD SAVED DATA
+  ========================================= */
 
   var state = {};
 
@@ -38,9 +41,9 @@
   }
 
 
-  /* -----------------------------------------
+  /* =========================================
      ELEMENTS
-  ----------------------------------------- */
+  ========================================= */
 
   var page =
     document.getElementById("universePage");
@@ -64,9 +67,9 @@
     document.getElementById("backButton");
 
 
-  /* -----------------------------------------
-     THEME
-  ----------------------------------------- */
+  /* =========================================
+     COLORS
+  ========================================= */
 
   page.style.setProperty(
     "--accent",
@@ -79,9 +82,9 @@
   );
 
 
-  /* -----------------------------------------
+  /* =========================================
      HEADER
-  ----------------------------------------- */
+  ========================================= */
 
   title.textContent =
     universe.name;
@@ -90,24 +93,85 @@
     universe.tagline;
 
 
-  /* -----------------------------------------
-     ALL MOVIES
-  ----------------------------------------- */
+  /* =========================================
+     CURRENT ORDER
+  ========================================= */
+
+  var currentOrder = "release";
+
+
+  /* =========================================
+     GET ALL ITEMS
+  ========================================= */
 
   function getAllItems() {
 
-    return universe.groups.flatMap(
-      function (group) {
-        return group.items;
-      }
-    );
+    var items = [];
+
+    universe.groups.forEach(function (group) {
+
+      group.items.forEach(function (item) {
+
+        items.push(item);
+
+      });
+
+    });
+
+    return items;
 
   }
 
 
-  /* -----------------------------------------
+  /* =========================================
+     RELEASE ORDER
+  ========================================= */
+
+  function getReleaseGroups() {
+
+    return universe.groups;
+
+  }
+
+
+  /* =========================================
+     CHRONOLOGICAL ORDER
+     
+     For now this uses the year stored
+     in data.js.
+
+     Later we can create a proper MCU
+     story timeline manually.
+  ========================================= */
+
+  function getChronologicalItems() {
+
+    var items =
+      getAllItems();
+
+
+    items.sort(function (a, b) {
+
+      var yearA =
+        Number(a.year) || 9999;
+
+      var yearB =
+        Number(b.year) || 9999;
+
+
+      return yearA - yearB;
+
+    });
+
+
+    return items;
+
+  }
+
+
+  /* =========================================
      SAVE
-  ----------------------------------------- */
+  ========================================= */
 
   function saveState() {
 
@@ -119,14 +183,15 @@
   }
 
 
-  /* -----------------------------------------
+  /* =========================================
      PROGRESS
-  ----------------------------------------- */
+  ========================================= */
 
   function updateProgress() {
 
     var items =
       getAllItems();
+
 
     var watched =
       items.filter(function (item) {
@@ -148,14 +213,10 @@
       items.length;
 
 
-    var percentage =
-      total
-        ? Math.round((watched / total) * 100)
-        : 0;
-
-
-    progressFill.style.width =
-      percentage + "%";
+    var remaining =
+      total -
+      watched -
+      halfway;
 
 
     progressText.textContent =
@@ -163,19 +224,34 @@
       " watched · " +
       halfway +
       " halfway · " +
-      (total - watched - halfway) +
+      remaining +
       " remaining";
+
+
+    var percentage =
+      total
+        ? Math.round(
+            (watched / total) * 100
+          )
+        : 0;
+
+
+    progressFill.style.width =
+      percentage + "%";
 
   }
 
 
-  /* -----------------------------------------
+  /* =========================================
      STATUS
-  ----------------------------------------- */
+  ========================================= */
 
   function getStatus(item) {
 
-    return state[item.id] || "not-watched";
+    return (
+      state[item.id] ||
+      "not-watched"
+    );
 
   }
 
@@ -183,14 +259,20 @@
   function getStatusText(status) {
 
     if (status === "watched") {
-      return "Watched";
+
+      return "✓ Watched";
+
     }
+
 
     if (status === "halfway") {
-      return "Halfway";
+
+      return "◐ Halfway";
+
     }
 
-    return "Not Watched";
+
+    return "○ Not Watched";
 
   }
 
@@ -198,46 +280,65 @@
   function getNextStatus(status) {
 
     if (status === "not-watched") {
+
       return "halfway";
+
     }
 
+
     if (status === "halfway") {
+
       return "watched";
+
     }
+
 
     return "not-watched";
 
   }
 
 
-  /* -----------------------------------------
+  /* =========================================
      RATING
-  ----------------------------------------- */
+  ========================================= */
 
   function getRating(item) {
 
-    return state[item.id + "-rating"] || 0;
+    return (
+      state[item.id + "-rating"] ||
+      0
+    );
 
   }
 
 
-  function createStars(item, ratingContainer) {
+  function createStars(
+    item,
+    container
+  ) {
 
-    ratingContainer.innerHTML = "";
+    container.innerHTML = "";
+
 
     var currentRating =
       getRating(item);
 
 
-    for (var i = 1; i <= 5; i++) {
+    for (
+      var i = 1;
+      i <= 5;
+      i++
+    ) {
 
       var star =
         document.createElement("button");
+
 
       star.type = "button";
 
       star.className =
         "rating-star";
+
 
       star.textContent =
         i <= currentRating
@@ -245,8 +346,14 @@
           : "☆";
 
 
+      star.dataset.rating =
+        String(i);
+
+
       star.title =
-        "Rate " + i + " out of 5";
+        "Rate " +
+        i +
+        " out of 5";
 
 
       star.addEventListener(
@@ -255,30 +362,30 @@
 
           var value =
             Number(
-              event.currentTarget.dataset.rating
+              event.currentTarget
+                .dataset
+                .rating
             );
 
 
-          state[item.id + "-rating"] =
-            value;
+          state[
+            item.id + "-rating"
+          ] = value;
 
 
           saveState();
 
+
           createStars(
             item,
-            ratingContainer
+            container
           );
 
         }
       );
 
 
-      star.dataset.rating =
-        String(i);
-
-
-      ratingContainer.appendChild(
+      container.appendChild(
         star
       );
 
@@ -287,15 +394,16 @@
   }
 
 
-  /* -----------------------------------------
+  /* =========================================
      TRAILER
-  ----------------------------------------- */
+  ========================================= */
 
   function openTrailer(item) {
 
     var query =
       encodeURIComponent(
-        item.title + " official trailer"
+        item.title +
+        " official trailer"
       );
 
 
@@ -312,9 +420,9 @@
   }
 
 
-  /* -----------------------------------------
+  /* =========================================
      CREATE MOVIE CARD
-  ----------------------------------------- */
+  ========================================= */
 
   function createMovieCard(
     item,
@@ -329,20 +437,25 @@
       "movie-card";
 
 
+    /* NUMBER */
+
     var numberEl =
       document.createElement("div");
+
 
     numberEl.className =
       "movie-number";
 
+
     numberEl.textContent =
-      number;
+      String(number);
 
 
     /* INFO */
 
     var info =
       document.createElement("div");
+
 
     info.className =
       "movie-info";
@@ -351,51 +464,53 @@
     var heading =
       document.createElement("h3");
 
+
     heading.className =
       "movie-title";
+
 
     heading.textContent =
       item.title;
 
 
-    var year =
-      document.createElement("span");
+    if (item.year) {
 
-    year.className =
-      "movie-year";
-
-    year.textContent =
-      item.year;
+      var year =
+        document.createElement("span");
 
 
-    heading.appendChild(
-      year
-    );
+      year.className =
+        "movie-year";
+
+
+      year.textContent =
+        item.year;
+
+
+      heading.appendChild(
+        year
+      );
+
+    }
 
 
     var description =
       document.createElement("p");
 
+
     description.className =
       "movie-description";
 
 
-    if (item.description) {
-
-      description.textContent =
-        item.description;
-
-    } else {
-
-      description.textContent =
-        "Description coming soon.";
-
-    }
+    description.textContent =
+      item.description ||
+      "Description coming soon.";
 
 
     info.appendChild(
       heading
     );
+
 
     info.appendChild(
       description
@@ -407,8 +522,82 @@
     var details =
       document.createElement("div");
 
+
     details.className =
       "movie-details";
+
+
+    /* RATING */
+
+    var ratingWrapper =
+      document.createElement("div");
+
+
+    ratingWrapper.className =
+      "rating-wrapper";
+
+
+    var ratingLabel =
+      document.createElement("span");
+
+
+    ratingLabel.className =
+      "rating-label";
+
+
+    ratingLabel.textContent =
+      "Your Rating";
+
+
+    var stars =
+      document.createElement("div");
+
+
+    stars.className =
+      "rating-stars";
+
+
+    ratingWrapper.appendChild(
+      ratingLabel
+    );
+
+
+    ratingWrapper.appendChild(
+      stars
+    );
+
+
+    createStars(
+      item,
+      stars
+    );
+
+
+    /* TRAILER */
+
+    var trailer =
+      document.createElement("button");
+
+
+    trailer.type = "button";
+
+
+    trailer.className =
+      "trailer-button";
+
+
+    trailer.textContent =
+      "▶ Trailer";
+
+
+    trailer.addEventListener(
+      "click",
+      function () {
+
+        openTrailer(item);
+
+      }
+    );
 
 
     /* STATUS */
@@ -416,14 +605,15 @@
     var status =
       document.createElement("button");
 
-    status.type =
-      "button";
+
+    status.type = "button";
+
 
     status.className =
       "status-button";
 
 
-    function updateStatusButton() {
+    function updateStatus() {
 
       var current =
         getStatus(item);
@@ -440,19 +630,27 @@
       );
 
 
-      if (current === "watched") {
+      if (
+        current === "watched"
+      ) {
 
         status.classList.add(
           "status-watched"
         );
 
-      } else if (current === "halfway") {
+      }
+
+      else if (
+        current === "halfway"
+      ) {
 
         status.classList.add(
           "status-halfway"
         );
 
-      } else {
+      }
+
+      else {
 
         status.classList.add(
           "status-not-watched"
@@ -463,7 +661,7 @@
     }
 
 
-    updateStatusButton();
+    updateStatus();
 
 
     status.addEventListener(
@@ -480,79 +678,12 @@
 
         saveState();
 
-        updateStatusButton();
+
+        updateStatus();
 
         updateProgress();
 
-        updateProfileProgress();
-
       }
-    );
-
-
-    /* TRAILER */
-
-    var trailer =
-      document.createElement("button");
-
-    trailer.type =
-      "button";
-
-    trailer.className =
-      "trailer-button";
-
-    trailer.textContent =
-      "▶ Trailer";
-
-
-    trailer.addEventListener(
-      "click",
-      function () {
-
-        openTrailer(item);
-
-      }
-    );
-
-
-    /* RATING */
-
-    var ratingWrapper =
-      document.createElement("div");
-
-    ratingWrapper.className =
-      "rating-wrapper";
-
-
-    var ratingLabel =
-      document.createElement("span");
-
-    ratingLabel.className =
-      "rating-label";
-
-    ratingLabel.textContent =
-      "Your Rating";
-
-
-    var stars =
-      document.createElement("div");
-
-    stars.className =
-      "rating-stars";
-
-
-    ratingWrapper.appendChild(
-      ratingLabel
-    );
-
-    ratingWrapper.appendChild(
-      stars
-    );
-
-
-    createStars(
-      item,
-      stars
     );
 
 
@@ -560,9 +691,11 @@
       ratingWrapper
     );
 
+
     details.appendChild(
       trailer
     );
+
 
     details.appendChild(
       status
@@ -573,9 +706,11 @@
       numberEl
     );
 
+
     card.appendChild(
       info
     );
+
 
     card.appendChild(
       details
@@ -587,22 +722,161 @@
   }
 
 
-  /* -----------------------------------------
-     RENDER GROUPS
-  ----------------------------------------- */
+  /* =========================================
+     CREATE ORDER TOGGLE
+  ========================================= */
 
-  function renderGroups() {
+  function createOrderToggle() {
+
+    var existing =
+      document.getElementById(
+        "orderToggle"
+      );
+
+
+    if (existing) {
+
+      existing.remove();
+
+    }
+
+
+    var sectionHeader =
+      document.querySelector(
+        ".movie-section-header"
+      );
+
+
+    if (!sectionHeader) {
+
+      return;
+
+    }
+
+
+    var toggle =
+      document.createElement("div");
+
+
+    toggle.id =
+      "orderToggle";
+
+
+    toggle.className =
+      "order-toggle";
+
+
+    var releaseButton =
+      document.createElement("button");
+
+
+    releaseButton.type =
+      "button";
+
+
+    releaseButton.textContent =
+      "🎬 Release Order";
+
+
+    var chronologicalButton =
+      document.createElement("button");
+
+
+    chronologicalButton.type =
+      "button";
+
+
+    chronologicalButton.textContent =
+      "🕐 Chronological";
+
+
+    function updateToggle() {
+
+      releaseButton.classList.toggle(
+        "active",
+        currentOrder === "release"
+      );
+
+
+      chronologicalButton.classList.toggle(
+        "active",
+        currentOrder === "chronological"
+      );
+
+    }
+
+
+    releaseButton.addEventListener(
+      "click",
+      function () {
+
+        currentOrder =
+          "release";
+
+
+        updateToggle();
+
+        render();
+
+      }
+    );
+
+
+    chronologicalButton.addEventListener(
+      "click",
+      function () {
+
+        currentOrder =
+          "chronological";
+
+
+        updateToggle();
+
+        render();
+
+      }
+    );
+
+
+    toggle.appendChild(
+      releaseButton
+    );
+
+
+    toggle.appendChild(
+      chronologicalButton
+    );
+
+
+    sectionHeader.appendChild(
+      toggle
+    );
+
+
+    updateToggle();
+
+  }
+
+
+  /* =========================================
+     RENDER RELEASE ORDER
+  ========================================= */
+
+  function renderRelease() {
 
     movieGroups.innerHTML = "";
+
 
     var movieNumber = 1;
 
 
-    universe.groups.forEach(
+    getReleaseGroups().forEach(
       function (group) {
 
         var groupEl =
-          document.createElement("section");
+          document.createElement(
+            "section"
+          );
 
 
         groupEl.className =
@@ -670,23 +944,99 @@
   }
 
 
-  /* -----------------------------------------
-     UPDATE PROFILE PROGRESS
-  ----------------------------------------- */
+  /* =========================================
+     RENDER CHRONOLOGICAL
+  ========================================= */
 
-  function updateProfileProgress() {
+  function renderChronological() {
 
-    /*
-     * The homepage reads the same localStorage,
-     * so simply saving the state is enough.
-     */
+    movieGroups.innerHTML = "";
+
+
+    var items =
+      getChronologicalItems();
+
+
+    var list =
+      document.createElement("div");
+
+
+    list.className =
+      "movie-list";
+
+
+    items.forEach(
+      function (item, index) {
+
+        var card =
+          createMovieCard(
+            item,
+            index + 1
+          );
+
+
+        list.appendChild(
+          card
+        );
+
+      }
+    );
+
+
+    var heading =
+      document.createElement("h2");
+
+
+    heading.className =
+      "movie-group-title";
+
+
+    heading.textContent =
+      "Story Timeline";
+
+
+    movieGroups.appendChild(
+      heading
+    );
+
+
+    movieGroups.appendChild(
+      list
+    );
 
   }
 
 
-  /* -----------------------------------------
-     BACK BUTTON
-  ----------------------------------------- */
+  /* =========================================
+     RENDER
+  ========================================= */
+
+  function render() {
+
+    if (
+      currentOrder ===
+      "chronological"
+    ) {
+
+      renderChronological();
+
+    }
+
+    else {
+
+      renderRelease();
+
+    }
+
+
+    updateProgress();
+
+  }
+
+
+  /* =========================================
+     BACK
+  ========================================= */
 
   backButton.addEventListener(
     "click",
@@ -699,12 +1049,12 @@
   );
 
 
-  /* -----------------------------------------
-     START
-  ----------------------------------------- */
+  /* =========================================
+     INITIALIZE
+  ========================================= */
 
-  renderGroups();
+  createOrderToggle();
 
-  updateProgress();
+  render();
 
 })();
