@@ -1,1795 +1,2868 @@
-/**
- * ============================================================
- * WATCHLIST DATA
- * ============================================================
- *
- * Every title has a stable ID.
- * DO NOT change an existing ID after you start tracking it.
- *
- * Each universe contains:
- *
- *   id
- *   name
- *   accent
- *   accent2
- *   icon
- *   tagline
- *   groups
- *
- * Each group contains:
- *
- *   title
- *   items
- *
- * Each item contains:
- *
- *   id
- *   title
- *   year
- *   type
- *
- * `type` can be:
- *
- *   movie
- *   series
- *   special
- *
- * ============================================================
- */
+/*
+========================================================
+WATCHLIST DATA
+========================================================
+
+Structure:
+
+UNIVERSE
+    ↓
+GROUP / CONTINUITY
+    ↓
+TITLE
+    ↓
+description
+trailer
+poster
+status
+rating
+
+Release Order is used inside every group.
+
+status is NOT stored here permanently.
+It is stored in browser localStorage.
+========================================================
+*/
 
 const UNIVERSES = [
 
-  /* ============================================================
-     MARVEL
-  ============================================================ */
+    {
+        id: "marvel",
 
-  {
-    id: "marvel",
+        name: "Marvel",
 
-    name: "Marvel",
+        accent: "#E53935",
+        accent2: "#FFB300",
 
-    accent: "#E6483F",
+        icon: "bolt",
 
-    accent2: "#F2A93C",
+        tagline:
+            "Marvel — MCU, X-Men, Spider-Man and the wider Marvel screen universe.",
 
-    icon: "bolt",
+        groups: [
 
-    tagline:
-      "The Marvel Multiverse — MCU, X-Men, Spider-Man and beyond.",
+            {
+                title: "MCU — Release Order",
 
-    groups: [
+                items: [
 
-      /* ========================================================
-         MCU — RELEASE ORDER
-      ======================================================== */
+                    {
+                        id: "mcu-iron-man",
 
-      {
-        title: "MCU — Infinity Saga",
+                        title: "Iron Man",
 
-        items: [
+                        year: 2008,
 
-          {
-            id: "mcu-iron-man",
-            title: "Iron Man",
-            year: 2008,
-            type: "movie"
-          },
+                        description:
+                            "After being captured in Afghanistan, billionaire inventor Tony Stark builds a powered suit of armor and becomes Iron Man.",
 
-          {
-            id: "mcu-iron-man-2",
-            title: "Iron Man 2",
-            year: 2010,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=8ugaeA-nMTc",
 
-          {
-            id: "mcu-thor",
-            title: "Thor",
-            year: 2011,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "mcu-cap-1",
-            title: "Captain America: The First Avenger",
-            year: 2011,
-            type: "movie"
-          },
+                    {
+                        id: "mcu-incredible-hulk",
 
-          {
-            id: "mcu-avengers-1",
-            title: "The Avengers",
-            year: 2012,
-            type: "movie"
-          },
+                        title: "The Incredible Hulk",
 
-          {
-            id: "mcu-iron-man-3",
-            title: "Iron Man 3",
-            year: 2013,
-            type: "movie"
-          },
+                        year: 2008,
 
-          {
-            id: "mcu-thor-2",
-            title: "Thor: The Dark World",
-            year: 2013,
-            type: "movie"
-          },
+                        description:
+                            "Bruce Banner searches for a cure for the gamma radiation that transformed him into the Hulk while being hunted by the military.",
 
-          {
-            id: "mcu-cap-2",
-            title: "Captain America: The Winter Soldier",
-            year: 2014,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=xbqNb2PFKKA",
 
-          {
-            id: "mcu-gotg-1",
-            title: "Guardians of the Galaxy",
-            year: 2014,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "mcu-avengers-2",
-            title: "Avengers: Age of Ultron",
-            year: 2015,
-            type: "movie"
-          },
+                    {
+                        id: "mcu-iron-man-2",
 
-          {
-            id: "mcu-antman-1",
-            title: "Ant-Man",
-            year: 2015,
-            type: "movie"
-          },
+                        title: "Iron Man 2",
 
-          {
-            id: "mcu-cap-3",
-            title: "Captain America: Civil War",
-            year: 2016,
-            type: "movie"
-          },
+                        year: 2010,
 
-          {
-            id: "mcu-doctor-strange-1",
-            title: "Doctor Strange",
-            year: 2016,
-            type: "movie"
-          },
+                        description:
+                            "Tony Stark faces new enemies and struggles with the consequences of revealing his identity as Iron Man.",
 
-          {
-            id: "mcu-gotg-2",
-            title: "Guardians of the Galaxy Vol. 2",
-            year: 2017,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=wKtcmiifycU",
 
-          {
-            id: "mcu-spiderman-1",
-            title: "Spider-Man: Homecoming",
-            year: 2017,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "mcu-thor-3",
-            title: "Thor: Ragnarok",
-            year: 2017,
-            type: "movie"
-          },
+                    {
+                        id: "mcu-thor",
 
-          {
-            id: "mcu-black-panther-1",
-            title: "Black Panther",
-            year: 2018,
-            type: "movie"
-          },
+                        title: "Thor",
 
-          {
-            id: "mcu-infinity-war",
-            title: "Avengers: Infinity War",
-            year: 2018,
-            type: "movie"
-          },
+                        year: 2011,
 
-          {
-            id: "mcu-antman-2",
-            title: "Ant-Man and the Wasp",
-            year: 2018,
-            type: "movie"
-          },
+                        description:
+                            "The arrogant god Thor is banished to Earth and must learn humility before he can reclaim his powers.",
 
-          {
-            id: "mcu-captain-marvel",
-            title: "Captain Marvel",
-            year: 2019,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=JOddp-nlNvQ",
 
-          {
-            id: "mcu-endgame",
-            title: "Avengers: Endgame",
-            year: 2019,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "mcu-spiderman-2",
-            title: "Spider-Man: Far From Home",
-            year: 2019,
-            type: "movie"
-          }
+                    {
+                        id: "mcu-captain-america",
+
+                        title: "Captain America: The First Avenger",
+
+                        year: 2011,
+
+                        description:
+                            "Steve Rogers becomes Captain America and joins the fight against Hydra during World War II.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=JerVrbLldXw",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "mcu-avengers",
+
+                        title: "The Avengers",
+
+                        year: 2012,
+
+                        description:
+                            "Earth's greatest heroes must unite when Loki threatens the planet with an alien invasion.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=eOrNdBpGMv8",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "mcu-iron-man-3",
+
+                        title: "Iron Man 3",
+
+                        year: 2013,
+
+                        description:
+                            "Tony Stark faces a powerful enemy known as the Mandarin while struggling with the aftermath of the Battle of New York.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=Ke1Y3P9D0Bc",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "mcu-thor-dark-world",
+
+                        title: "Thor: The Dark World",
+
+                        year: 2013,
+
+                        description:
+                            "Thor battles an ancient enemy seeking to plunge the universe into darkness.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=npvJ9FTgZbM",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "mcu-winter-soldier",
+
+                        title: "Captain America: The Winter Soldier",
+
+                        year: 2014,
+
+                        description:
+                            "Steve Rogers uncovers a conspiracy inside S.H.I.E.L.D. while facing a mysterious assassin known as the Winter Soldier.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=7SlILk2WMTI",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "mcu-guardians",
+
+                        title: "Guardians of the Galaxy",
+
+                        year: 2014,
+
+                        description:
+                            "Peter Quill and a group of unlikely criminals become the Guardians of the Galaxy after stealing a mysterious cosmic orb.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=d96cjJhvlMA",
+
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "X-Men / Fox — Release Order",
+
+                items: [
+
+                    {
+                        id: "xmen-1",
+
+                        title: "X-Men",
+
+                        year: 2000,
+
+                        description:
+                            "Mutants with extraordinary abilities find themselves caught between a world that fears them and powerful forces seeking control.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=KyA9AtUOqRM",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "xmen-2",
+
+                        title: "X2: X-Men United",
+
+                        year: 2003,
+
+                        description:
+                            "The X-Men must unite with former enemies when a government attack threatens mutantkind.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=2l3D0r0m8t0",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "xmen-last-stand",
+
+                        title: "X-Men: The Last Stand",
+
+                        year: 2006,
+
+                        description:
+                            "A controversial mutant cure divides the X-Men as an ancient mutant threat emerges.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=ZQ1xY0G7j5s",
+
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "Spider-Man — Raimi",
+
+                items: [
+
+                    {
+                        id: "spiderman-raimi-1",
+
+                        title: "Spider-Man",
+
+                        year: 2002,
+
+                        description:
+                            "Peter Parker gains extraordinary powers after being bitten by a genetically engineered spider.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=t06RUxPbp_c",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "spiderman-raimi-2",
+
+                        title: "Spider-Man 2",
+
+                        year: 2004,
+
+                        description:
+                            "Peter Parker struggles to balance his personal life with his responsibility as Spider-Man while facing Doctor Octopus.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=1s9Yln0YwCw",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "spiderman-raimi-3",
+
+                        title: "Spider-Man 3",
+
+                        year: 2007,
+
+                        description:
+                            "Peter Parker faces new enemies and the darker side of his own powers.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=e5wUilOeOmg",
+
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "dc",
 
-      /* ========================================================
-         MCU — PHASE 4/5
-      ======================================================== */
+        name: "DC",
 
-      {
-        title: "MCU — Multiverse Saga",
+        accent: "#1769E0",
+        accent2: "#00B8D4",
 
-        items: [
+        icon: "shield",
 
-          {
-            id: "mcu-black-widow",
-            title: "Black Widow",
-            year: 2021,
-            type: "movie"
-          },
+        tagline:
+            "DC — DCEU, DCU, DCAU, DCAMU, Tomorrowverse and major standalone continuities.",
 
-          {
-            id: "mcu-shang-chi",
-            title: "Shang-Chi and the Legend of the Ten Rings",
-            year: 2021,
-            type: "movie"
-          },
+        groups: [
 
-          {
-            id: "mcu-eternals",
-            title: "Eternals",
-            year: 2021,
-            type: "movie"
-          },
+            {
+                title: "The Dark Knight Trilogy",
 
-          {
-            id: "mcu-spiderman-3",
-            title: "Spider-Man: No Way Home",
-            year: 2021,
-            type: "movie"
-          },
+                items: [
 
-          {
-            id: "mcu-doctor-strange-2",
-            title: "Doctor Strange in the Multiverse of Madness",
-            year: 2022,
-            type: "movie"
-          },
+                    {
+                        id: "dark-knight-begins",
 
-          {
-            id: "mcu-thor-4",
-            title: "Thor: Love and Thunder",
-            year: 2022,
-            type: "movie"
-          },
+                        title: "Batman Begins",
 
-          {
-            id: "mcu-black-panther-2",
-            title: "Black Panther: Wakanda Forever",
-            year: 2022,
-            type: "movie"
-          },
+                        year: 2005,
 
-          {
-            id: "mcu-antman-3",
-            title: "Ant-Man and the Wasp: Quantumania",
-            year: 2023,
-            type: "movie"
-          },
+                        description:
+                            "Bruce Wayne begins his transformation into Batman and returns to Gotham to fight the criminal forces consuming his city.",
 
-          {
-            id: "mcu-gotg-3",
-            title: "Guardians of the Galaxy Vol. 3",
-            year: 2023,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=neY2xVmOfUM",
 
-          {
-            id: "mcu-marvels",
-            title: "The Marvels",
-            year: 2023,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "mcu-deadpool-3",
-            title: "Deadpool & Wolverine",
-            year: 2024,
-            type: "movie"
-          }
+                    {
+                        id: "dark-knight",
 
-        ]
-      },
+                        title: "The Dark Knight",
 
+                        year: 2008,
 
-      /* ========================================================
-         MCU — SERIES
-      ======================================================== */
+                        description:
+                            "Batman faces the Joker, a criminal mastermind who pushes Gotham into chaos.",
 
-      {
-        title: "MCU — Disney+ Series",
+                        trailer:
+                            "https://www.youtube.com/watch?v=EXeTwQWrcwY",
 
-        items: [
+                        poster: ""
+                    },
 
-          {
-            id: "mcu-wandavision",
-            title: "WandaVision",
-            year: 2021,
-            type: "series"
-          },
+                    {
+                        id: "dark-knight-rises",
 
-          {
-            id: "mcu-falcon-ws",
-            title: "The Falcon and the Winter Soldier",
-            year: 2021,
-            type: "series"
-          },
+                        title: "The Dark Knight Rises",
 
-          {
-            id: "mcu-loki-1",
-            title: "Loki — Season 1",
-            year: 2021,
-            type: "series"
-          },
+                        year: 2012,
 
-          {
-            id: "mcu-hawkeye",
-            title: "Hawkeye",
-            year: 2021,
-            type: "series"
-          },
+                        description:
+                            "Batman returns from retirement when the terrorist Bane threatens to destroy Gotham.",
 
-          {
-            id: "mcu-moon-knight",
-            title: "Moon Knight",
-            year: 2022,
-            type: "series"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=g8evyE9TuYk",
 
-          {
-            id: "mcu-ms-marvel",
-            title: "Ms. Marvel",
-            year: 2022,
-            type: "series"
-          },
+                        poster: ""
+                    }
 
-          {
-            id: "mcu-she-hulk",
-            title: "She-Hulk: Attorney at Law",
-            year: 2022,
-            type: "series"
-          },
+                ]
+            },
 
-          {
-            id: "mcu-secret-invasion",
-            title: "Secret Invasion",
-            year: 2023,
-            type: "series"
-          },
+            {
+                title: "DCEU — Release Order",
 
-          {
-            id: "mcu-loki-2",
-            title: "Loki — Season 2",
-            year: 2023,
-            type: "series"
-          },
+                items: [
 
-          {
-            id: "mcu-agatha",
-            title: "Agatha All Along",
-            year: 2024,
-            type: "series"
-          },
+                    {
+                        id: "dc-man-of-steel",
 
-          {
-            id: "mcu-daredevil-ba",
-            title: "Daredevil: Born Again",
-            year: 2025,
-            type: "series"
-          }
+                        title: "Man of Steel",
 
-        ]
-      },
+                        year: 2013,
 
+                        description:
+                            "Clark Kent discovers his Kryptonian heritage and embraces his destiny as Earth's protector.",
 
-      /* ========================================================
-         X-MEN / FOX
-      ======================================================== */
+                        trailer:
+                            "https://www.youtube.com/watch?v=T6DJcgm3wNY",
 
-      {
-        title: "X-Men — Fox Universe",
+                        poster: ""
+                    },
 
-        items: [
+                    {
+                        id: "dc-batman-v-superman",
 
-          {
-            id: "xmen-1",
-            title: "X-Men",
-            year: 2000,
-            type: "movie"
-          },
+                        title: "Batman v Superman: Dawn of Justice",
 
-          {
-            id: "xmen-2",
-            title: "X2: X-Men United",
-            year: 2003,
-            type: "movie"
-          },
+                        year: 2016,
 
-          {
-            id: "xmen-last-stand",
-            title: "X-Men: The Last Stand",
-            year: 2006,
-            type: "movie"
-          },
+                        description:
+                            "Batman and Superman clash over their different approaches to protecting humanity while a greater threat emerges.",
 
-          {
-            id: "xmen-origins-wolverine",
-            title: "X-Men Origins: Wolverine",
-            year: 2009,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=0WWzgGyAH6Y",
 
-          {
-            id: "xmen-first-class",
-            title: "X-Men: First Class",
-            year: 2011,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "xmen-wolverine",
-            title: "The Wolverine",
-            year: 2013,
-            type: "movie"
-          },
+                    {
+                        id: "dc-suicide-squad",
 
-          {
-            id: "xmen-days-future-past",
-            title: "X-Men: Days of Future Past",
-            year: 2014,
-            type: "movie"
-          },
+                        title: "Suicide Squad",
 
-          {
-            id: "xmen-apocalypse",
-            title: "X-Men: Apocalypse",
-            year: 2016,
-            type: "movie"
-          },
+                        year: 2016,
 
-          {
-            id: "xmen-logan",
-            title: "Logan",
-            year: 2017,
-            type: "movie"
-          },
+                        description:
+                            "A secret government agency recruits dangerous criminals for an impossible mission.",
 
-          {
-            id: "xmen-dark-phoenix",
-            title: "Dark Phoenix",
-            year: 2019,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=CmRih_VtVAs",
 
-          {
-            id: "xmen-new-mutants",
-            title: "The New Mutants",
-            year: 2020,
-            type: "movie"
-          }
+                        poster: ""
+                    },
+
+                    {
+                        id: "dc-wonder-woman",
+
+                        title: "Wonder Woman",
+
+                        year: 2017,
+
+                        description:
+                            "Diana leaves Themyscira and enters the world of humanity during World War I.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=1Q8fG0TtVAY",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "dc-justice-league",
+
+                        title: "Justice League",
+
+                        year: 2017,
+
+                        description:
+                            "Batman recruits a team of heroes to defend Earth from an apocalyptic threat.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=3cxixDgHUYw",
+
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "DCAU — Canon",
+
+                items: [
+
+                    {
+                        id: "dcau-btas",
+
+                        title: "Batman: The Animated Series",
+
+                        year: 1992,
+
+                        type: "series",
+
+                        description:
+                            "Batman protects Gotham City while confronting some of his most famous villains.",
+
+                        trailer:
+                            "",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "dcau-mask-phantasm",
+
+                        title: "Batman: Mask of the Phantasm",
+
+                        year: 1993,
+
+                        description:
+                            "Batman investigates a mysterious vigilante while confronting memories from his past.",
+
+                        trailer:
+                            "",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "dcau-superman",
+
+                        title: "Superman: The Animated Series",
+
+                        year: 1996,
+
+                        type: "series",
+
+                        description:
+                            "Superman protects Metropolis while facing threats from Earth and beyond.",
+
+                        trailer:
+                            "",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "dcau-justice-league",
+
+                        title: "Justice League",
+
+                        year: 2001,
+
+                        type: "series",
+
+                        description:
+                            "Batman, Superman, Wonder Woman and other heroes form Earth's premier superhero team.",
+
+                        trailer:
+                            "",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "dcau-jlu",
+
+                        title: "Justice League Unlimited",
+
+                        year: 2004,
+
+                        type: "series",
+
+                        description:
+                            "The Justice League expands into a massive alliance of heroes defending Earth from increasingly dangerous threats.",
+
+                        trailer:
+                            "",
+
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "star-wars",
 
-      /* ========================================================
-         DEADPOOL
-      ======================================================== */
+        name: "Star Wars",
 
-      {
-        title: "Deadpool",
+        accent: "#2636C9",
+        accent2: "#00C2FF",
 
-        items: [
+        icon: "star",
 
-          {
-            id: "deadpool-1",
-            title: "Deadpool",
-            year: 2016,
-            type: "movie"
-          },
+        tagline:
+            "A galaxy far, far away — the Star Wars screen saga.",
 
-          {
-            id: "deadpool-2",
-            title: "Deadpool 2",
-            year: 2018,
-            type: "movie"
-          },
+        groups: [
 
-          {
-            id: "mcu-deadpool-3",
-            title: "Deadpool & Wolverine",
-            year: 2024,
-            type: "movie"
-          }
+            {
+                title: "Skywalker Saga — Release Order",
 
-        ]
-      },
+                items: [
 
+                    {
+                        id: "sw-episode-4",
 
-      /* ========================================================
-         SPIDER-MAN — RAIMI
-      ======================================================== */
+                        title: "Star Wars: Episode IV — A New Hope",
 
-      {
-        title: "Spider-Man — Sam Raimi Trilogy",
+                        year: 1977,
 
-        items: [
+                        description:
+                            "A young farm boy joins a rebellion against the Galactic Empire and discovers a path toward becoming a Jedi.",
 
-          {
-            id: "spiderman-raimi-1",
-            title: "Spider-Man",
-            year: 2002,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=vZ734NWnAHA",
 
-          {
-            id: "spiderman-raimi-2",
-            title: "Spider-Man 2",
-            year: 2004,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "spiderman-raimi-3",
-            title: "Spider-Man 3",
-            year: 2007,
-            type: "movie"
-          }
+                    {
+                        id: "sw-episode-5",
 
-        ]
-      },
+                        title: "Star Wars: Episode V — The Empire Strikes Back",
 
+                        year: 1980,
 
-      /* ========================================================
-         AMAZING SPIDER-MAN
-      ======================================================== */
+                        description:
+                            "The Rebel Alliance suffers a devastating defeat while Luke Skywalker begins his Jedi training.",
 
-      {
-        title: "Spider-Man — The Amazing Spider-Man",
+                        trailer:
+                            "https://www.youtube.com/watch?v=JNwNXF9Y6kY",
 
-        items: [
+                        poster: ""
+                    },
 
-          {
-            id: "amazing-spiderman-1",
-            title: "The Amazing Spider-Man",
-            year: 2012,
-            type: "movie"
-          },
+                    {
+                        id: "sw-episode-6",
 
-          {
-            id: "amazing-spiderman-2",
-            title: "The Amazing Spider-Man 2",
-            year: 2014,
-            type: "movie"
-          }
+                        title: "Star Wars: Episode VI — Return of the Jedi",
 
-        ]
-      },
+                        year: 1983,
 
+                        description:
+                            "The Rebels launch a final assault against the Empire while Luke confronts Darth Vader.",
 
-      /* ========================================================
-         SPIDER-VERSE
-      ======================================================== */
+                        trailer:
+                            "https://www.youtube.com/watch?v=5UfA_aKBGMc",
 
-      {
-        title: "Spider-Verse — Animated",
+                        poster: ""
+                    },
 
-        items: [
+                    {
+                        id: "sw-episode-1",
 
-          {
-            id: "spiderverse-1",
-            title: "Spider-Man: Into the Spider-Verse",
-            year: 2018,
-            type: "movie"
-          },
+                        title: "Star Wars: Episode I — The Phantom Menace",
 
-          {
-            id: "spiderverse-2",
-            title: "Spider-Man: Across the Spider-Verse",
-            year: 2023,
-            type: "movie"
-          },
+                        year: 1999,
 
-          {
-            id: "spiderverse-3",
-            title: "Spider-Man: Beyond the Spider-Verse",
-            year: 2027,
-            type: "movie"
-          }
+                        description:
+                            "Two Jedi protect a young queen and encounter a mysterious boy with extraordinary potential.",
 
-        ]
-      },
+                        trailer:
+                            "https://www.youtube.com/watch?v=bD7bpG-zDJQ",
 
+                        poster: ""
+                    },
 
-      /* ========================================================
-         OTHER MARVEL LIVE ACTION
-      ======================================================== */
+                    {
+                        id: "sw-episode-2",
 
-      {
-        title: "Other Marvel",
+                        title: "Star Wars: Episode II — Attack of the Clones",
 
-        items: [
+                        year: 2002,
 
-          {
-            id: "blade-1",
-            title: "Blade",
-            year: 1998,
-            type: "movie"
-          },
+                        description:
+                            "Anakin Skywalker and Obi-Wan Kenobi uncover a growing Separatist movement as the galaxy approaches war.",
 
-          {
-            id: "blade-2",
-            title: "Blade II",
-            year: 2002,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=gYbW1F_c9Mc",
 
-          {
-            id: "blade-3",
-            title: "Blade: Trinity",
-            year: 2004,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "daredevil-2003",
-            title: "Daredevil",
-            year: 2003,
-            type: "movie"
-          },
+                    {
+                        id: "sw-episode-3",
 
-          {
-            id: "elektra-2005",
-            title: "Elektra",
-            year: 2005,
-            type: "movie"
-          },
+                        title: "Star Wars: Episode III — Revenge of the Sith",
 
-          {
-            id: "fantastic-four-2005",
-            title: "Fantastic Four",
-            year: 2005,
-            type: "movie"
-          },
+                        year: 2005,
 
-          {
-            id: "fantastic-four-2007",
-            title: "Fantastic Four: Rise of the Silver Surfer",
-            year: 2007,
-            type: "movie"
-          },
+                        description:
+                            "The Clone Wars reach their climax as Anakin Skywalker falls toward the dark side.",
 
-          {
-            id: "ghost-rider-1",
-            title: "Ghost Rider",
-            year: 2007,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=5UnjrG_N8hU",
 
-          {
-            id: "ghost-rider-2",
-            title: "Ghost Rider: Spirit of Vengeance",
-            year: 2011,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "punisher-2004",
-            title: "The Punisher",
-            year: 2004,
-            type: "movie"
-          },
+                    {
+                        id: "sw-episode-7",
 
-          {
-            id: "punisher-war-zone",
-            title: "Punisher: War Zone",
-            year: 2008,
-            type: "movie"
-          },
+                        title: "Star Wars: Episode VII — The Force Awakens",
 
-          {
-            id: "fantastic-four-2015",
-            title: "Fantastic Four",
-            year: 2015,
-            type: "movie"
-          },
+                        year: 2015,
 
-          {
-            id: "venom-1",
-            title: "Venom",
-            year: 2018,
-            type: "movie"
-          },
+                        description:
+                            "A new generation of heroes rises as the First Order threatens the galaxy.",
 
-          {
-            id: "venom-2",
-            title: "Venom: Let There Be Carnage",
-            year: 2021,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=sGbxmsDFVnE",
 
-          {
-            id: "morbius",
-            title: "Morbius",
-            year: 2022,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "madame-web",
-            title: "Madame Web",
-            year: 2024,
-            type: "movie"
-          },
+                    {
+                        id: "sw-episode-8",
 
-          {
-            id: "venom-3",
-            title: "Venom: The Last Dance",
-            year: 2024,
-            type: "movie"
-          }
+                        title: "Star Wars: Episode VIII — The Last Jedi",
+
+                        year: 2017,
+
+                        description:
+                            "Rey seeks answers from Luke Skywalker while the Resistance struggles to survive.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=Q0CbN8sfihY",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "sw-episode-9",
+
+                        title: "Star Wars: Episode IX — The Rise of Skywalker",
+
+                        year: 2019,
+
+                        description:
+                            "The surviving Resistance faces the final battle against the forces of the First Order.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=8Qn_spdM5Zg",
+
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "Standalone Films",
+
+                items: [
+
+                    {
+                        id: "sw-rogue-one",
+
+                        title: "Rogue One: A Star Wars Story",
+
+                        year: 2016,
+
+                        description:
+                            "A group of unlikely heroes joins a desperate mission to steal the plans for the Death Star.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=frdj1zb9sMY",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "sw-solo",
+
+                        title: "Solo: A Star Wars Story",
+
+                        year: 2018,
+
+                        description:
+                            "A young Han Solo embarks on a dangerous adventure that introduces him to Chewbacca and Lando Calrissian.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=jPEYpryMp2s",
+
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      }
+    },
 
-    ]
-  },
+    {
+        id: "star-trek",
 
+        name: "Star Trek",
 
-  /* ============================================================
-     DC
-  ============================================================ */
+        accent: "#1565C0",
+        accent2: "#7E57C2",
 
-  {
-    id: "dc",
+        icon: "planet",
 
-    name: "DC",
+        tagline:
+            "Explore strange new worlds across the Star Trek screen universe.",
 
-    accent: "#3E7BFA",
+        groups: [
 
-    accent2: "#9AA9C7",
+            {
+                title: "Kelvin Timeline — Release Order",
 
-    icon: "shield",
+                items: [
 
-    tagline:
-      "DC — DCAU, DCEU, Dark Knight, Elseworlds and the new DC Universe.",
+                    {
+                        id: "trek-2009",
 
-    groups: [
+                        title: "Star Trek",
 
-      /* ========================================================
-         DCEU
-      ======================================================== */
+                        year: 2009,
 
-      {
-        title: "DCEU",
+                        description:
+                            "A new generation of the Enterprise crew begins an alternate journey through the Kelvin timeline.",
 
-        items: [
+                        trailer:
+                            "https://www.youtube.com/watch?v=p8fE7l6s3xU",
 
-          {
-            id: "dc-man-of-steel",
-            title: "Man of Steel",
-            year: 2013,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "dc-bvs",
-            title: "Batman v Superman: Dawn of Justice",
-            year: 2016,
-            type: "movie"
-          },
+                    {
+                        id: "trek-into-darkness",
 
-          {
-            id: "dc-suicide-squad-1",
-            title: "Suicide Squad",
-            year: 2016,
-            type: "movie"
-          },
+                        title: "Star Trek Into Darkness",
 
-          {
-            id: "dc-wonder-woman-1",
-            title: "Wonder Woman",
-            year: 2017,
-            type: "movie"
-          },
+                        year: 2013,
 
-          {
-            id: "dc-justice-league",
-            title: "Justice League",
-            year: 2017,
-            type: "movie"
-          },
+                        description:
+                            "Captain Kirk and the Enterprise crew confront a dangerous adversary who threatens the Federation.",
 
-          {
-            id: "dc-aquaman-1",
-            title: "Aquaman",
-            year: 2018,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=r5gdbUCZ-0s",
 
-          {
-            id: "dc-shazam-1",
-            title: "Shazam!",
-            year: 2019,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "dc-birds-of-prey",
-            title: "Birds of Prey",
-            year: 2020,
-            type: "movie"
-          },
+                    {
+                        id: "trek-beyond",
 
-          {
-            id: "dc-ww84",
-            title: "Wonder Woman 1984",
-            year: 2020,
-            type: "movie"
-          },
+                        title: "Star Trek Beyond",
 
-          {
-            id: "dc-suicide-squad-2",
-            title: "The Suicide Squad",
-            year: 2021,
-            type: "movie"
-          },
+                        year: 2016,
 
-          {
-            id: "dc-black-adam",
-            title: "Black Adam",
-            year: 2022,
-            type: "movie"
-          },
+                        description:
+                            "The Enterprise crew becomes stranded on an unknown planet and faces a powerful new enemy.",
 
-          {
-            id: "dc-shazam-2",
-            title: "Shazam! Fury of the Gods",
-            year: 2023,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=XRVD32rnzOw",
 
-          {
-            id: "dc-flash",
-            title: "The Flash",
-            year: 2023,
-            type: "movie"
-          },
+                        poster: ""
+                    }
 
-          {
-            id: "dc-blue-beetle",
-            title: "Blue Beetle",
-            year: 2023,
-            type: "movie"
-          },
-
-          {
-            id: "dc-aquaman-2",
-            title: "Aquaman and the Lost Kingdom",
-            year: 2023,
-            type: "movie"
-          }
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "hp",
 
-      /* ========================================================
-         DARK KNIGHT TRILOGY
-      ======================================================== */
+        name: "Wizarding World",
 
-      {
-        title: "The Dark Knight Trilogy",
+        accent: "#263238",
+        accent2: "#D4AF37",
 
-        items: [
+        icon: "wand",
 
-          {
-            id: "dark-knight-begins",
-            title: "Batman Begins",
-            year: 2005,
-            type: "movie"
-          },
+        tagline:
+            "Harry Potter, Fantastic Beasts and the Wizarding World.",
 
-          {
-            id: "dark-knight",
-            title: "The Dark Knight",
-            year: 2008,
-            type: "movie"
-          },
+        groups: [
 
-          {
-            id: "dark-knight-rises",
-            title: "The Dark Knight Rises",
-            year: 2012,
-            type: "movie"
-          }
+            {
+                title: "Harry Potter — Release Order",
 
-        ]
-      },
+                items: [
 
+                    {
+                        id: "hp-1",
 
-      /* ========================================================
-         BURTON BATMAN
-      ======================================================== */
+                        title:
+                            "Harry Potter and the Philosopher's Stone",
 
-      {
-        title: "Batman — Burton Era",
+                        year: 2001,
 
-        items: [
+                        description:
+                            "Harry Potter discovers that he is a wizard and begins his first year at Hogwarts.",
 
-          {
-            id: "batman-1989",
-            title: "Batman",
-            year: 1989,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=VyHV0BRtdxo",
 
-          {
-            id: "batman-returns",
-            title: "Batman Returns",
-            year: 1992,
-            type: "movie"
-          }
+                        poster: ""
+                    },
 
-        ]
-      },
+                    {
+                        id: "hp-2",
 
+                        title:
+                            "Harry Potter and the Chamber of Secrets",
 
-      /* ========================================================
-         SCHUMACHER BATMAN
-      ======================================================== */
+                        year: 2002,
 
-      {
-        title: "Batman — Schumacher Era",
+                        description:
+                            "Harry returns to Hogwarts and investigates a mysterious chamber threatening the students.",
 
-        items: [
+                        trailer:
+                            "https://www.youtube.com/watch?v=jBltxS8SazM",
 
-          {
-            id: "batman-forever",
-            title: "Batman Forever",
-            year: 1995,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "batman-robin",
-            title: "Batman & Robin",
-            year: 1997,
-            type: "movie"
-          }
+                    {
+                        id: "hp-3",
 
-        ]
-      },
+                        title:
+                            "Harry Potter and the Prisoner of Azkaban",
 
+                        year: 2004,
 
-      /* ========================================================
-         JOKER
-      ======================================================== */
+                        description:
+                            "Harry learns more about his parents while a dangerous prisoner escapes from Azkaban.",
 
-      {
-        title: "Joker — Elseworlds",
+                        trailer:
+                            "https://www.youtube.com/watch?v=lAxgztbYDbs",
 
-        items: [
+                        poster: ""
+                    },
 
-          {
-            id: "dc-joker-1",
-            title: "Joker",
-            year: 2019,
-            type: "movie"
-          },
+                    {
+                        id: "hp-4",
 
-          {
-            id: "dc-joker-2",
-            title: "Joker: Folie à Deux",
-            year: 2024,
-            type: "movie"
-          }
+                        title:
+                            "Harry Potter and the Goblet of Fire",
 
-        ]
-      },
+                        year: 2005,
 
+                        description:
+                            "Harry is unexpectedly entered into the dangerous Triwizard Tournament.",
 
-      /* ========================================================
-         REEVES BATMAN
-      ======================================================== */
+                        trailer:
+                            "https://www.youtube.com/watch?v=3EGojp4Hh6I",
 
-      {
-        title: "The Batman — Reeves Universe",
+                        poster: ""
+                    },
 
-        items: [
+                    {
+                        id: "hp-5",
 
-          {
-            id: "dc-the-batman",
-            title: "The Batman",
-            year: 2022,
-            type: "movie"
-          }
+                        title:
+                            "Harry Potter and the Order of the Phoenix",
 
-        ]
-      },
+                        year: 2007,
 
+                        description:
+                            "Harry forms a secret group of students to prepare for the return of Voldemort.",
 
-      /* ========================================================
-         DCAU — YOUR CANON WATCH ORDER
-      ======================================================== */
+                        trailer:
+                            "https://www.youtube.com/watch?v=y6ZW7KXaXYk",
 
-      {
-        title: "DCAU — Canon Watch Order",
+                        poster: ""
+                    },
 
-        items: [
+                    {
+                        id: "hp-6",
 
-          {
-            id: "dc-dcau-btas",
-            title: "Batman: The Animated Series",
-            year: 1992,
-            type: "series"
-          },
+                        title:
+                            "Harry Potter and the Half-Blood Prince",
 
-          {
-            id: "dc-dcau-mask-phantasm",
-            title: "Batman: Mask of the Phantasm",
-            year: 1993,
-            type: "movie"
-          },
+                        year: 2009,
 
-          {
-            id: "dc-dcau-stas",
-            title: "Superman: The Animated Series",
-            year: 1996,
-            type: "series"
-          },
+                        description:
+                            "Harry and Dumbledore investigate Voldemort's past and search for the secret behind his immortality.",
 
-          {
-            id: "dc-dcau-new-batman",
-            title: "The New Batman Adventures",
-            year: 1997,
-            type: "series"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=sg81Lts5kYY",
 
-          {
-            id: "dc-dcau-subzero",
-            title: "Batman & Mr. Freeze: SubZero",
-            year: 1998,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "dc-dcau-beyond",
-            title: "Batman Beyond",
-            year: 1999,
-            type: "series"
-          },
+                    {
+                        id: "hp-7-1",
 
-          {
-            id: "dc-dcau-return-joker",
-            title: "Batman Beyond: Return of the Joker",
-            year: 2000,
-            type: "movie"
-          },
+                        title:
+                            "Harry Potter and the Deathly Hallows: Part 1",
 
-          {
-            id: "dc-dcau-static",
-            title: "Static Shock",
-            year: 2000,
-            type: "series"
-          },
+                        year: 2010,
 
-          {
-            id: "dc-dcau-justice-league",
-            title: "Justice League",
-            year: 2001,
-            type: "series"
-          },
+                        description:
+                            "Harry, Ron and Hermione leave Hogwarts to find the objects necessary to defeat Voldemort.",
 
-          {
-            id: "dc-dcau-mystery-batwoman",
-            title: "Batman: Mystery of the Batwoman",
-            year: 2003,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=MxqsmsA8y5k",
 
-          {
-            id: "dc-dcau-jlu",
-            title: "Justice League Unlimited",
-            year: 2004,
-            type: "series"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "dc-dcau-harley-quinn",
-            title: "Batman and Harley Quinn",
-            year: 2017,
-            type: "movie"
-          },
+                    {
+                        id: "hp-7-2",
 
-          {
-            id: "dc-dcau-fatal-five",
-            title: "Justice League vs. the Fatal Five",
-            year: 2019,
-            type: "movie"
-          }
+                        title:
+                            "Harry Potter and the Deathly Hallows: Part 2",
+
+                        year: 2011,
+
+                        description:
+                            "The final battle for Hogwarts begins as Harry faces Voldemort for the last time.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=5NYt1qirBWg",
+
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "Fantastic Beasts",
+
+                items: [
+
+                    {
+                        id: "fantastic-beasts-1",
+
+                        title:
+                            "Fantastic Beasts and Where to Find Them",
+
+                        year: 2016,
+
+                        description:
+                            "Magizoologist Newt Scamander arrives in New York with a mysterious case full of magical creatures.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=Vso5o11LuGU",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "fantastic-beasts-2",
+
+                        title:
+                            "Fantastic Beasts: The Crimes of Grindelwald",
+
+                        year: 2018,
+
+                        description:
+                            "Newt is recruited to stop the dark wizard Gellert Grindelwald.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=8bYBOVWLNIs",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "fantastic-beasts-3",
+
+                        title:
+                            "Fantastic Beasts: The Secrets of Dumbledore",
+
+                        year: 2022,
+
+                        description:
+                            "Dumbledore and Newt assemble a team to confront Grindelwald and his growing movement.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=Y9dr2zw-TXQ",
+
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "middle-earth",
 
-      /* ========================================================
-         DCAMU
-      ======================================================== */
+        name: "Middle-earth",
 
-      {
-        title: "DC Animated Movie Universe — DCAMU",
+        accent: "#4E342E",
+        accent2: "#C9A227",
 
-        items: [
+        icon: "ring",
 
-          {
-            id: "dcam-justice-league-flashpoint",
-            title: "Justice League: The Flashpoint Paradox",
-            year: 2013,
-            type: "movie"
-          },
+        tagline:
+            "The Lord of the Rings, The Hobbit and the world of Middle-earth.",
 
-          {
-            id: "dcam-justice-league-war",
-            title: "Justice League: War",
-            year: 2014,
-            type: "movie"
-          },
+        groups: [
 
-          {
-            id: "dcam-son-batman",
-            title: "Son of Batman",
-            year: 2014,
-            type: "movie"
-          },
+            {
+                title: "The Lord of the Rings",
 
-          {
-            id: "dcam-throne-atlantis",
-            title: "Justice League: Throne of Atlantis",
-            year: 2015,
-            type: "movie"
-          },
+                items: [
 
-          {
-            id: "dcam-batman-robin",
-            title: "Batman vs. Robin",
-            year: 2015,
-            type: "movie"
-          },
+                    {
+                        id: "lotr-fellowship",
 
-          {
-            id: "dcam-bad-blood",
-            title: "Batman: Bad Blood",
-            year: 2016,
-            type: "movie"
-          },
+                        title:
+                            "The Lord of the Rings: The Fellowship of the Ring",
 
-          {
-            id: "dcam-justice-league-teen-titans",
-            title: "Justice League vs. Teen Titans",
-            year: 2016,
-            type: "movie"
-          },
+                        year: 2001,
 
-          {
-            id: "dcam-justice-league-dark",
-            title: "Justice League Dark",
-            year: 2017,
-            type: "movie"
-          },
+                        description:
+                            "Frodo Baggins inherits a powerful ring and begins a dangerous journey to destroy it.",
 
-          {
-            id: "dcam-judas-contract",
-            title: "Teen Titans: The Judas Contract",
-            year: 2017,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=V75dMMIW2B4",
 
-          {
-            id: "dcam-suicide-squad-hell-to-pay",
-            title: "Suicide Squad: Hell to Pay",
-            year: 2018,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "dcam-death-superman",
-            title: "The Death of Superman",
-            year: 2018,
-            type: "movie"
-          },
+                    {
+                        id: "lotr-two-towers",
 
-          {
-            id: "dcam-reign-supermen",
-            title: "Reign of the Supermen",
-            year: 2019,
-            type: "movie"
-          },
+                        title:
+                            "The Lord of the Rings: The Two Towers",
 
-          {
-            id: "dcam-batman-hush",
-            title: "Batman: Hush",
-            year: 2019,
-            type: "movie"
-          },
+                        year: 2002,
 
-          {
-            id: "dcam-wonder-woman-bloodlines",
-            title: "Wonder Woman: Bloodlines",
-            year: 2019,
-            type: "movie"
-          },
+                        description:
+                            "The Fellowship is divided as the forces of Middle-earth prepare for a massive war.",
 
-          {
-            id: "dcam-apokolips-war",
-            title: "Justice League Dark: Apokolips War",
-            year: 2020,
-            type: "movie"
-          }
+                        trailer:
+                            "https://www.youtube.com/watch?v=LbfMDwc4azU",
 
-        ]
-      },
+                        poster: ""
+                    },
 
+                    {
+                        id: "lotr-return-king",
 
-      /* ========================================================
-         DC LIVE ACTION SERIES
-      ======================================================== */
+                        title:
+                            "The Lord of the Rings: The Return of the King",
 
-      {
-        title: "DC Live-Action Series",
+                        year: 2003,
 
-        items: [
+                        description:
+                            "The final battle for Middle-earth begins as Frodo and Sam approach Mount Doom.",
 
-          {
-            id: "dc-titans",
-            title: "Titans",
-            year: 2018,
-            type: "series"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=r5X-hFf6Bwo",
 
-          {
-            id: "dc-doom-patrol",
-            title: "Doom Patrol",
-            year: 2019,
-            type: "series"
-          },
+                        poster: ""
+                    }
 
-          {
-            id: "dc-peacemaker-1",
-            title: "Peacemaker — Season 1",
-            year: 2022,
-            type: "series"
-          },
+                ]
+            },
 
-          {
-            id: "dc-peacemaker-2",
-            title: "Peacemaker — Season 2",
-            year: 2025,
-            type: "series"
-          }
+            {
+                title: "The Hobbit",
+
+                items: [
+
+                    {
+                        id: "hobbit-1",
+
+                        title:
+                            "The Hobbit: An Unexpected Journey",
+
+                        year: 2012,
+
+                        description:
+                            "Bilbo Baggins joins a company of dwarves on a quest to reclaim their homeland.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=SDnYMbYB-nU",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "hobbit-2",
+
+                        title:
+                            "The Hobbit: The Desolation of Smaug",
+
+                        year: 2013,
+
+                        description:
+                            "Bilbo and the dwarves continue their journey toward the Lonely Mountain and encounter the dragon Smaug.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=OPVWy1tFXuc",
+
+                        poster: ""
+                    },
+
+                    {
+                        id: "hobbit-3",
+
+                        title:
+                            "The Hobbit: The Battle of the Five Armies",
+
+                        year: 2014,
+
+                        description:
+                            "The armies of Middle-earth clash over the Lonely Mountain.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=iVAgTiBrrDA",
+
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "transformers",
 
-      /* ========================================================
-         NEW DC UNIVERSE
-      ======================================================== */
+        name: "Transformers",
 
-      {
-        title: "New DC Universe",
+        accent: "#E65100",
+        accent2: "#546E7A",
 
-        items: [
+        icon: "robot",
 
-          {
-            id: "dc-creature-commandos",
-            title: "Creature Commandos",
-            year: 2024,
-            type: "series"
-          },
+        tagline:
+            "Autobots, Decepticons and the Transformers screen saga.",
 
-          {
-            id: "dc-superman-2025",
-            title: "Superman",
-            year: 2025,
-            type: "movie"
-          }
+        groups: [
 
-        ]
-      }
+            {
+                title: "Live Action — Release Order",
 
-    ]
-  },
+                items: [
 
+                    {
+                        id: "tf-1",
 
-  /* ============================================================
-     WIZARDING WORLD
-  ============================================================ */
+                        title: "Transformers",
 
-  {
-    id: "hp",
+                        year: 2007,
 
-    name: "Wizarding World",
+                        description:
+                            "Sam Witwicky becomes caught in a war between the Autobots and Decepticons.",
 
-    accent: "#2E7D5B",
+                        trailer:
+                            "https://www.youtube.com/watch?v=dxQxgAfNzyE",
 
-    accent2: "#B8863B",
+                        poster: ""
+                    },
 
-    icon: "wand",
+                    {
+                        id: "tf-2",
 
-    tagline:
-      "Hogwarts, Fantastic Beasts and the Wizarding World.",
+                        title: "Transformers: Revenge of the Fallen",
 
-    groups: [
+                        year: 2009,
 
-      {
-        title: "Harry Potter — Release Order",
+                        description:
+                            "Sam discovers secrets about the ancient history of the Transformers while the Decepticons return.",
 
-        items: [
+                        trailer:
+                            "https://www.youtube.com/watch?v=fnXzKwUgDhg",
 
-          {
-            id: "hp-1",
-            title: "Harry Potter and the Philosopher's Stone",
-            year: 2001,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "hp-2",
-            title: "Harry Potter and the Chamber of Secrets",
-            year: 2002,
-            type: "movie"
-          },
+                    {
+                        id: "tf-3",
 
-          {
-            id: "hp-3",
-            title: "Harry Potter and the Prisoner of Azkaban",
-            year: 2004,
-            type: "movie"
-          },
+                        title: "Transformers: Dark of the Moon",
 
-          {
-            id: "hp-4",
-            title: "Harry Potter and the Goblet of Fire",
-            year: 2005,
-            type: "movie"
-          },
+                        year: 2011,
 
-          {
-            id: "hp-5",
-            title: "Harry Potter and the Order of the Phoenix",
-            year: 2007,
-            type: "movie"
-          },
+                        description:
+                            "The Autobots uncover a hidden Cybertronian secret connected to the space race.",
 
-          {
-            id: "hp-6",
-            title: "Harry Potter and the Half-Blood Prince",
-            year: 2009,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=kHRf01Gjosk",
 
-          {
-            id: "hp-7a",
-            title: "Harry Potter and the Deathly Hallows: Part 1",
-            year: 2010,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "hp-7b",
-            title: "Harry Potter and the Deathly Hallows: Part 2",
-            year: 2011,
-            type: "movie"
-          }
+                    {
+                        id: "tf-4",
 
-        ]
-      },
+                        title: "Transformers: Age of Extinction",
 
+                        year: 2014,
 
-      {
-        title: "Fantastic Beasts",
+                        description:
+                            "A new human family becomes involved in the conflict between Transformers and humanity.",
 
-        items: [
+                        trailer:
+                            "https://www.youtube.com/watch?v=d7d6yD8e7qA",
 
-          {
-            id: "fb-1",
-            title: "Fantastic Beasts and Where to Find Them",
-            year: 2016,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "fb-2",
-            title: "Fantastic Beasts: The Crimes of Grindelwald",
-            year: 2018,
-            type: "movie"
-          },
+                    {
+                        id: "tf-5",
 
-          {
-            id: "fb-3",
-            title: "Fantastic Beasts: The Secrets of Dumbledore",
-            year: 2022,
-            type: "movie"
-          }
+                        title: "Transformers: The Last Knight",
 
-        ]
-      },
+                        year: 2017,
 
+                        description:
+                            "An ancient connection between Transformers and human history is revealed.",
 
-      {
-        title: "Wizarding World — Coming",
+                        trailer:
+                            "https://www.youtube.com/watch?v=6V7k8pK1y4c",
 
-        items: [
+                        poster: ""
+                    },
 
-          {
-            id: "hp-hbo-series",
-            title: "Harry Potter — HBO Series",
-            year: 2027,
-            type: "series"
-          }
+                    {
+                        id: "tf-bumblebee",
 
-        ]
-      }
+                        title: "Bumblebee",
 
-    ]
-  },
+                        year: 2018,
 
+                        description:
+                            "A young woman discovers a damaged Autobot hiding in a California junkyard.",
 
-  /* ============================================================
-     STAR WARS
-  ============================================================ */
+                        trailer:
+                            "https://www.youtube.com/watch?v=fAIX12F6958",
 
-  {
-    id: "star-wars",
+                        poster: ""
+                    },
 
-    name: "Star Wars",
+                    {
+                        id: "tf-rise-beasts",
 
-    accent: "#5C6BC0",
+                        title: "Transformers: Rise of the Beasts",
 
-    accent2: "#ECEFF1",
+                        year: 2023,
 
-    icon: "star",
+                        description:
+                            "The Autobots encounter the Maximals while an ancient cosmic threat approaches Earth.",
 
-    tagline:
-      "A long time ago in a galaxy far, far away...",
+                        trailer:
+                            "https://www.youtube.com/watch?v=itnqEauWQZM",
 
-    groups: [
+                        poster: ""
+                    }
 
-      {
-        title: "Skywalker Saga",
+                ]
+            },
 
-        items: [
+            {
+                title: "Animated",
 
-          {
-            id: "sw-episode-1",
-            title: "Star Wars: Episode I — The Phantom Menace",
-            year: 1999,
-            type: "movie"
-          },
+                items: [
 
-          {
-            id: "sw-episode-2",
-            title: "Star Wars: Episode II — Attack of the Clones",
-            year: 2002,
-            type: "movie"
-          },
+                    {
+                        id: "transformers-one",
 
-          {
-            id: "sw-episode-3",
-            title: "Star Wars: Episode III — Revenge of the Sith",
-            year: 2005,
-            type: "movie"
-          },
+                        title: "Transformers One",
 
-          {
-            id: "sw-episode-4",
-            title: "Star Wars: Episode IV — A New Hope",
-            year: 1977,
-            type: "movie"
-          },
+                        year: 2024,
 
-          {
-            id: "sw-episode-5",
-            title: "Star Wars: Episode V — The Empire Strikes Back",
-            year: 1980,
-            type: "movie"
-          },
+                        description:
+                            "The origin story of Optimus Prime and Megatron and their relationship on Cybertron.",
 
-          {
-            id: "sw-episode-6",
-            title: "Star Wars: Episode VI — Return of the Jedi",
-            year: 1983,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=jaVcWQfJ9uM",
 
-          {
-            id: "sw-episode-7",
-            title: "Star Wars: Episode VII — The Force Awakens",
-            year: 2015,
-            type: "movie"
-          },
+                        poster: ""
+                    }
 
-          {
-            id: "sw-episode-8",
-            title: "Star Wars: Episode VIII — The Last Jedi",
-            year: 2017,
-            type: "movie"
-          },
-
-          {
-            id: "sw-episode-9",
-            title: "Star Wars: Episode IX — The Rise of Skywalker",
-            year: 2019,
-            type: "movie"
-          }
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "monsterverse",
 
-      {
-        title: "Star Wars — Standalone Films",
+        name: "MonsterVerse",
 
-        items: [
+        accent: "#263238",
+        accent2: "#00A896",
 
-          {
-            id: "sw-rogue-one",
-            title: "Rogue One: A Star Wars Story",
-            year: 2016,
-            type: "movie"
-          },
+        icon: "gorilla",
 
-          {
-            id: "sw-solo",
-            title: "Solo: A Star Wars Story",
-            year: 2018,
-            type: "movie"
-          }
+        tagline:
+            "Godzilla, Kong and the MonsterVerse.",
 
-        ]
-      },
+        groups: [
 
+            {
+                title: "Films — Release Order",
 
-      {
-        title: "Star Wars — Series",
+                items: [
 
-        items: [
+                    {
+                        id: "monster-godzilla",
 
-          {
-            id: "sw-clone-wars",
-            title: "Star Wars: The Clone Wars",
-            year: 2008,
-            type: "series"
-          },
+                        title: "Godzilla",
 
-          {
-            id: "sw-rebels",
-            title: "Star Wars Rebels",
-            year: 2014,
-            type: "series"
-          },
+                        year: 2014,
 
-          {
-            id: "sw-mandalorian",
-            title: "The Mandalorian",
-            year: 2019,
-            type: "series"
-          },
+                        description:
+                            "Humanity discovers that ancient giant creatures still exist and that Godzilla may be the force capable of stopping them.",
 
-          {
-            id: "sw-andor",
-            title: "Andor",
-            year: 2022,
-            type: "series"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=vIu85WQTPRc",
 
-          {
-            id: "sw-ahsoka",
-            title: "Ahsoka",
-            year: 2023,
-            type: "series"
-          }
+                        poster: ""
+                    },
 
-        ]
-      }
+                    {
+                        id: "monster-kong",
 
-    ]
-  },
+                        title: "Kong: Skull Island",
 
+                        year: 2017,
 
-  /* ============================================================
-     STAR TREK
-  ============================================================ */
+                        description:
+                            "An expedition enters the mysterious Skull Island and encounters the enormous Kong.",
 
-  {
-    id: "star-trek",
+                        trailer:
+                            "https://www.youtube.com/watch?v=44LdLqgOpjo",
 
-    name: "Star Trek",
+                        poster: ""
+                    },
 
-    accent: "#1976D2",
+                    {
+                        id: "monster-king-monsters",
 
-    accent2: "#7E57C2",
+                        title: "Godzilla: King of the Monsters",
 
-    icon: "planet",
+                        year: 2019,
 
-    tagline:
-      "Explore strange new worlds and boldly go where no one has gone before.",
+                        description:
+                            "Godzilla faces several ancient Titans as humanity struggles to survive their awakening.",
 
-    groups: [
+                        trailer:
+                            "https://www.youtube.com/watch?v=QFxN2oDKk0E",
 
-      {
-        title: "Star Trek — Original Films",
+                        poster: ""
+                    },
 
-        items: [
+                    {
+                        id: "monster-gvk",
 
-          {
-            id: "st-motion-picture",
-            title: "Star Trek: The Motion Picture",
-            year: 1979,
-            type: "movie"
-          },
+                        title: "Godzilla vs. Kong",
 
-          {
-            id: "st-wrath-khan",
-            title: "Star Trek II: The Wrath of Khan",
-            year: 1982,
-            type: "movie"
-          },
+                        year: 2021,
 
-          {
-            id: "st-search-spock",
-            title: "Star Trek III: The Search for Spock",
-            year: 1984,
-            type: "movie"
-          },
+                        description:
+                            "Godzilla and Kong collide while humanity searches for answers about the Titans.",
 
-          {
-            id: "st-voyage-home",
-            title: "Star Trek IV: The Voyage Home",
-            year: 1986,
-            type: "movie"
-          },
+                        trailer:
+                            "https://www.youtube.com/watch?v=odM92ap8_c0",
 
-          {
-            id: "st-final-frontier",
-            title: "Star Trek V: The Final Frontier",
-            year: 1989,
-            type: "movie"
-          },
+                        poster: ""
+                    },
 
-          {
-            id: "st-undiscovered-country",
-            title: "Star Trek VI: The Undiscovered Country",
-            year: 1991,
-            type: "movie"
-          }
+                    {
+                        id: "monster-new-empire",
+
+                        title: "Godzilla x Kong: The New Empire",
+
+                        year: 2024,
+
+                        description:
+                            "Godzilla and Kong unite against a new threat hidden deep within the Hollow Earth.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=lV1OOlGwExM",
+
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "Series",
+
+                items: [
+
+                    {
+                        id: "monster-monarch",
+
+                        title: "Monarch: Legacy of Monsters",
+
+                        year: 2023,
+
+                        type: "series",
+
+                        description:
+                            "A family uncovers secrets surrounding Monarch and the Titans across multiple generations.",
+
+                        trailer:
+                            "https://www.youtube.com/watch?v=JL1b9Rr9FjI",
+
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "mission-impossible",
 
-      {
-        title: "Star Trek — Next Generation Films",
+        name: "Mission: Impossible",
 
-        items: [
+        accent: "#212121",
+        accent2: "#E53935",
 
-          {
-            id: "st-generations",
-            title: "Star Trek: Generations",
-            year: 1994,
-            type: "movie"
-          },
+        icon: "target",
 
-          {
-            id: "st-first-contact",
-            title: "Star Trek: First Contact",
-            year: 1996,
-            type: "movie"
-          },
+        tagline:
+            "The complete Ethan Hunt mission saga.",
 
-          {
-            id: "st-insurrection",
-            title: "Star Trek: Insurrection",
-            year: 1998,
-            type: "movie"
-          },
+        groups: [
 
-          {
-            id: "st-nemesis",
-            title: "Star Trek: Nemesis",
-            year: 2002,
-            type: "movie"
-          }
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "mi-1",
+                        title: "Mission: Impossible",
+                        year: 1996,
+                        description: "Ethan Hunt is framed after a mission goes catastrophically wrong and must uncover the real traitor.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "mi-2",
+                        title: "Mission: Impossible 2",
+                        year: 2000,
+                        description: "Ethan Hunt races to stop a dangerous biological weapon from falling into the wrong hands.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "mi-3",
+                        title: "Mission: Impossible III",
+                        year: 2006,
+                        description: "Ethan Hunt comes out of retirement to rescue a captured agent and confront a ruthless arms dealer.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "mi-4",
+                        title: "Mission: Impossible — Ghost Protocol",
+                        year: 2011,
+                        description: "The IMF is shut down and Ethan's team must prevent a nuclear war without official support.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "mi-5",
+                        title: "Mission: Impossible — Rogue Nation",
+                        year: 2015,
+                        description: "Ethan Hunt goes rogue to dismantle a mysterious organization of highly trained operatives.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "mi-6",
+                        title: "Mission: Impossible — Fallout",
+                        year: 2018,
+                        description: "Ethan Hunt and his allies race against time after plutonium falls into the hands of extremists.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "mi-7",
+                        title: "Mission: Impossible — Dead Reckoning",
+                        year: 2023,
+                        description: "Ethan Hunt faces an artificial intelligence threat capable of controlling global systems.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "mi-8",
+                        title: "Mission: Impossible — The Final Reckoning",
+                        year: 2025,
+                        description: "Ethan Hunt faces the continuing consequences of the Entity threat.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "invincible",
 
-      {
-        title: "Star Trek — Kelvin Timeline",
+        name: "Invincible",
 
-        items: [
+        accent: "#FFC107",
+        accent2: "#E53935",
 
-          {
-            id: "st-2009",
-            title: "Star Trek",
-            year: 2009,
-            type: "movie"
-          },
+        icon: "hero",
 
-          {
-            id: "st-into-darkness",
-            title: "Star Trek Into Darkness",
-            year: 2013,
-            type: "movie"
-          },
+        tagline:
+            "Mark Grayson and the Invincible animated universe.",
 
-          {
-            id: "st-beyond",
-            title: "Star Trek Beyond",
-            year: 2016,
-            type: "movie"
-          }
+        groups: [
+
+            {
+                title: "Animated Series — Release Order",
+
+                items: [
+
+                    {
+                        id: "invincible-s1",
+                        title: "Invincible — Season 1",
+                        year: 2021,
+                        type: "series",
+                        description: "Mark Grayson discovers that becoming a superhero is far more complicated than he imagined.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "invincible-atom-eve",
+                        title: "Invincible: Atom Eve",
+                        year: 2023,
+                        type: "special",
+                        description: "Atom Eve's origin story reveals how Samantha Eve Wilkins became a powerful superhero.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "invincible-s2",
+                        title: "Invincible — Season 2",
+                        year: 2023,
+                        type: "series",
+                        description: "Mark struggles with the consequences of his father's betrayal while new threats emerge.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "invincible-s3",
+                        title: "Invincible — Season 3",
+                        year: 2025,
+                        type: "series",
+                        description: "Mark faces increasingly powerful enemies while learning what it truly means to be Invincible.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      },
+    },
 
+    {
+        id: "jurassic",
 
-      {
-        title: "Star Trek — Modern Series",
+        name: "Jurassic Park / World",
 
-        items: [
+        accent: "#33691E",
+        accent2: "#FDD835",
 
-          {
-            id: "st-discovery",
-            title: "Star Trek: Discovery",
-            year: 2017,
-            type: "series"
-          },
+        icon: "dino",
 
-          {
-            id: "st-picard",
-            title: "Star Trek: Picard",
-            year: 2020,
-            type: "series"
-          },
+        tagline:
+            "Dinosaurs, theme parks and the Jurassic saga.",
 
-          {
-            id: "st-strange-new-worlds",
-            title: "Star Trek: Strange New Worlds",
-            year: 2022,
-            type: "series"
-          }
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "jurassic-park",
+                        title: "Jurassic Park",
+                        year: 1993,
+                        description: "A groundbreaking theme park filled with cloned dinosaurs becomes a fight for survival.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "lost-world",
+                        title: "The Lost World: Jurassic Park",
+                        year: 1997,
+                        description: "A research team returns to Isla Sorna to study dinosaurs living freely in the wild.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "jurassic-park-3",
+                        title: "Jurassic Park III",
+                        year: 2001,
+                        description: "A rescue mission on Isla Sorna becomes a struggle to survive among dangerous prehistoric creatures.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "jurassic-world",
+                        title: "Jurassic World",
+                        year: 2015,
+                        description: "A fully operational dinosaur theme park faces disaster when a genetically engineered predator escapes.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fallen-kingdom",
+                        title: "Jurassic World: Fallen Kingdom",
+                        year: 2018,
+                        description: "Owen and Claire return to Isla Nublar to rescue dinosaurs from an approaching volcanic disaster.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "jurassic-dominion",
+                        title: "Jurassic World Dominion",
+                        year: 2022,
+                        description: "Humans and dinosaurs must find a way to coexist after prehistoric creatures spread around the world.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "jurassic-rebirth",
+                        title: "Jurassic World Rebirth",
+                        year: 2025,
+                        description: "A new expedition ventures into dangerous territory as humanity searches for dinosaurs with valuable genetic properties.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
 
         ]
-      }
+    },
 
-    ]
-  }
+    {
+        id: "pirates",
+
+        name: "Pirates of the Caribbean",
+
+        accent: "#004D40",
+        accent2: "#D4AF37",
+
+        icon: "pirate",
+
+        tagline:
+            "Captain Jack Sparrow and the Pirates saga.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "pirates-1",
+                        title: "The Curse of the Black Pearl",
+                        year: 2003,
+                        description: "Jack Sparrow joins forces with Will Turner to rescue Elizabeth Swann and reclaim the Black Pearl.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "pirates-2",
+                        title: "Dead Man's Chest",
+                        year: 2006,
+                        description: "Jack Sparrow owes a debt to the legendary Davy Jones and must find a way to escape his fate.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "pirates-3",
+                        title: "At World's End",
+                        year: 2007,
+                        description: "The pirate lords unite for a final battle against the East India Trading Company.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "pirates-4",
+                        title: "On Stranger Tides",
+                        year: 2011,
+                        description: "Jack Sparrow searches for the Fountain of Youth while encountering the pirate Blackbeard.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "pirates-5",
+                        title: "Dead Men Tell No Tales",
+                        year: 2017,
+                        description: "Jack Sparrow faces Captain Salazar, a supernatural enemy seeking revenge.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "narnia",
+
+        name: "The Chronicles of Narnia",
+
+        accent: "#1565C0",
+        accent2: "#8D6E63",
+
+        icon: "lion",
+
+        tagline:
+            "The Chronicles of Narnia screen saga.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "narnia-1",
+                        title: "The Lion, the Witch and the Wardrobe",
+                        year: 2005,
+                        description: "Four siblings discover a magical world beyond a wardrobe and become part of a battle between good and evil.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "narnia-2",
+                        title: "Prince Caspian",
+                        year: 2008,
+                        description: "The Pevensie siblings return to Narnia and help Prince Caspian reclaim his throne.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "narnia-3",
+                        title: "The Voyage of the Dawn Treader",
+                        year: 2010,
+                        description: "Edmund and Lucy return to Narnia and join Prince Caspian on a voyage across mysterious seas.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "fast-furious",
+
+        name: "Fast & Furious",
+
+        accent: "#212121",
+        accent2: "#FF6D00",
+
+        icon: "car",
+
+        tagline:
+            "Family, speed and the Fast Saga.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "fast-1",
+                        title: "The Fast and the Furious",
+                        year: 2001,
+                        description: "An undercover police officer infiltrates a street racing crew suspected of hijacking trucks.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-2",
+                        title: "2 Fast 2 Furious",
+                        year: 2003,
+                        description: "Brian O'Conner teams up with an old friend to bring down a dangerous criminal.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-3",
+                        title: "The Fast and the Furious: Tokyo Drift",
+                        year: 2006,
+                        description: "A troubled teenager discovers the underground world of drifting in Tokyo.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-4",
+                        title: "Fast & Furious",
+                        year: 2009,
+                        description: "Dom and Brian reunite to take down a dangerous drug trafficker.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-5",
+                        title: "Fast Five",
+                        year: 2011,
+                        description: "Dom and his crew plan an enormous heist in Rio de Janeiro.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-6",
+                        title: "Fast & Furious 6",
+                        year: 2013,
+                        description: "The crew is offered a chance at freedom in exchange for stopping a highly skilled criminal organization.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-7",
+                        title: "Furious 7",
+                        year: 2015,
+                        description: "The crew is targeted by a dangerous enemy seeking revenge.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-8",
+                        title: "The Fate of the Furious",
+                        year: 2017,
+                        description: "Dom unexpectedly turns against his family after being manipulated by a cyberterrorist.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-hobbs-shaw",
+                        title: "Hobbs & Shaw",
+                        year: 2019,
+                        description: "Luke Hobbs and Deckard Shaw reluctantly team up to stop a genetically enhanced terrorist.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-9",
+                        title: "F9: The Fast Saga",
+                        year: 2021,
+                        description: "Dom's past returns when his estranged brother becomes involved with a dangerous enemy.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "fast-x",
+                        title: "Fast X",
+                        year: 2023,
+                        description: "Dom and his family face a powerful enemy seeking revenge for events from their past.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "john-wick",
+
+        name: "John Wick",
+
+        accent: "#111111",
+        accent2: "#D4AF37",
+
+        icon: "gun",
+
+        tagline:
+            "The John Wick action universe.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "john-wick-1",
+                        title: "John Wick",
+                        year: 2014,
+                        description: "A retired assassin returns to his violent past after criminals steal his car and kill his beloved dog.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "john-wick-2",
+                        title: "John Wick: Chapter 2",
+                        year: 2017,
+                        description: "John Wick is pulled back into the criminal underworld by a blood oath.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "john-wick-3",
+                        title: "John Wick: Chapter 3 — Parabellum",
+                        year: 2019,
+                        description: "John becomes a global target after breaking one of the High Table's most important rules.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "john-wick-4",
+                        title: "John Wick: Chapter 4",
+                        year: 2023,
+                        description: "John Wick searches for a way to defeat the High Table and earn his freedom.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "Spin-Offs / Series",
+
+                items: [
+
+                    {
+                        id: "john-wick-continental",
+                        title: "The Continental",
+                        year: 2023,
+                        type: "series",
+                        description: "A prequel series exploring the origins of the Continental hotel and Winston Scott.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "terminator",
+
+        name: "Terminator",
+
+        accent: "#263238",
+        accent2: "#EF5350",
+
+        icon: "robot",
+
+        tagline:
+            "The Terminator time-war saga.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "terminator-1",
+                        title: "The Terminator",
+                        year: 1984,
+                        description: "A cyborg assassin travels back in time to kill the woman whose unborn son will lead humanity's resistance.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "terminator-2",
+                        title: "Terminator 2: Judgment Day",
+                        year: 1991,
+                        description: "A reprogrammed Terminator protects young John Connor from a more advanced killing machine.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "terminator-3",
+                        title: "Terminator 3: Rise of the Machines",
+                        year: 2003,
+                        description: "John Connor attempts to prevent Judgment Day while being hunted by an advanced Terminator.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "terminator-salvation",
+                        title: "Terminator Salvation",
+                        year: 2009,
+                        description: "John Connor leads the human resistance in a future war against Skynet's machines.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "terminator-genisys",
+                        title: "Terminator Genisys",
+                        year: 2015,
+                        description: "A mission to protect Sarah Connor changes the timeline and creates a radically different future.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "terminator-dark-fate",
+                        title: "Terminator: Dark Fate",
+                        year: 2019,
+                        description: "Sarah Connor returns when a new enhanced Terminator arrives to kill a young woman who is crucial to humanity's future.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "Animated Series",
+
+                items: [
+
+                    {
+                        id: "terminator-zero",
+                        title: "Terminator Zero",
+                        year: 2024,
+                        type: "series",
+                        description: "A new story in the Terminator universe involving a scientist, an AI and a battle against machines.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "avatar",
+
+        name: "Avatar",
+
+        accent: "#0277BD",
+        accent2: "#7E57C2",
+
+        icon: "water",
+
+        tagline:
+            "Pandora and James Cameron's Avatar saga.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "avatar-1",
+                        title: "Avatar",
+                        year: 2009,
+                        description: "A former Marine becomes involved in the conflict between humanity and the Na'vi on Pandora.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "avatar-2",
+                        title: "Avatar: The Way of Water",
+                        year: 2022,
+                        description: "Jake Sully and Neytiri protect their family while seeking refuge among the ocean-dwelling Metkayina.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "avatar-3",
+                        title: "Avatar: Fire and Ash",
+                        year: 2025,
+                        description: "The story of Pandora continues as the Sully family encounters new dangers and cultures.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "apes",
+
+        name: "Planet of the Apes",
+
+        accent: "#4E342E",
+        accent2: "#78909C",
+
+        icon: "ape",
+
+        tagline:
+            "The Planet of the Apes screen saga.",
+
+        groups: [
+
+            {
+                title: "Original Series",
+
+                items: [
+
+                    {
+                        id: "apes-1968",
+                        title: "Planet of the Apes",
+                        year: 1968,
+                        description: "Astronauts land on a mysterious planet ruled by intelligent apes.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "apes-beneath",
+                        title: "Beneath the Planet of the Apes",
+                        year: 1970,
+                        description: "A second astronaut searches for the missing crew and discovers a hidden underground civilization.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "apes-escape",
+                        title: "Escape from the Planet of the Apes",
+                        year: 1971,
+                        description: "Two intelligent apes travel back to present-day Earth and become subjects of public fascination.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "apes-conquest",
+                        title: "Conquest of the Planet of the Apes",
+                        year: 1972,
+                        description: "Caesar leads an uprising against humans in a society where apes are enslaved.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "apes-battle",
+                        title: "Battle for the Planet of the Apes",
+                        year: 1973,
+                        description: "Humans and apes attempt to build a peaceful society after the collapse of civilization.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            },
+
+            {
+                title: "Caesar Saga",
+
+                items: [
+
+                    {
+                        id: "apes-rise",
+                        title: "Rise of the Planet of the Apes",
+                        year: 2011,
+                        description: "A genetically enhanced chimpanzee named Caesar becomes the beginning of a revolution.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "apes-dawn",
+                        title: "Dawn of the Planet of the Apes",
+                        year: 2014,
+                        description: "Caesar and his ape community encounter a group of surviving humans.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "apes-war",
+                        title: "War for the Planet of the Apes",
+                        year: 2017,
+                        description: "Caesar leads his people through a final conflict with a human military force.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "apes-kingdom",
+                        title: "Kingdom of the Planet of the Apes",
+                        year: 2024,
+                        description: "Generations after Caesar, a young ape begins a journey that challenges what his society believes about the past.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "conjuring",
+
+        name: "The Conjuring Universe",
+
+        accent: "#263238",
+        accent2: "#9C27B0",
+
+        icon: "ghost",
+
+        tagline:
+            "The interconnected Conjuring horror universe.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "conjuring-1",
+                        title: "The Conjuring",
+                        year: 2013,
+                        description: "Ed and Lorraine Warren investigate a terrifying supernatural presence haunting a family home.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "annabelle",
+                        title: "Annabelle",
+                        year: 2014,
+                        description: "A couple discovers that an antique doll has become the center of a terrifying supernatural haunting.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "conjuring-2",
+                        title: "The Conjuring 2",
+                        year: 2016,
+                        description: "The Warrens travel to England to investigate a disturbing haunting involving a young girl.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "annabelle-creation",
+                        title: "Annabelle: Creation",
+                        year: 2017,
+                        description: "An orphanage becomes the target of a terrifying demonic presence connected to a mysterious doll.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "nun",
+                        title: "The Nun",
+                        year: 2018,
+                        description: "A priest and a nun investigate the mysterious death of a nun at a Romanian abbey.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "annabelle-comes-home",
+                        title: "Annabelle Comes Home",
+                        year: 2019,
+                        description: "The Warrens' daughter and her friends unleash a collection of supernatural entities.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "conjuring-devil",
+                        title: "The Conjuring: The Devil Made Me Do It",
+                        year: 2021,
+                        description: "The Warrens investigate a murder case involving a suspected demonic possession.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "nun-2",
+                        title: "The Nun II",
+                        year: 2023,
+                        description: "Sister Irene faces the demonic Valak again years after their first encounter.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "insidious",
+
+        name: "Insidious",
+
+        accent: "#4A148C",
+        accent2: "#EF5350",
+
+        icon: "ghost",
+
+        tagline:
+            "The Further and the Insidious horror saga.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "insidious-1",
+                        title: "Insidious",
+                        year: 2010,
+                        description: "A family discovers that their son is trapped in a terrifying supernatural realm known as the Further.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "insidious-2",
+                        title: "Insidious: Chapter 2",
+                        year: 2013,
+                        description: "The Lambert family continues to confront the supernatural forces connected to the Further.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "insidious-3",
+                        title: "Insidious: Chapter 3",
+                        year: 2015,
+                        description: "A young woman seeks Elise Rainier's help after experiencing terrifying supernatural activity.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "insidious-last-key",
+                        title: "Insidious: The Last Key",
+                        year: 2018,
+                        description: "Elise returns to the house where she grew up and confronts demons from her childhood.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "insidious-red-door",
+                        title: "Insidious: The Red Door",
+                        year: 2023,
+                        description: "Josh and Dalton Lambert confront their buried memories of the Further.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "scream",
+
+        name: "Scream",
+
+        accent: "#111111",
+        accent2: "#E53935",
+
+        icon: "mask",
+
+        tagline:
+            "Ghostface and the Scream film series.",
+
+        groups: [
+
+            {
+                title: "Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "scream-1",
+                        title: "Scream",
+                        year: 1996,
+                        description: "A masked killer begins terrorizing a small town while a group of teenagers attempt to survive.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "scream-2",
+                        title: "Scream 2",
+                        year: 1997,
+                        description: "Ghostface returns while Sidney attends college and tries to leave the events of Woodsboro behind.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "scream-3",
+                        title: "Scream 3",
+                        year: 2000,
+                        description: "A new Ghostface killer targets the cast of a movie based on the Woodsboro murders.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "scream-4",
+                        title: "Scream 4",
+                        year: 2011,
+                        description: "Sidney returns to Woodsboro just as a new Ghostface begins killing again.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "scream-5",
+                        title: "Scream",
+                        year: 2022,
+                        description: "A new generation becomes the target of Ghostface while familiar survivors return.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "scream-6",
+                        title: "Scream VI",
+                        year: 2023,
+                        description: "The survivors leave Woodsboro for New York, where another Ghostface emerges.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    },
+
+    {
+        id: "james-bond",
+
+        name: "James Bond",
+
+        accent: "#0B3D2E",
+        accent2: "#D4AF37",
+
+        icon: "diamond",
+
+        tagline:
+            "James Bond 007 — the official Eon film saga.",
+
+        groups: [
+
+            {
+                title: "Eon Films — Release Order",
+
+                items: [
+
+                    {
+                        id: "bond-dr-no",
+                        title: "Dr. No",
+                        year: 1962,
+                        description: "James Bond investigates the disappearance of a British agent in Jamaica.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-russia",
+                        title: "From Russia with Love",
+                        year: 1963,
+                        description: "Bond is sent to Istanbul to obtain a Soviet decoding device while being targeted by SPECTRE.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-goldfinger",
+                        title: "Goldfinger",
+                        year: 1964,
+                        description: "Bond investigates billionaire Auric Goldfinger and uncovers a dangerous plan involving Fort Knox.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-thunderball",
+                        title: "Thunderball",
+                        year: 1965,
+                        description: "Bond must recover stolen nuclear weapons before SPECTRE can use them.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-you-only-live-twice",
+                        title: "You Only Live Twice",
+                        year: 1967,
+                        description: "Bond investigates the disappearance of spacecraft and uncovers a SPECTRE plot.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-on-her-majestys",
+                        title: "On Her Majesty's Secret Service",
+                        year: 1969,
+                        description: "Bond attempts to stop Blofeld while becoming personally involved in the mission.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-diamonds",
+                        title: "Diamonds Are Forever",
+                        year: 1971,
+                        description: "Bond investigates a diamond-smuggling operation connected to a massive criminal scheme.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-live-let-die",
+                        title: "Live and Let Die",
+                        year: 1973,
+                        description: "Bond investigates a series of murders connected to a powerful Caribbean drug lord.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-man-golden-gun",
+                        title: "The Man with the Golden Gun",
+                        year: 1974,
+                        description: "Bond is targeted by legendary assassin Francisco Scaramanga.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-spy-loved-me",
+                        title: "The Spy Who Loved Me",
+                        year: 1977,
+                        description: "Bond teams up with a Soviet agent to stop a shipping magnate from starting a nuclear war.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-moonraker",
+                        title: "Moonraker",
+                        year: 1979,
+                        description: "Bond investigates the theft of a space shuttle and uncovers a plan to destroy humanity.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-for-your-eyes",
+                        title: "For Your Eyes Only",
+                        year: 1981,
+                        description: "Bond searches for a communications device while navigating an international weapons conspiracy.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-octopussy",
+                        title: "Octopussy",
+                        year: 1983,
+                        description: "Bond investigates a plot involving a valuable jewel, an international smuggler and nuclear weapons.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-view-kill",
+                        title: "A View to a Kill",
+                        year: 1985,
+                        description: "Bond faces industrialist Max Zorin and a plot targeting Silicon Valley.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-living-daylights",
+                        title: "The Living Daylights",
+                        year: 1987,
+                        description: "Bond protects a defecting Soviet general while uncovering a larger arms conspiracy.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-licence-kill",
+                        title: "Licence to Kill",
+                        year: 1989,
+                        description: "Bond leaves the service to pursue revenge against a drug lord who attacked his friend.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-goldeneye",
+                        title: "GoldenEye",
+                        year: 1995,
+                        description: "Bond investigates a stolen satellite weapon and confronts a former MI6 agent.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-tomorrow",
+                        title: "Tomorrow Never Dies",
+                        year: 1997,
+                        description: "Bond attempts to prevent a media tycoon from engineering a global conflict.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-world-not-enough",
+                        title: "The World Is Not Enough",
+                        year: 1999,
+                        description: "Bond protects an oil heiress while investigating an international terrorist plot.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-die-another-day",
+                        title: "Die Another Day",
+                        year: 2002,
+                        description: "Bond returns to the field after being imprisoned and discovers a dangerous technological weapon.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-casino-royale",
+                        title: "Casino Royale",
+                        year: 2006,
+                        description: "A newly promoted James Bond faces terrorist financier Le Chiffre in a high-stakes poker game.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-quantum",
+                        title: "Quantum of Solace",
+                        year: 2008,
+                        description: "Bond uncovers a secret organization while seeking revenge for Vesper Lynd.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-skyfall",
+                        title: "Skyfall",
+                        year: 2012,
+                        description: "Bond returns to action when an attack threatens MI6 and M's past comes back to haunt her.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-spectre",
+                        title: "Spectre",
+                        year: 2015,
+                        description: "Bond uncovers a mysterious organization connected to events from his past.",
+                        trailer: "",
+                        poster: ""
+                    },
+
+                    {
+                        id: "bond-no-time",
+                        title: "No Time to Die",
+                        year: 2021,
+                        description: "Bond is drawn back into action when an old CIA friend asks for help rescuing a kidnapped scientist.",
+                        trailer: "",
+                        poster: ""
+                    }
+
+                ]
+            }
+
+        ]
+    }
 
 ];

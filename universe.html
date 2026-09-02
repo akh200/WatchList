@@ -1,792 +1,475 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>WatchList — Universe</title>
-
-
-    <!-- Google Fonts -->
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
-
-
-    <!-- Main stylesheet -->
-
-    <link rel="stylesheet"
-          href="styles.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WatchList — Your Cinematic Worlds</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
 
-            /* =====================================================
-           PAGE
-        ===================================================== */
+        html {
+            scroll-behavior: smooth;
+        }
 
-            .universe-page {
-                --accent: #e6483f;
-                --accent-2: #f2a93c;
-                min-height: 100vh;
-                max-width: 1250px;
-                margin: 0 auto;
-                padding: 35px 30px 80px;
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+            background: radial-gradient(circle at 20% 10%, rgba(120, 70, 255, .28), transparent 30%), radial-gradient(circle at 80% 20%, rgba(0, 200, 255, .18), transparent 28%), linear-gradient(135deg, #080812, #10101d 50%, #080812);
+        }
+
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+                background-size: 40px 40px;
             }
 
+        .hero {
+            position: relative;
+            padding: 70px 30px 45px;
+            text-align: center;
+        }
 
-            /* =====================================================
-           BACK BUTTON
-        ===================================================== */
-
-            .back-button {
-                display: inline-flex;
-                align-items: center;
-                gap: 7px;
-                margin-bottom: 30px;
-                padding: 10px 17px;
-                border: 1px solid var(--border);
-                border-radius: 999px;
-                background: rgba(255,255,255,0.03);
-                color: var(--text-dim);
-                cursor: pointer;
-                font-size: 0.78rem;
-                font-weight: 600;
-                transition: 0.2s ease;
-            }
-
-
-                .back-button:hover {
-                    color: var(--text);
-                    border-color: var(--accent);
-                    transform: translateX(-3px);
-                }
-
-
-            /* =====================================================
-           UNIVERSE HERO
-        ===================================================== */
-
-            .universe-header {
-                position: relative;
-                min-height: 300px;
-                display: flex;
-                align-items: flex-end;
-                overflow: hidden;
-                padding: 45px;
-                border: 1px solid var(--border);
-                border-radius: 28px;
-                background: radial-gradient( circle at 85% 20%, var(--accent), transparent 32% ), radial-gradient( circle at 15% 100%, var(--accent-2), transparent 30% ), linear-gradient( 135deg, #171a22, #0b0d12 );
-            }
-
-
-                .universe-header::before {
-                    content: "";
-                    position: absolute;
-                    width: 500px;
-                    height: 500px;
-                    right: -200px;
-                    top: -280px;
-                    border-radius: 50%;
-                    background: var(--accent);
-                    opacity: 0.16;
-                    filter: blur(60px);
-                }
-
-
-                .universe-header::after {
-                    content: "";
-                    position: absolute;
-                    inset: 0;
-                    background: linear-gradient( 90deg, rgba(5,7,10,0.92), rgba(5,7,10,0.55), rgba(5,7,10,0.2) );
-                    pointer-events: none;
-                }
-
-
-            .universe-header-content {
-                position: relative;
-                z-index: 2;
-                width: 100%;
-            }
-
-
-            /* =====================================================
-           KICKER
-        ===================================================== */
-
-            .header-kicker {
-                display: inline-block;
-                margin: 0 0 12px;
-                color: var(--accent);
-                font-size: 0.7rem;
-                font-weight: 700;
-                letter-spacing: 0.2em;
-            }
-
-
-            /* =====================================================
-           TITLE
-        ===================================================== */
-
-            .universe-title {
+            .hero h1 {
                 margin: 0;
-                font-family: "Space Grotesk", sans-serif;
-                font-size: clamp( 3rem, 8vw, 6.5rem );
-                line-height: 0.9;
-                letter-spacing: -0.06em;
-                text-transform: uppercase;
-                text-shadow: 0 10px 50px rgba(0,0,0,0.4);
+                font-size: clamp(38px, 6vw, 76px);
+                font-weight: 900;
+                letter-spacing: -3px;
+                background: linear-gradient(90deg, #fff, #b99cff, #64dcff);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
             }
 
-
-            .universe-tagline {
+            .hero p {
+                margin: 18px auto 0;
                 max-width: 700px;
-                margin: 20px 0 0;
-                color: var(--text-dim);
-                font-size: 0.95rem;
-                line-height: 1.6;
+                color: #aaaabe;
+                font-size: 18px;
             }
 
+        .progress-wrap {
+            width: min(700px, 90%);
+            margin: 32px auto 0;
+        }
 
-            /* =====================================================
-           PROGRESS
-        ===================================================== */
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            color: #bcbccc;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
 
-            .universe-progress {
-                max-width: 700px;
-                margin-top: 30px;
+        .progress-bar {
+            height: 8px;
+            border-radius: 99px;
+            background: rgba(255,255,255,.1);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #8b5cf6, #22d3ee);
+            transition: width .4s ease;
+        }
+
+        .controls {
+            position: relative;
+            z-index: 2;
+            width: min(1200px, 92%);
+            margin: 0 auto 35px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .search {
+            flex: 1;
+            padding: 15px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.1);
+            outline: none;
+            color: white;
+            background: rgba(255,255,255,.07);
+            backdrop-filter: blur(15px);
+            font-size: 15px;
+        }
+
+            .search::placeholder {
+                color: #858598;
             }
 
+        .profiles {
+            position: relative;
+            z-index: 2;
+            width: min(1400px, 94%);
+            margin: auto;
+            padding-bottom: 60px;
+        }
 
-            .universe-progress-info {
-                display: flex;
-                justify-content: space-between;
-                gap: 20px;
-                margin-bottom: 9px;
-                color: var(--text-dim);
-                font-size: 0.75rem;
+        .section-title {
+            margin: 0 0 22px;
+            font-size: 27px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .profile {
+            position: relative;
+            min-height: 220px;
+            border-radius: 22px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,.1);
+            background: linear-gradient(145deg, var(--accent), #111);
+            box-shadow: 0 18px 50px rgba(0,0,0,.35);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+
+            .profile::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(circle at 80% 20%, var(--accent2), transparent 35%), linear-gradient(145deg, transparent, rgba(0,0,0,.75));
+                opacity: .75;
             }
 
-
-            .universe-progress-bar {
-                height: 8px;
-                overflow: hidden;
-                border-radius: 999px;
-                background: rgba(255,255,255,0.08);
+            .profile::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(circle at 20% 80%, rgba(255,255,255,.15), transparent 25%);
+                pointer-events: none;
             }
 
-
-            .universe-progress-fill {
-                height: 100%;
-                width: 0;
-                border-radius: inherit;
-                background: linear-gradient( 90deg, var(--accent), var(--accent-2) );
-                box-shadow: 0 0 18px var(--accent);
-                transition: width 0.4s ease;
+            .profile:hover {
+                transform: translateY(-8px) scale(1.015);
+                border-color: rgba(255,255,255,.35);
+                box-shadow: 0 28px 65px rgba(0,0,0,.55);
             }
 
+        .profile-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            min-height: 220px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-            /* =====================================================
-           MOVIE SECTION
-        ===================================================== */
+        .profile-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            font-size: 28px;
+            background: rgba(255,255,255,.14);
+            border: 1px solid rgba(255,255,255,.2);
+            backdrop-filter: blur(10px);
+        }
 
-            .movie-section {
-                margin-top: 55px;
+        .profile-name {
+            font-size: 25px;
+            font-weight: 900;
+            margin-top: 25px;
+        }
+
+        .profile-tagline {
+            color: rgba(255,255,255,.7);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 6px;
+        }
+
+        .profile-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .count {
+            color: rgba(255,255,255,.75);
+            font-size: 13px;
+        }
+
+        .open {
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,.14);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .empty {
+            display: none;
+            text-align: center;
+            color: #88889c;
+            padding: 50px;
+        }
+
+        footer {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 30px;
+            color: #686879;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding-top: 45px;
             }
 
-
-            .movie-section-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-end;
-                gap: 25px;
-                margin-bottom: 25px;
-            }
-
-
-                .movie-section-header h2 {
-                    margin: 0;
-                    font-family: "Space Grotesk", sans-serif;
-                    font-size: 1.8rem;
-                    letter-spacing: -0.03em;
-                }
-
-
-                .movie-section-header p {
-                    margin: 6px 0 0;
-                    color: var(--text-faint);
-                    font-size: 0.78rem;
-                }
-
-
-            /* =====================================================
-           ORDER TOGGLE
-        ===================================================== */
-
-            .order-toggle {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                padding: 5px;
-                border: 1px solid var(--border);
-                border-radius: 999px;
-                background: rgba(255,255,255,0.03);
-                flex-shrink: 0;
-            }
-
-
-                .order-toggle button {
-                    border: none;
-                    border-radius: 999px;
-                    padding: 10px 16px;
-                    background: transparent;
-                    color: var(--text-faint);
-                    cursor: pointer;
-                    font-family: "Inter", sans-serif;
-                    font-size: 0.72rem;
-                    font-weight: 600;
-                    transition: 0.2s ease;
-                }
-
-
-                    .order-toggle button:hover {
-                        color: var(--text);
-                    }
-
-
-                    .order-toggle button.active {
-                        background: var(--accent);
-                        color: #ffffff;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-                    }
-
-
-            /* =====================================================
-           MOVIE GROUP
-        ===================================================== */
-
-            .movie-group {
-                margin-bottom: 40px;
-            }
-
-
-            .movie-group-title {
-                display: flex;
-                align-items: center;
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
-                margin: 0 0 15px;
-                color: var(--text-dim);
-                font-family: "Space Grotesk", sans-serif;
-                font-size: 0.95rem;
-                letter-spacing: 0.02em;
             }
 
-
-                .movie-group-title::before {
-                    content: "";
-                    display: block;
-                    width: 4px;
-                    height: 20px;
-                    border-radius: 4px;
-                    background: linear-gradient( var(--accent), var(--accent-2) );
-                }
-
-
-            /* =====================================================
-           MOVIE LIST
-        ===================================================== */
-
-            .movie-list {
-                display: grid;
-                gap: 10px;
+            .profile {
+                min-height: 190px;
             }
 
-
-            /* =====================================================
-           MOVIE CARD
-        ===================================================== */
-
-            .movie-card {
-                position: relative;
-                display: grid;
-                grid-template-columns: 58px minmax(0,1fr) auto;
-                align-items: center;
-                gap: 18px;
-                padding: 17px 20px;
-                border: 1px solid var(--border);
-                border-radius: 16px;
-                background: linear-gradient( 120deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015) );
-                overflow: hidden;
-                transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+            .profile-content {
+                min-height: 190px;
+                padding: 16px;
             }
 
-
-                .movie-card::before {
-                    content: "";
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    bottom: 0;
-                    width: 3px;
-                    background: linear-gradient( var(--accent), var(--accent-2) );
-                    opacity: 0;
-                    transition: opacity 0.2s ease;
-                }
-
-
-                .movie-card:hover {
-                    transform: translateX(5px);
-                    border-color: color-mix( in srgb, var(--accent) 55%, var(--border) );
-                    background: rgba(255,255,255,0.055);
-                }
-
-
-                    .movie-card:hover::before {
-                        opacity: 1;
-                    }
-
-
-            /* =====================================================
-           MOVIE NUMBER
-        ===================================================== */
-
-            .movie-number {
-                display: grid;
-                place-items: center;
-                width: 48px;
-                height: 48px;
-                border: 1px solid var(--border);
-                border-radius: 13px;
-                background: rgba(255,255,255,0.04);
-                color: var(--text-faint);
-                font-family: "Space Grotesk", sans-serif;
-                font-size: 0.9rem;
-                font-weight: 700;
+            .profile-name {
+                font-size: 19px;
             }
 
-
-            /* =====================================================
-           MOVIE INFO
-        ===================================================== */
-
-            .movie-info {
-                min-width: 0;
+            .profile-tagline {
+                display: none;
             }
 
-
-            .movie-title {
-                margin: 0;
-                color: var(--text);
-                font-family: "Space Grotesk", sans-serif;
-                font-size: 1rem;
-                font-weight: 600;
-                line-height: 1.35;
+            .profile-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 22px;
             }
-
-
-            .movie-year {
-                margin-left: 8px;
-                color: var(--text-faint);
-                font-family: "Inter", sans-serif;
-                font-size: 0.72rem;
-                font-weight: 400;
-            }
-
-
-            .movie-description {
-                max-width: 750px;
-                margin: 5px 0 0;
-                color: var(--text-faint);
-                font-size: 0.76rem;
-                line-height: 1.5;
-            }
-
-
-            /* =====================================================
-           DETAILS
-        ===================================================== */
-
-            .movie-details {
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                gap: 9px;
-                flex-wrap: wrap;
-            }
-
-
-            /* =====================================================
-           RATING
-        ===================================================== */
-
-            .rating-wrapper {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-
-
-            .rating-label {
-                color: var(--text-faint);
-                font-size: 0.65rem;
-                white-space: nowrap;
-            }
-
-
-            .rating-stars {
-                display: flex;
-                align-items: center;
-            }
-
-
-            .rating-star {
-                border: none;
-                padding: 1px;
-                background: transparent;
-                color: var(--accent-2);
-                cursor: pointer;
-                font-size: 1rem;
-                line-height: 1;
-                transition: transform 0.15s ease;
-            }
-
-
-                .rating-star:hover {
-                    transform: scale(1.2);
-                }
-
-
-            /* =====================================================
-           BUTTONS
-        ===================================================== */
-
-            .trailer-button,
-            .status-button {
-                border: 1px solid var(--border);
-                border-radius: 999px;
-                padding: 8px 13px;
-                cursor: pointer;
-                font-family: "Inter", sans-serif;
-                font-size: 0.68rem;
-                font-weight: 600;
-                transition: 0.2s ease;
-                white-space: nowrap;
-            }
-
-
-            .trailer-button {
-                background: rgba(255,255,255,0.03);
-                color: var(--text-dim);
-            }
-
-
-                .trailer-button:hover {
-                    border-color: var(--accent);
-                    color: var(--text);
-                    background: rgba(255,255,255,0.06);
-                }
-
-
-            /* =====================================================
-           STATUS
-        ===================================================== */
-
-            .status-button {
-                background: var(--surface-2);
-                color: var(--text-dim);
-            }
-
-
-            .status-not-watched {
-                color: var(--text-faint);
-            }
-
-
-            .status-halfway {
-                border-color: #f2a93c;
-                background: rgba(242,169,60,0.12);
-                color: #f2a93c;
-            }
-
-
-            .status-watched {
-                border-color: #4caf83;
-                background: rgba(76,175,131,0.12);
-                color: #72d5a7;
-            }
-
-
-            /* =====================================================
-           CHRONOLOGICAL MODE
-        ===================================================== */
-
-            #movieGroups > .movie-list {
-                margin-top: 5px;
-            }
-
-
-            /* =====================================================
-           EMPTY STATE
-        ===================================================== */
-
-            .empty-state {
-                padding: 50px 25px;
-                border: 1px dashed var(--border);
-                border-radius: 18px;
-                color: var(--text-faint);
-                text-align: center;
-            }
-
-
-            /* =====================================================
-           MOBILE
-        ===================================================== */
-
-            @media (max-width: 900px) {
-
-                .movie-card {
-                    grid-template-columns: 50px minmax(0,1fr);
-                }
-
-
-                .movie-details {
-                    grid-column: 2;
-                    justify-content: flex-start;
-                }
-            }
-
-
-            @media (max-width: 700px) {
-
-                .universe-page {
-                    padding: 22px 15px 50px;
-                }
-
-
-                .universe-header {
-                    min-height: 280px;
-                    padding: 30px 25px;
-                    border-radius: 22px;
-                }
-
-
-                .universe-title {
-                    font-size: clamp( 2.7rem, 16vw, 4.5rem );
-                }
-
-
-                .movie-section-header {
-                    align-items: flex-start;
-                    flex-direction: column;
-                }
-
-
-                .order-toggle {
-                    width: 100%;
-                }
-
-
-                    .order-toggle button {
-                        flex: 1;
-                    }
-
-
-                .movie-card {
-                    grid-template-columns: 43px minmax(0,1fr);
-                    gap: 13px;
-                    padding: 15px;
-                }
-
-
-                .movie-number {
-                    width: 40px;
-                    height: 40px;
-                }
-
-
-                .movie-details {
-                    grid-column: 2;
-                    gap: 7px;
-                }
-
-
-                .movie-description {
-                    font-size: 0.72rem;
-                }
-
-
-                .rating-wrapper {
-                    width: 100%;
-                }
-            }
-
-
-            @media (max-width: 430px) {
-
-                .trailer-button,
-                .status-button {
-                    padding: 7px 10px;
-                    font-size: 0.63rem;
-                }
-
-
-                .rating-label {
-                    display: none;
-                }
-            }
+        }
     </style>
-
 </head>
-
 
 <body>
 
+    <header class="hero">
+        <h1>YOUR CINEMATIC WORLDS</h1>
 
-    <main id="universePage"
-          class="universe-page">
+        <p>
+            Choose a universe and continue your personal cinematic journey.
+        </p>
 
+        <div class="progress-wrap">
+            <div class="progress-info">
+                <span id="progressPercent">0%</span>
+                <span id="progressText">0 / 0 titles watched</span>
+            </div>
 
-        <!-- ===================================================
-             BACK
-        ==================================================== -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </header>
 
-        <button id="backButton"
-                class="back-button"
-                type="button">
+    <div class="controls">
+        <input class="search"
+               id="search"
+               type="text"
+               placeholder="Search your cinematic worlds...">
+    </div>
 
-            ← Back to Universes
+    <main class="profiles">
 
-        </button>
+        <h2 class="section-title">PROFILES</h2>
 
+        <div class="grid" id="universeGrid"></div>
 
-        <!-- ===================================================
-             UNIVERSE HERO
-        ==================================================== -->
+        <div class="empty" id="empty">
+            No cinematic world found.
+        </div>
 
-        <section class="universe-header">
+    </main>
 
-            <div class="universe-header-content">
+    <footer>
+        WatchList · Your personal cinematic journey
+    </footer>
 
-                <div class="header-kicker">
-                    YOUR UNIVERSE
-                </div>
+    <script src="./data.js"></script>
 
+    <script>
+    const grid = document.getElementById("universeGrid");
+    const search = document.getElementById("search");
+    const empty = document.getElementById("empty");
 
-                <h1 id="universeTitle"
-                    class="universe-title">
-                    Loading...
-                </h1>
+    const ICONS = {
+        bolt: "⚡",
+        shield: "🛡️",
+        star: "⭐",
+        planet: "🪐",
+        wand: "🪄",
+        ring: "💍",
+        robot: "🤖",
+        gorilla: "🦍",
+        target: "🎯",
+        hero: "🦸",
+        dino: "🦖",
+        pirate: "🏴‍☠️",
+        lion: "🦁",
+        car: "🏎️",
+        gun: "🔫",
+        water: "🌊",
+        ape: "🐒",
+        ghost: "👻",
+        mask: "🎭",
+        diamond: "💎"
+    };
 
+    function allItems(universe) {
+        return universe.groups.flatMap(group => group.items);
+    }
 
-                <p id="universeTagline"
-                   class="universe-tagline">
-                </p>
+    function getStatus(item) {
+        try {
+            const saved = JSON.parse(localStorage.getItem("watchlist-progress") || "{}");
+            return saved[item.id]?.status || "not-watched";
+        } catch {
+            return "not-watched";
+        }
+    }
 
+    function getUniverseStats(universe) {
+        const items = allItems(universe);
 
-                <!-- PROGRESS -->
+        const watched = items.filter(item =>
+            getStatus(item) === "watched"
+        ).length;
 
-                <div class="universe-progress">
+        return {
+            total: items.length,
+            watched
+        };
+    }
 
-                    <div class="universe-progress-info">
+    function render(list = UNIVERSES) {
 
-                        <span>
-                            Your Progress
-                        </span>
+        grid.innerHTML = "";
 
+        if (!list.length) {
+            empty.style.display = "block";
+            return;
+        }
 
-                        <span id="universeProgressText">
-                            0 watched · 0 halfway · 0 remaining
-                        </span>
+        empty.style.display = "none";
 
+        list.forEach(universe => {
+
+            const stats = getUniverseStats(universe);
+
+            const card = document.createElement("div");
+            card.className = "profile";
+
+            card.style.setProperty("--accent", universe.accent);
+            card.style.setProperty("--accent2", universe.accent2);
+
+            card.innerHTML = `
+                <div class="profile-content">
+
+                    <div>
+                        <div class="profile-icon">
+                            ${ICONS[universe.icon] || "🎬"}
+                        </div>
+
+                        <div class="profile-name">
+                            ${universe.name}
+                        </div>
+
+                        <div class="profile-tagline">
+                            ${universe.tagline}
+                        </div>
                     </div>
 
+                    <div class="profile-bottom">
 
-                    <div class="universe-progress-bar">
+                        <div class="count">
+                            ${stats.watched} / ${stats.total} watched
+                        </div>
 
-                        <div id="universeProgressFill"
-                             class="universe-progress-fill">
+                        <div class="open">
+                            OPEN →
                         </div>
 
                     </div>
 
                 </div>
+            `;
 
-            </div>
+            card.addEventListener("click", () => {
+                window.location.href =
+                    `./universe.html?universe=${encodeURIComponent(universe.id)}`;
+            });
 
-        </section>
+            grid.appendChild(card);
+        });
+    }
 
+    function updateOverallProgress() {
 
-        <!-- ===================================================
-             MOVIES
-        ==================================================== -->
+        const items = UNIVERSES.flatMap(allItems);
 
-        <section class="movie-section">
+        const watched = items.filter(item =>
+            getStatus(item) === "watched"
+        ).length;
 
+        const total = items.length;
 
-            <div class="movie-section-header">
+        const percent = total
+            ? Math.round((watched / total) * 100)
+            : 0;
 
-                <div>
+        document.getElementById("progressPercent").textContent =
+            `${percent}%`;
 
-                    <h2>
-                        Watch Order
-                    </h2>
+        document.getElementById("progressText").textContent =
+            `${watched} / ${total} titles watched`;
 
-                    <p>
-                        Choose how you want to experience this universe.
-                    </p>
+        document.getElementById("progressFill").style.width =
+            `${percent}%`;
+    }
 
-                </div>
+    search.addEventListener("input", () => {
 
+        const value = search.value.toLowerCase().trim();
 
-                <!--
-                  universe.js automatically inserts:
+        const filtered = UNIVERSES.filter(universe =>
+            universe.name.toLowerCase().includes(value) ||
+            universe.tagline.toLowerCase().includes(value)
+        );
 
-                  Release Order
-                  Chronological
+        render(filtered);
+    });
 
-                  here.
-                -->
-
-            </div>
-
-
-            <!-- MOVIES ARE GENERATED BY universe.js -->
-
-            <div id="movieGroups">
-
-            </div>
-
-
-        </section>
-
-
-    </main>
-
-
-    <!-- =====================================================
-         DATA
-    ====================================================== -->
-
-    <script src="data.js"></script>
-
-
-    <!-- =====================================================
-         UNIVERSE LOGIC
-    ====================================================== -->
-
-    <script src="universe.js"></script>
-
+    render();
+    updateOverallProgress();
+    </script>
 
 </body>
-
 </html>
