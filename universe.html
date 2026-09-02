@@ -1,756 +1,1095 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>WatchList</title>
 
-
     <style>
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-
         body {
             font-family: Arial, Helvetica, sans-serif;
-            background: radial-gradient( circle at top left, rgba(255,0,100,.18), transparent 35% ), radial-gradient( circle at bottom right, rgba(0,100,255,.18), transparent 35% ), #080808;
+            background: radial-gradient(circle at top left, #242424 0%, #090909 45%, #000000 100%);
             color: white;
             min-height: 100vh;
         }
 
+        /* HEADER */
 
-        .container {
-            width: 92%;
-            max-width: 1400px;
-            margin: auto;
-            padding: 35px 0 80px;
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 20px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
-
-        .back {
-            display: inline-block;
-            margin-bottom: 30px;
-            padding: 10px 18px;
-            border-radius: 20px;
-            background: rgba(255,255,255,.1);
-            color: white;
-            text-decoration: none;
-            cursor: pointer;
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -1px;
         }
 
-
-        .hero {
-            padding: 50px 30px;
-            border-radius: 30px;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient( 135deg, rgba(255,0,80,.3), rgba(0,100,255,.2), rgba(100,0,255,.3) );
-            border: 1px solid rgba(255,255,255,.15);
-            backdrop-filter: blur(20px);
-        }
-
-
-            .hero h1 {
-                font-size: clamp(40px, 7vw, 80px);
-                font-weight: 900;
-                margin-bottom: 15px;
+            .logo span {
+                color: #e50914;
             }
 
+        .back-btn {
+            border: none;
+            background: rgba(255,255,255,0.12);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+            .back-btn:hover {
+                background: rgba(255,255,255,0.22);
+            }
+
+        /* HERO */
+
+        .hero {
+            padding: 60px 5% 35px;
+        }
+
+            .hero h1 {
+                font-size: clamp(35px, 5vw, 65px);
+                font-weight: 900;
+                margin-bottom: 10px;
+            }
 
             .hero p {
-                max-width: 800px;
-                color: #ccc;
-                font-size: 18px;
+                color: #bdbdbd;
+                font-size: 17px;
+                max-width: 700px;
                 line-height: 1.6;
             }
 
+        /* PROGRESS */
 
         .progress-box {
-            margin-top: 30px;
-            max-width: 600px;
+            margin: 10px 5% 35px;
+            padding: 20px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
         }
 
-
-        .progress-info {
+        .progress-top {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            color: #ccc;
+            margin-bottom: 12px;
+            color: #ddd;
+            font-size: 14px;
         }
 
-
-        .progress {
-            height: 12px;
-            background: #222;
-            border-radius: 20px;
+        .progress-bar {
+            width: 100%;
+            height: 9px;
+            border-radius: 10px;
+            background: #272727;
             overflow: hidden;
         }
-
 
         .progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient( 90deg, #ff3b3b, #ff9900, #00e5ff, #8b5cff );
-            transition: width .5s ease;
+            background: linear-gradient(90deg, #e50914, #ff7a00);
+            transition: width 0.4s ease;
         }
 
-
-        .section {
-            margin-bottom: 50px;
-        }
-
-
-        .section-title {
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat( auto-fit, minmax(280px, 1fr) );
-            gap: 25px;
-        }
-
-
-        .movie {
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.1);
-            border-radius: 22px;
-            overflow: hidden;
-            transition: transform .3s ease, border .3s ease;
-        }
-
-
-            .movie:hover {
-                transform: translateY(-7px);
-                border-color: rgba(255,255,255,.35);
-            }
-
-
-        .movie-poster {
-            height: 360px;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-        }
-
-
-        .movie-number {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            padding: 7px 12px;
-            border-radius: 20px;
-            background: rgba(0,0,0,.75);
-            font-weight: bold;
-        }
-
-
-        .movie-info {
-            padding: 20px;
-        }
-
-
-        .movie-title {
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 7px;
-        }
-
-
-        .movie-year {
-            color: #aaa;
-            margin-bottom: 15px;
-        }
-
-
-        .description {
-            color: #ccc;
-            line-height: 1.5;
-            font-size: 14px;
-            min-height: 80px;
-        }
-
-
-        .trailer {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 16px;
-            border-radius: 20px;
-            background: linear-gradient( 90deg, #ff1744, #ff5722 );
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
+        /* CONTROLS */
 
         .controls {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,.1);
-        }
-
-
-        .status-buttons {
+            padding: 0 5% 30px;
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
+        .filter-btn {
+            border: none;
+            color: white;
+            background: #222;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+            .filter-btn.active {
+                background: #e50914;
+            }
+
+        /* MOVIES */
+
+        .movie-container {
+            padding: 0 5% 60px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 25px;
+        }
+
+        /* CARD */
+
+        .movie-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 470px;
+            border-radius: 18px;
+            background: linear-gradient( 180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025) );
+            border: 1px solid rgba(255,255,255,0.09);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+            .movie-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            }
+
+        .poster {
+            width: 100%;
+            height: 310px;
+            object-fit: cover;
+            display: block;
+            background: #151515;
+        }
+
+        .movie-info {
+            padding: 17px;
+        }
+
+        .movie-title {
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .movie-year {
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #c7c7c7;
+            font-size: 13px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 78px;
+        }
+
+        /* STATUS */
+
+        .status-row {
+            margin-top: 14px;
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
 
         .status-btn {
+            flex: 1;
+            min-width: 70px;
             border: none;
-            padding: 8px 12px;
-            border-radius: 15px;
-            background: rgba(255,255,255,.1);
-            color: white;
+            border-radius: 8px;
+            padding: 8px 5px;
+            font-size: 11px;
             cursor: pointer;
-            font-size: 12px;
+            color: white;
+            background: #292929;
         }
-
 
             .status-btn:hover {
-                background: rgba(255,255,255,.2);
+                background: #444;
             }
 
-
-            .status-btn.active {
-                background: linear-gradient( 90deg, #00c853, #00e5ff );
-                color: black;
-                font-weight: bold;
+            .status-btn.selected {
+                background: #e50914;
             }
 
+        .trailer-btn {
+            width: 100%;
+            margin-top: 9px;
+            padding: 10px;
+            border: none;
+            border-radius: 9px;
+            background: #fff;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .trailer-btn:hover {
+                background: #ddd;
+            }
+
+        /* RATING */
 
         .rating {
-            margin-top: 12px;
+            margin-top: 10px;
             display: flex;
-            gap: 5px;
+            align-items: center;
+            gap: 4px;
         }
-
 
         .star {
+            font-size: 18px;
             cursor: pointer;
-            font-size: 23px;
-            opacity: .35;
+            color: #555;
         }
-
 
             .star.active {
-                opacity: 1;
+                color: #ffd21f;
             }
 
+        /* SECTION */
 
-        .empty {
-            padding: 50px;
-            text-align: center;
-            color: #aaa;
+        .section-title {
+            margin: 30px 0 20px;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        /* ERROR */
+
+        .error {
+            margin: 30px 5%;
+            padding: 25px;
+            border-radius: 15px;
+            background: rgba(255,0,0,0.08);
+            border: 1px solid rgba(255,0,0,0.25);
+            color: #ffaaaa;
+        }
+
+        /* MOBILE */
+
+        @media(max-width: 600px) {
+
+            .movie-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .movie-card {
+                min-height: 420px;
+            }
+
+            .poster {
+                height: 250px;
+            }
+
+            .movie-title {
+                font-size: 15px;
+            }
+
+            .description {
+                font-size: 11px;
+            }
+
+            .status-btn {
+                font-size: 9px;
+            }
         }
     </style>
-
 </head>
-
 
 <body>
 
+    <header>
 
-    <div class="container">
+        <div class="logo">
+            WATCH<span>LIST</span>
+        </div>
 
+        <button class="back-btn" onclick="goBack()">
+            ← Profiles
+        </button>
 
-        <a class="back"
-           href="index.html">
-
-            ← Back to Profiles
-
-        </a>
-
-
-        <div class="hero"
-             id="hero">
-
-            <h1 id="universeTitle">
-                WatchList
-            </h1>
-
-            <p id="universeDescription">
-            </p>
+    </header>
 
 
-            <div class="progress-box">
+    <section class="hero">
 
-                <div class="progress-info">
+        <h1 id="universeTitle">
+            Loading...
+        </h1>
 
-                    <span id="progressPercent">
-                        0%
-                    </span>
+        <p id="universeDescription">
+            Loading universe...
+        </p>
 
-                    <span id="progressCount">
-                        0 / 0 watched
-                    </span>
-
-                </div>
+    </section>
 
 
-                <div class="progress">
+    <section class="progress-box">
 
-                    <div class="progress-fill"
-                         id="progressFill">
-                    </div>
+        <div class="progress-top">
 
-                </div>
+            <span id="progressText">
+                0 / 0 watched
+            </span>
 
+            <span id="progressPercent">
+                0%
+            </span>
+
+        </div>
+
+        <div class="progress-bar">
+
+            <div id="progressFill"
+                 class="progress-fill">
             </div>
 
         </div>
 
+    </section>
 
-        <div id="content"></div>
 
+    <div class="controls">
+
+        <button class="filter-btn active"
+                onclick="setFilter('all', this)">
+            All
+        </button>
+
+        <button class="filter-btn"
+                onclick="setFilter('unwatched', this)">
+            Unwatched
+        </button>
+
+        <button class="filter-btn"
+                onclick="setFilter('watched', this)">
+            Watched
+        </button>
+
+        <button class="filter-btn"
+                onclick="setFilter('half', this)">
+            Half Completed
+        </button>
 
     </div>
 
 
-    <script src="data.js"></script>
+    <main class="movie-container">
 
+        <div id="movieContainer"
+             class="movie-grid">
+        </div>
+
+    </main>
+
+
+    <script src="data.js"></script>
 
     <script>
 
-
-function getUniverse() {
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    const id =
-        params.get("id");
-
-
-    return universes.find(
-        universe =>
-            universe.id === id
-    );
-
-}
-
-
-function createMovie(movie, number) {
-
-    const savedStatus =
-        localStorage.getItem(
-            "watchlist_" + movie.id
-        ) || "unwatched";
-
-
-    const savedRating =
-        Number(
-            localStorage.getItem(
-                "rating_" + movie.id
-            ) || 0
-        );
-
-
-    const card =
-        document.createElement("div");
-
-    card.className = "movie";
-
-
-    card.innerHTML = `
-
-        <div
-            class="movie-poster"
-            style="
-                background-image:
-                url('${movie.image}');
-            ">
-
-            <div class="movie-number">
-                #${number}
-            </div>
-
-        </div>
-
-
-        <div class="movie-info">
-
-            <div class="movie-title">
-                ${movie.title}
-            </div>
-
-            <div class="movie-year">
-                ${movie.year}
-            </div>
-
-            <div class="description">
-                ${movie.description}
-            </div>
-
-
-            <a
-                class="trailer"
-                href="${movie.trailer}"
-                target="_blank">
-
-                ▶ Watch Trailer
-
-            </a>
-
-
-            <div class="controls">
-
-                <div class="status-buttons">
-
-                    <button
-                        class="status-btn
-                        ${savedStatus === "unwatched" ? "active" : ""}"
-                        onclick="
-                            setStatus(
-                                '${movie.id}',
-                                'unwatched',
-                                this
-                            )">
-
-                        ○ Not Watched
-
-                    </button>
-
-
-                    <button
-                        class="status-btn
-                        ${savedStatus === "half" ? "active" : ""}"
-                        onclick="
-                            setStatus(
-                                '${movie.id}',
-                                'half',
-                                this
-                            )">
-
-                        ◐ Half Completed
-
-                    </button>
-
-
-                    <button
-                        class="status-btn
-                        ${savedStatus === "watched" ? "active" : ""}"
-                        onclick="
-                            setStatus(
-                                '${movie.id}',
-                                'watched',
-                                this
-                            )">
-
-                        ✓ Watched
-
-                    </button>
-
-                </div>
-
-
-                <div class="rating">
-
-                    ${createStars(
-                        movie.id,
-                        savedRating
-                    )}
-
-                </div>
-
-            </div>
-
-        </div>
-    `;
-
-
-    return card;
-
-}
-
-
-function createStars(id, rating) {
-
-    let html = "";
-
-
-    for (
-        let i = 1;
-        i <= 5;
-        i++
-    ) {
-
-        html += `
-
-            <span
-                class="star
-                ${i <= rating ? "active" : ""}"
-                onclick="
-                    setRating(
-                        '${id}',
-                        ${i}
-                    )">
-
-                ★
-
-            </span>
-
-        `;
-
-    }
-
-
-    return html;
-
-}
-
-
-function setStatus(id, status, button) {
-
-    localStorage.setItem(
-        "watchlist_" + id,
-        status
-    );
-
-
-    const parent =
-        button.parentElement;
-
-
-    parent
-        .querySelectorAll(".status-btn")
-        .forEach(btn =>
-            btn.classList.remove("active")
-        );
-
-
-    button.classList.add("active");
-
-
-    updateProgress();
-
-}
-
-
-function setRating(id, rating) {
-
-    localStorage.setItem(
-        "rating_" + id,
-        rating
-    );
-
-
-    render();
-
-}
-
-
-function updateProgress() {
-
-    const universe =
-        getUniverse();
-
-
-    if (!universe) return;
-
+    /*
+     * ==========================================
+     * WATCHLIST UNIVERSE PAGE
+     * ==========================================
+     */
+
+    let currentFilter = "all";
+
+    let currentUniverse = null;
 
     let movies = [];
 
 
-    universe.sections.forEach(
-        section => {
+    /*
+     * GET UNIVERSE FROM URL
+     *
+     * Example:
+     *
+     * universe.html?universe=marvel
+     */
 
-            section.items.forEach(
-                movie => {
+    const params = new URLSearchParams(window.location.search);
 
-                    movies.push(movie);
+    const universeKey =
+        params.get("universe");
 
-                }
-            );
 
+    /*
+     * FIND DATA
+     */
+
+    function findUniverse() {
+
+        if (!universeKey) {
+            return null;
         }
-    );
 
+        /*
+         * Supports:
+         *
+         * universes.marvel
+         *
+         * or
+         *
+         * UNIVERSES.marvel
+         *
+         * or
+         *
+         * universeData.marvel
+         */
 
-    let watched = 0;
-
-
-    movies.forEach(
-        movie => {
-
-            if (
-                localStorage.getItem(
-                    "watchlist_" + movie.id
-                ) === "watched"
-            ) {
-
-                watched++;
-
-            }
-
+        if (
+            typeof universes !== "undefined" &&
+            universes[universeKey]
+        ) {
+            return universes[universeKey];
         }
-    );
+
+        if (
+            typeof UNIVERSES !== "undefined" &&
+            UNIVERSES[universeKey]
+        ) {
+            return UNIVERSES[universeKey];
+        }
+
+        if (
+            typeof universeData !== "undefined" &&
+            universeData[universeKey]
+        ) {
+            return universeData[universeKey];
+        }
+
+        return null;
+    }
 
 
-    const total =
-        movies.length;
+    /*
+     * INITIALIZE
+     */
+
+    function initialize() {
+
+        currentUniverse = findUniverse();
 
 
-    const percent =
-        total === 0
-            ? 0
-            : Math.round(
-                watched / total * 100
-            );
+        if (!currentUniverse) {
+
+            document.getElementById("movieContainer").innerHTML = `
+
+                <div class="error">
+
+                    <h2>Universe not found</h2>
+
+                    <p>
+                        The universe
+                        <strong>${universeKey || "unknown"}</strong>
+                        could not be found in data.js.
+                    </p>
+
+                    <br>
+
+                    <p>
+                        Check that your data.js contains:
+                    </p>
+
+                    <br>
+
+                    <code>
+                        marvel: { ... }
+                    </code>
+
+                </div>
+
+            `;
+
+            return;
+        }
 
 
-    document.getElementById(
-        "progressPercent"
-    ).textContent =
-        percent + "%";
+        /*
+         * TITLE
+         */
+
+        document.getElementById("universeTitle").textContent =
+            currentUniverse.name ||
+            currentUniverse.title ||
+            universeKey.toUpperCase();
 
 
-    document.getElementById(
-        "progressCount"
-    ).textContent =
-        watched +
-        " / " +
-        total +
-        " watched";
+        /*
+         * DESCRIPTION
+         */
+
+        document.getElementById("universeDescription").textContent =
+            currentUniverse.description ||
+            "Explore the complete collection from this universe.";
 
 
-    document.getElementById(
-        "progressFill"
-    ).style.width =
-        percent + "%";
+        /*
+         * MOVIES
+         */
 
-}
-
-
-function render() {
-
-    const universe =
-        getUniverse();
+        movies =
+            currentUniverse.movies ||
+            currentUniverse.titles ||
+            currentUniverse.items ||
+            [];
 
 
-    if (!universe) {
+        /*
+         * RELEASE ORDER
+         */
 
-        document.getElementById(
-            "content"
-        ).innerHTML = `
+        movies = [...movies].sort(function(a, b) {
 
-            <div class="empty">
+            const yearA =
+                Number(
+                    a.year ||
+                    a.releaseYear ||
+                    a.release ||
+                    9999
+                );
 
-                Universe not found.
+            const yearB =
+                Number(
+                    b.year ||
+                    b.releaseYear ||
+                    b.release ||
+                    9999
+                );
 
-            </div>
+            return yearA - yearB;
 
-        `;
+        });
 
-        return;
+
+        renderMovies();
+
+        updateProgress();
 
     }
 
 
-    document.title =
-        universe.name +
-        " · WatchList";
+    /*
+     * GET MOVIE ID
+     */
 
+    function getMovieId(movie, index) {
 
-    document.getElementById(
-        "universeTitle"
-    ).textContent =
-        universe.name;
-
-
-    document.getElementById(
-        "universeDescription"
-    ).textContent =
-        universe.description;
-
-
-    const content =
-        document.getElementById(
-            "content"
+        return (
+            movie.id ||
+            movie.slug ||
+            (
+                universeKey +
+                "-" +
+                index
+            )
         );
 
-
-    content.innerHTML = "";
-
-
-    universe.sections.forEach(
-        section => {
-
-            const sectionDiv =
-                document.createElement("div");
+    }
 
 
-            sectionDiv.className =
-                "section";
+    /*
+     * LOCAL STORAGE
+     */
+
+    function getStatus(id) {
+
+        return (
+            localStorage.getItem(
+                "watchlist-status-" + id
+            ) || "unwatched"
+        );
+
+    }
 
 
-            sectionDiv.innerHTML = `
+    function setStatus(id, status) {
 
-                <h2 class="section-title">
+        localStorage.setItem(
+            "watchlist-status-" + id,
+            status
+        );
 
-                    ${section.name}
+        renderMovies();
 
-                </h2>
+        updateProgress();
 
-                <div class="movie-grid"></div>
+    }
+
+
+    /*
+     * RATINGS
+     */
+
+    function getRating(id) {
+
+        return Number(
+            localStorage.getItem(
+                "watchlist-rating-" + id
+            ) || 0
+        );
+
+    }
+
+
+    function setRating(id, rating) {
+
+        localStorage.setItem(
+            "watchlist-rating-" + id,
+            rating
+        );
+
+        renderMovies();
+
+    }
+
+
+    /*
+     * FILTER
+     */
+
+    function setFilter(filter, button) {
+
+        currentFilter = filter;
+
+
+        document
+            .querySelectorAll(".filter-btn")
+            .forEach(function(btn) {
+
+                btn.classList.remove("active");
+
+            });
+
+
+        button.classList.add("active");
+
+
+        renderMovies();
+
+    }
+
+
+    /*
+     * IMAGE
+     */
+
+    function getImage(movie) {
+
+        return (
+            movie.image ||
+            movie.poster ||
+            movie.posterUrl ||
+            movie.background ||
+            movie.imageUrl ||
+            "https://via.placeholder.com/500x750/151515/ffffff?text=No+Poster"
+        );
+
+    }
+
+
+    /*
+     * DESCRIPTION
+     */
+
+    function getDescription(movie) {
+
+        return (
+            movie.description ||
+            movie.synopsis ||
+            movie.summary ||
+            "Description coming soon."
+        );
+
+    }
+
+
+    /*
+     * TRAILER
+     */
+
+    function getTrailer(movie) {
+
+        /*
+         * If data.js already contains
+         * a YouTube trailer URL, use it.
+         */
+
+        if (movie.trailer) {
+            return movie.trailer;
+        }
+
+        if (movie.trailerUrl) {
+            return movie.trailerUrl;
+        }
+
+        if (movie.youtube) {
+            return movie.youtube;
+        }
+
+
+        /*
+         * Otherwise create a YouTube
+         * search for the movie trailer.
+         */
+
+        const title =
+            movie.title ||
+            movie.name ||
+            "";
+
+        return (
+            "https://www.youtube.com/results?search_query=" +
+            encodeURIComponent(
+                title + " official trailer"
+            )
+        );
+
+    }
+
+
+    /*
+     * RENDER MOVIES
+     */
+
+    function renderMovies() {
+
+        const container =
+            document.getElementById(
+                "movieContainer"
+            );
+
+
+        container.innerHTML = "";
+
+
+        if (!movies.length) {
+
+            container.innerHTML = `
+
+                <div class="error">
+
+                    <h2>No movies found</h2>
+
+                    <p>
+                        This universe currently has
+                        no movie data in data.js.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        movies.forEach(function(movie, index) {
+
+            const id =
+                getMovieId(movie, index);
+
+
+            const status =
+                getStatus(id);
+
+
+            /*
+             * FILTER
+             */
+
+            if (
+                currentFilter === "watched" &&
+                status !== "watched"
+            ) {
+                return;
+            }
+
+
+            if (
+                currentFilter === "unwatched" &&
+                status !== "unwatched"
+            ) {
+                return;
+            }
+
+
+            if (
+                currentFilter === "half" &&
+                status !== "half"
+            ) {
+                return;
+            }
+
+
+            const title =
+                movie.title ||
+                movie.name ||
+                "Untitled";
+
+
+            const year =
+                movie.year ||
+                movie.releaseYear ||
+                movie.release ||
+                "";
+
+
+            const image =
+                getImage(movie);
+
+
+            const description =
+                getDescription(movie);
+
+
+            const trailer =
+                getTrailer(movie);
+
+
+            const rating =
+                getRating(id);
+
+
+            const card =
+                document.createElement("article");
+
+
+            card.className =
+                "movie-card";
+
+
+            card.innerHTML = `
+
+                <img
+                    class="poster"
+                    src="${image}"
+                    alt="${escapeHtml(title)}"
+                    onerror="this.src='https://via.placeholder.com/500x750/151515/ffffff?text=No+Poster'"
+                >
+
+                <div class="movie-info">
+
+                    <div class="movie-title">
+                        ${escapeHtml(title)}
+                    </div>
+
+                    <div class="movie-year">
+                        ${year}
+                    </div>
+
+                    <div class="description">
+                        ${escapeHtml(description)}
+                    </div>
+
+                    <div class="status-row">
+
+                        <button
+                            class="status-btn ${status === "unwatched" ? "selected" : ""}"
+                            onclick="setStatus('${id}', 'unwatched')">
+
+                            Not Watched
+
+                        </button>
+
+                        <button
+                            class="status-btn ${status === "half" ? "selected" : ""}"
+                            onclick="setStatus('${id}', 'half')">
+
+                            Half
+
+                        </button>
+
+                        <button
+                            class="status-btn ${status === "watched" ? "selected" : ""}"
+                            onclick="setStatus('${id}', 'watched')">
+
+                            Watched
+
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        class="trailer-btn"
+                        onclick="window.open('${trailer}', '_blank')">
+
+                        ▶ Watch Trailer
+
+                    </button>
+
+
+                    <div class="rating">
+
+                        <span>Rating:</span>
+
+                        ${createStars(id, rating)}
+
+                    </div>
+
+                </div>
 
             `;
 
 
-            const grid =
-                sectionDiv.querySelector(
-                    ".movie-grid"
-                );
+            container.appendChild(card);
+
+        });
+
+    }
 
 
-            section.items.forEach(
-                (movie, index) => {
+    /*
+     * STARS
+     */
 
-                    grid.appendChild(
-                        createMovie(
-                            movie,
-                            index + 1
-                        )
-                    );
+    function createStars(id, rating) {
 
-                }
-            );
+        let html = "";
 
 
-            content.appendChild(
-                sectionDiv
-            );
+        for (let i = 1; i <= 5; i++) {
+
+            html += `
+
+                <span
+                    class="star ${i <= rating ? "active" : ""}"
+                    onclick="setRating('${id}', ${i})">
+
+                    ★
+
+                </span>
+
+            `;
 
         }
-    );
 
 
-    updateProgress();
+        return html;
 
-}
+    }
 
 
-render();
+    /*
+     * PROGRESS
+     */
 
+    function updateProgress() {
+
+        if (!movies.length) {
+            return;
+        }
+
+
+        let watched = 0;
+
+
+        movies.forEach(function(movie, index) {
+
+            const id =
+                getMovieId(movie, index);
+
+
+            if (
+                getStatus(id) === "watched"
+            ) {
+                watched++;
+            }
+
+        });
+
+
+        const total =
+            movies.length;
+
+
+        const percent =
+            Math.round(
+                (watched / total) * 100
+            );
+
+
+        document.getElementById(
+            "progressText"
+        ).textContent =
+            watched +
+            " / " +
+            total +
+            " watched";
+
+
+        document.getElementById(
+            "progressPercent"
+        ).textContent =
+            percent + "%";
+
+
+        document.getElementById(
+            "progressFill"
+        ).style.width =
+            percent + "%";
+
+    }
+
+
+    /*
+     * HTML SAFETY
+     */
+
+    function escapeHtml(text) {
+
+        if (!text) {
+            return "";
+        }
+
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /*
+     * BACK BUTTON
+     */
+
+    function goBack() {
+
+        window.location.href =
+            "index.html";
+
+    }
+
+
+    /*
+     * START
+     */
+
+    initialize();
 
     </script>
 
-
 </body>
-
 </html>
