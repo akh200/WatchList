@@ -1,36 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Akhil & Manasa WatchList</title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<main class="page">
-  <section class="hero" aria-label="Akhil and Manasa WatchList home">
-    <div class="hero-content">
-      <div class="brand">
-        <h1>Akhil &amp; Mansa WatchList</h1>
-        <p>Our universe. Our watchlist. Our journey. ❤️</p>
-      </div>
-      <div class="overall">
-        <div class="overall-top"><strong id="overallPct">0%</strong><span id="overallCount">0 / 0 titles watched</span></div>
-        <div class="bar"><div class="fill" id="overallFill"></div></div>
-      </div>
-    </div>
-  </section>
 
-  <section>
-    <div class="section-head">
-      <div><h2>Choose Your Universe</h2><p>Slide sideways, drag or use the arrows to choose where your next journey begins.</p></div>
-      <div class="controls"><button class="arrow" id="prevBtn" aria-label="Previous">‹</button><button class="arrow" id="nextBtn" aria-label="Next">›</button></div>
-    </div>
-    <div class="profiles" id="profiles"></div>
-  </section>
-  <div class="footer">Akhil &amp; Manasa WatchList · Made for endless stories and unforgettable moments 💗</div>
-</main>
-<script src="data.js"></script>
-<script src="script.js"></script>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Akhil & Manasa WatchList</title>
+
+    <link rel="stylesheet"
+          href="styles.css">
+
+</head>
+
+
+<body>
+
+    <main class="page">
+
+
+        <!-- =====================================================
+             HOME / HERO
+        ====================================================== -->
+
+        <section class="hero"
+                 aria-label="Akhil and Manasa WatchList">
+
+            <div class="hero-overlay"></div>
+
+
+            <div class="hero-content">
+
+                <div class="hero-title">
+
+                    <h1>
+                        Akhil &amp; Manasa WatchList
+                    </h1>
+
+                    <p>
+                        Our universe. Our watchlist. Our journey. ❤️
+                    </p>
+
+                </div>
+
+
+                <!-- OVERALL PROGRESS -->
+
+                <div class="overall-progress">
+
+                    <div class="overall-top">
+
+                        <strong id="overallPercent">
+                            0%
+                        </strong>
+
+                        <span id="overallCount">
+                            0 / 0 titles watched
+                        </span>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div class="progress-fill"
+                             id="overallFill"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             UNIVERSES
+        ====================================================== -->
+
+        <section class="universe-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Choose Your Universe
+                    </h2>
+
+                    <p>
+                        Slide sideways, drag or use the arrows
+                        to choose where your next journey begins.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PROFILE SLIDER -->
+
+            <div class="profiles-container">
+
+
+                <button class="slider-button slider-left"
+                        id="prevBtn"
+                        aria-label="Previous universe">
+                    ‹
+                </button>
+
+
+                <div class="profiles"
+                     id="profiles">
+                    <!-- JavaScript creates profiles here -->
+                </div>
+
+
+                <button class="slider-button slider-right"
+                        id="nextBtn"
+                        aria-label="Next universe">
+                    ›
+                </button>
+
+
+            </div>
+
+
+            <div class="slider-hint">
+
+                ← Drag / swipe sideways →
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             FOOTER
+        ====================================================== -->
+
+        <footer>
+
+            Akhil &amp; Manasa WatchList
+            <span>•</span>
+            Made for endless stories and unforgettable moments 💗
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =========================================================
+         DATA FIRST
+    ========================================================== -->
+
+    <script src="data.js"></script>
+
+
+    <!-- =========================================================
+         HOME PAGE LOGIC
+    ========================================================== -->
+
+    <script src="script.js"></script>
+
+
 </body>
+
 </html>
