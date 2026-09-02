@@ -5,14 +5,29 @@
     ============================================================
        AKHIL & MANASA WATCHLIST
        HOMEPAGE CONTROLLER
-       
-       IMPORTANT:
-       data.js uses:
-           const universes = [...]
 
-       So we access `universes` directly.
+       WORKFLOW:
+       index.html
+          ↓
+       data.js
+          ↓
+       script.js
+          ↓
+       universe.html?universe=marvel
+          ↓
+       universe.js
+
+       IMPORTANT:
+       - Do NOT change data.js structure.
+       - Do NOT remove the Home hero image from index.html.
+       - Progress is stored separately for every universe.
     ============================================================
     */
+
+
+    /* ============================================================
+       PAGE ELEMENTS
+    ============================================================ */
 
     const profiles =
         document.getElementById("profiles");
@@ -33,24 +48,11 @@
         document.getElementById("nextBtn");
 
 
-    /*
-    ============================================================
+    /* ============================================================
        GET UNIVERSES
-    ============================================================
-    */
+    ============================================================ */
 
     function getUniverses() {
-
-        /*
-        data.js currently defines:
-
-            const universes = [...]
-
-        Because it is a normal script, it is NOT necessarily
-        available as window.universes.
-
-        Therefore use the variable directly.
-        */
 
         if (
             typeof universes !== "undefined" &&
@@ -58,10 +60,6 @@
         ) {
             return universes;
         }
-
-        /*
-        Compatibility with older versions.
-        */
 
         if (
             Array.isArray(window.UNIVERSES)
@@ -79,11 +77,9 @@
     }
 
 
-    /*
-    ============================================================
-       GET GROUPS / SECTIONS
-    ============================================================
-    */
+    /* ============================================================
+       GET GROUPS
+    ============================================================ */
 
     function getGroups(universe) {
 
@@ -97,11 +93,9 @@
     }
 
 
-    /*
-    ============================================================
+    /* ============================================================
        GET ITEMS
-    ============================================================
-    */
+    ============================================================ */
 
     function getItems(universe) {
 
@@ -110,62 +104,76 @@
 
         const items = [];
 
+        if (!Array.isArray(groups)) {
+            return items;
+        }
 
-        groups.forEach(
-            function (group) {
+        groups.forEach(function (group) {
 
-                if (
-                    Array.isArray(group.items)
-                ) {
+            if (!group) {
+                return;
+            }
 
-                    items.push(
-                        ...group.items
-                    );
+            if (
+                Array.isArray(group.items)
+            ) {
 
-                }
-
-                else if (
-                    Array.isArray(group.movies)
-                ) {
-
-                    items.push(
-                        ...group.movies
-                    );
-
-                }
-
-                else if (
-                    Array.isArray(group.titles)
-                ) {
-
-                    items.push(
-                        ...group.titles
-                    );
-
-                }
+                items.push(
+                    ...group.items
+                );
 
             }
-        );
 
+            else if (
+                Array.isArray(group.movies)
+            ) {
+
+                items.push(
+                    ...group.movies
+                );
+
+            }
+
+            else if (
+                Array.isArray(group.titles)
+            ) {
+
+                items.push(
+                    ...group.titles
+                );
+
+            }
+
+        });
 
         return items;
-
     }
 
 
-    /*
-    ============================================================
-       READ JSON SAFELY
-    ============================================================
-    */
+    /* ============================================================
+       SAFE JSON
+    ============================================================ */
 
     function readJSON(key) {
 
         try {
 
-            return JSON.parse(
-                localStorage.getItem(key) || "{}"
-            );
+            const value =
+                localStorage.getItem(key);
+
+            if (!value) {
+                return {};
+            }
+
+            const parsed =
+                JSON.parse(value);
+
+            return (
+                parsed &&
+                typeof parsed === "object"
+            )
+                ? parsed
+                : {};
 
         }
 
@@ -178,34 +186,63 @@
     }
 
 
-    /*
-    ============================================================
+    /* ============================================================
+       NORMALISE ID
+    ============================================================ */
+
+    function normaliseId(value) {
+
+        return String(
+            value || ""
+        )
+            .trim()
+            .toLowerCase();
+
+    }
+
+
+    /* ============================================================
        GET MOVIE STATUS
-       
-       Supports ALL versions of our WatchList storage.
-    ============================================================
-    */
+
+       Supports:
+
+       CURRENT:
+       watchlist-progress-marvel
+
+       OLD:
+       watchlist-status-MOVIE-ID
+
+       OLDEST:
+       watchlist-progress
+    ============================================================ */
 
     function getStatus(movieId) {
+
+        const wantedId =
+            normaliseId(movieId);
+
+        if (!wantedId) {
+            return "not-watched";
+        }
+
 
         const allUniverses =
             getUniverses();
 
 
         /*
-        --------------------------------------------------------
-           CURRENT STORAGE FORMAT
-           
-           watchlist-progress-marvel
-           watchlist-progress-dc
-           watchlist-progress-horror
-           etc.
-        --------------------------------------------------------
+        ------------------------------------------------------------
+           CURRENT UNIVERSE STORAGE
+        ------------------------------------------------------------
         */
 
         for (
             const universe of allUniverses
         ) {
+
+            if (!universe) {
+                continue;
+            }
 
             const universeId =
                 universe.id ||
@@ -226,12 +263,37 @@
                 readJSON(storageKey);
 
 
+            /*
+            Exact ID match first.
+            */
+
             if (
-                progress &&
-                progress[movieId]
+                Object.prototype.hasOwnProperty.call(
+                    progress,
+                    movieId
+                )
             ) {
 
                 return progress[movieId];
+
+            }
+
+
+            /*
+            Compatibility with case differences.
+            */
+
+            for (
+                const key of Object.keys(progress)
+            ) {
+
+                if (
+                    normaliseId(key) === wantedId
+                ) {
+
+                    return progress[key];
+
+                }
 
             }
 
@@ -239,11 +301,9 @@
 
 
         /*
-        --------------------------------------------------------
-           OLD STORAGE FORMAT
-           
-           watchlist-status-MOVIE-ID
-        --------------------------------------------------------
+        ------------------------------------------------------------
+           OLD STORAGE
+        ------------------------------------------------------------
         */
 
         const oldStatus =
@@ -254,18 +314,14 @@
 
 
         if (oldStatus) {
-
             return oldStatus;
-
         }
 
 
         /*
-        --------------------------------------------------------
-           OLDEST GLOBAL FORMAT
-           
-           watchlist-progress
-        --------------------------------------------------------
+        ------------------------------------------------------------
+           OLDEST GLOBAL STORAGE
+        ------------------------------------------------------------
         */
 
         const oldGlobal =
@@ -275,8 +331,10 @@
 
 
         if (
-            oldGlobal &&
-            oldGlobal[movieId]
+            Object.prototype.hasOwnProperty.call(
+                oldGlobal,
+                movieId
+            )
         ) {
 
             return oldGlobal[movieId];
@@ -285,15 +343,12 @@
 
 
         return "not-watched";
-
     }
 
 
-    /*
-    ============================================================
-       GET ALL MOVIES / TITLES
-    ============================================================
-    */
+    /* ============================================================
+       GET ALL ITEMS
+    ============================================================ */
 
     function getAllItems() {
 
@@ -301,7 +356,6 @@
             getUniverses();
 
         const allItems = [];
-
 
         allUniverses.forEach(
             function (universe) {
@@ -313,17 +367,13 @@
             }
         );
 
-
         return allItems;
-
     }
 
 
-    /*
-    ============================================================
+    /* ============================================================
        ICONS
-    ============================================================
-    */
+    ============================================================ */
 
     const icons = {
 
@@ -398,11 +448,9 @@
     };
 
 
-    /*
-    ============================================================
+    /* ============================================================
        FALLBACK COLORS
-    ============================================================
-    */
+    ============================================================ */
 
     const colors = [
 
@@ -418,11 +466,9 @@
     ];
 
 
-    /*
-    ============================================================
+    /* ============================================================
        ESCAPE HTML
-    ============================================================
-    */
+    ============================================================ */
 
     function escapeHTML(value) {
 
@@ -458,11 +504,9 @@
     }
 
 
-    /*
-    ============================================================
-       ICON
-    ============================================================
-    */
+    /* ============================================================
+       GET ICON
+    ============================================================ */
 
     function getIcon(universe) {
 
@@ -485,11 +529,9 @@
     }
 
 
-    /*
-    ============================================================
+    /* ============================================================
        COUNT ONE UNIVERSE
-    ============================================================
-    */
+    ============================================================ */
 
     function countUniverse(universe) {
 
@@ -497,7 +539,6 @@
             getItems(universe);
 
         let watched = 0;
-
         let halfway = 0;
 
 
@@ -512,6 +553,11 @@
                 const movieId =
                     item.id ||
                     item.key;
+
+
+                if (!movieId) {
+                    return;
+                }
 
 
                 const status =
@@ -555,11 +601,9 @@
     }
 
 
-    /*
-    ============================================================
+    /* ============================================================
        CREATE PROFILE CARD
-    ============================================================
-    */
+    ============================================================ */
 
     function createProfileCard(
         universe,
@@ -593,6 +637,12 @@
 
         card.className =
             "profile";
+
+
+        card.dataset.universe =
+            universe.id ||
+            universe.key ||
+            "";
 
 
         card.style.setProperty(
@@ -681,25 +731,48 @@
 
 
         /*
-        ========================================================
+        ------------------------------------------------------------
            OPEN UNIVERSE
-        ========================================================
+        ------------------------------------------------------------
         */
 
         card.addEventListener(
             "click",
-            function () {
+            function (event) {
+
+                /*
+                Do not open the universe when
+                the user was dragging the carousel.
+                */
+
+                if (
+                    card.dataset.dragged === "true"
+                ) {
+
+                    card.dataset.dragged =
+                        "false";
+
+                    return;
+
+                }
+
+
+                const universeId =
+                    universe.id ||
+                    universe.key ||
+                    universe.slug;
+
 
                 localStorage.setItem(
                     "selected-universe",
-                    universe.id
+                    universeId
                 );
 
 
                 window.location.href =
                     "universe.html?universe=" +
                     encodeURIComponent(
-                        universe.id
+                        universeId
                     );
 
             }
@@ -707,15 +780,12 @@
 
 
         return card;
-
     }
 
 
-    /*
-    ============================================================
+    /* ============================================================
        UPDATE HOMEPAGE OVERALL PROGRESS
-    ============================================================
-    */
+    ============================================================ */
 
     function updateOverallProgress() {
 
@@ -724,8 +794,6 @@
 
 
         let watched = 0;
-
-        let halfway = 0;
 
 
         items.forEach(
@@ -741,6 +809,11 @@
                     item.key;
 
 
+                if (!movieId) {
+                    return;
+                }
+
+
                 const status =
                     getStatus(movieId);
 
@@ -753,15 +826,6 @@
 
                 }
 
-
-                if (
-                    status === "halfway"
-                ) {
-
-                    halfway++;
-
-                }
-
             }
         );
 
@@ -769,14 +833,6 @@
         const total =
             items.length;
 
-
-        /*
-        Homepage percentage is based on
-        WATCHED titles.
-
-        Halfway remains supported but does
-        not count as fully watched.
-        */
 
         const percentage =
             total > 0
@@ -828,11 +884,9 @@
     }
 
 
-    /*
-    ============================================================
-       RENDER PROFILES
-    ============================================================
-    */
+    /* ============================================================
+       RENDER ALL PROFILES
+    ============================================================ */
 
     function renderProfiles() {
 
@@ -848,12 +902,6 @@
         const allUniverses =
             getUniverses();
 
-
-        /*
-        --------------------------------------------------------
-           NO DATA
-        --------------------------------------------------------
-        */
 
         if (
             !allUniverses.length
@@ -879,14 +927,16 @@
             updateOverallProgress();
 
             return;
-
         }
 
 
         /*
-        --------------------------------------------------------
-           CREATE ALL PROFILE CARDS
-        --------------------------------------------------------
+        IMPORTANT:
+        Render EVERY universe.
+
+        No slicing.
+        No "first four".
+        No fixed visible count.
         */
 
         allUniverses.forEach(
@@ -913,11 +963,9 @@
     }
 
 
-    /*
-    ============================================================
-       CAROUSEL
-    ============================================================
-    */
+    /* ============================================================
+       CAROUSEL SCROLL AMOUNT
+    ============================================================ */
 
     function getScrollAmount() {
 
@@ -945,29 +993,38 @@
 
         const gap =
             parseFloat(
-                style.columnGap ||
                 style.gap ||
-                18
+                style.columnGap ||
+                "18"
             );
 
 
+        /*
+        Move exactly two cards.
+        */
+
         return (
-            firstCard.offsetWidth +
+            firstCard.getBoundingClientRect().width +
             gap
         ) * 2;
 
     }
 
 
-    /*
-    NEXT
-    */
+    /* ============================================================
+       NEXT BUTTON
+    ============================================================ */
 
     if (nextBtn) {
 
         nextBtn.addEventListener(
             "click",
             function () {
+
+                if (!profiles) {
+                    return;
+                }
+
 
                 profiles.scrollBy({
 
@@ -985,15 +1042,20 @@
     }
 
 
-    /*
-    PREVIOUS
-    */
+    /* ============================================================
+       PREVIOUS BUTTON
+    ============================================================ */
 
     if (prevBtn) {
 
         prevBtn.addEventListener(
             "click",
             function () {
+
+                if (!profiles) {
+                    return;
+                }
+
 
                 profiles.scrollBy({
 
@@ -1011,17 +1073,17 @@
     }
 
 
-    /*
-    ============================================================
-       DRAG / SWIPE
-    ============================================================
-    */
+    /* ============================================================
+       DRAG / SWIPE CAROUSEL
+    ============================================================ */
 
     let isDragging = false;
 
-    let startX = 0;
+    let dragStartX = 0;
 
-    let startScrollLeft = 0;
+    let dragStartScroll = 0;
+
+    let dragDistance = 0;
 
 
     if (profiles) {
@@ -1030,18 +1092,59 @@
             "pointerdown",
             function (event) {
 
+                /*
+                Only left mouse button on desktop.
+                Touch / pen is always allowed.
+                */
+
+                if (
+                    event.pointerType === "mouse" &&
+                    event.button !== 0
+                ) {
+
+                    return;
+
+                }
+
+
                 isDragging = true;
 
-                startX =
+                dragStartX =
                     event.clientX;
 
-                startScrollLeft =
+                dragStartScroll =
                     profiles.scrollLeft;
+
+                dragDistance = 0;
 
 
                 profiles.classList.add(
                     "dragging"
                 );
+
+
+                /*
+                THIS IS IMPORTANT.
+
+                Capture the pointer so dragging
+                continues even when the cursor
+                moves over a card.
+                */
+
+                try {
+
+                    profiles.setPointerCapture(
+                        event.pointerId
+                    );
+
+                }
+
+                catch (error) {
+                    /* Ignore */
+                }
+
+
+                event.preventDefault();
 
             }
         );
@@ -1058,24 +1161,82 @@
 
                 const distance =
                     event.clientX -
-                    startX;
+                    dragStartX;
+
+
+                dragDistance =
+                    Math.abs(distance);
 
 
                 profiles.scrollLeft =
-                    startScrollLeft -
+                    dragStartScroll -
                     distance;
+
+
+                if (
+                    dragDistance > 8
+                ) {
+
+                    /*
+                    Mark cards so a drag does
+                    not accidentally open a universe.
+                    */
+
+                    profiles
+                        .querySelectorAll(
+                            ".profile"
+                        )
+                        .forEach(
+                            function (card) {
+
+                                card.dataset.dragged =
+                                    "true";
+
+                            }
+                        );
+
+                }
+
+
+                event.preventDefault();
 
             }
         );
 
 
-        function stopDragging() {
+        function stopDragging(event) {
+
+            if (!isDragging) {
+                return;
+            }
+
 
             isDragging = false;
+
 
             profiles.classList.remove(
                 "dragging"
             );
+
+
+            if (
+                event &&
+                event.pointerId !== undefined
+            ) {
+
+                try {
+
+                    profiles.releasePointerCapture(
+                        event.pointerId
+                    );
+
+                }
+
+                catch (error) {
+                    /* Ignore */
+                }
+
+            }
 
         }
 
@@ -1091,28 +1252,16 @@
             stopDragging
         );
 
-
-        profiles.addEventListener(
-            "pointerleave",
-            stopDragging
-        );
-
     }
 
 
-    /*
-    ============================================================
+    /* ============================================================
        KEYBOARD
-    ============================================================
-    */
+    ============================================================ */
 
     document.addEventListener(
         "keydown",
         function (event) {
-
-            /*
-            Don't interfere while typing.
-            */
 
             const tag =
                 document.activeElement &&
@@ -1175,11 +1324,9 @@
     );
 
 
-    /*
-    ============================================================
+    /* ============================================================
        REFRESH WHEN RETURNING TO HOMEPAGE
-    ============================================================
-    */
+    ============================================================ */
 
     window.addEventListener(
         "pageshow",
@@ -1194,10 +1341,32 @@
 
 
     /*
-    ============================================================
-       START
-    ============================================================
+    Also refresh when the browser tab
+    becomes visible again.
     */
+
+    document.addEventListener(
+        "visibilitychange",
+        function () {
+
+            if (
+                document.visibilityState ===
+                "visible"
+            ) {
+
+                renderProfiles();
+
+                updateOverallProgress();
+
+            }
+
+        }
+    );
+
+
+    /* ============================================================
+       START
+    ============================================================ */
 
     renderProfiles();
 

@@ -15,6 +15,7 @@
     flex-wrap: nowrap;
     gap: 18px;
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -24,19 +25,20 @@
     cursor: grab;
     touch-action: pan-x;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
 }
-
 
     .profiles::-webkit-scrollbar {
         display: none;
     }
 
-
     .profiles.dragging {
         cursor: grabbing;
         scroll-behavior: auto;
+        scroll-snap-type: none;
     }
-
 
 /* =========================================================
    PROFILE CARD
