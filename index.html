@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Watchlist Control Room — Universe Tracker</title>
+<meta name="description" content="Track what you've watched across the Marvel, DC, and Wizarding World universes." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="hero-text">
+      <p class="hero-kicker">personal watch tracker</p>
+      <h1>Control Room</h1>
+      <p class="hero-sub">Every world you're watching, one dashboard. Check off what you've seen, watch the meter climb.</p>
+    </div>
+
+    <div class="hero-ring-wrap">
+      <svg class="hero-ring" viewBox="0 0 200 200" role="img" aria-label="Overall completion">
+        <circle class="ring-track" cx="100" cy="100" r="86"></circle>
+        <circle id="ringProgress" class="ring-progress" cx="100" cy="100" r="86"></circle>
+      </svg>
+      <div class="hero-ring-label">
+        <span id="overallPct">0%</span>
+        <small id="overallCount">0 / 0 watched</small>
+      </div>
+    </div>
+  </header>
+
+  <main id="universes"><!-- universe sections injected by script.js --></main>
+
+  <footer class="site-footer">
+    <p>Data lives in this session only — see the README for wiring up persistent storage.</p>
+    <button id="resetAll" class="reset-btn" type="button">Reset all progress</button>
+  </footer>
+
+  <template id="universeTemplate">
+    <section class="universe" data-universe="">
+      <div class="universe-header">
+        <div class="universe-icon" aria-hidden="true"></div>
+        <div class="universe-heading">
+          <h2 class="universe-name"></h2>
+          <p class="universe-count"></p>
+        </div>
+        <div class="universe-bar-wrap">
+          <div class="universe-bar"><div class="universe-bar-fill"></div></div>
+        </div>
+      </div>
+      <div class="universe-groups"></div>
+    </section>
+  </template>
+
+  <template id="groupTemplate">
+    <div class="item-group">
+      <h3 class="group-title"></h3>
+      <ul class="item-list"></ul>
+    </div>
+  </template>
+
+  <template id="itemTemplate">
+    <li class="item">
+      <label class="item-label">
+        <input type="checkbox" class="item-checkbox" />
+        <span class="item-check" aria-hidden="true"></span>
+        <span class="item-title"></span>
+        <span class="item-year"></span>
+      </label>
+    </li>
+  </template>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
