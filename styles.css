@@ -1,248 +1,29 @@
 /* =========================================================
-   AKHIL & MANASA WATCHLIST
-   HOME PAGE
-========================================================= */
+   PROFILE CAROUSEL
+   ========================================================= */
 
-
-/* =========================================================
-   RESET
-========================================================= */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-
-html {
-    scroll-behavior: smooth;
-}
-
-
-body {
-    min-height: 100vh;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #ffffff;
-    background: radial-gradient( circle at 8% 10%, rgba(229, 9, 20, .20), transparent 28% ), radial-gradient( circle at 92% 12%, rgba(0, 100, 255, .20), transparent 30% ), radial-gradient( circle at 50% 100%, rgba(150, 0, 255, .15), transparent 38% ), #05070c;
-    overflow-x: hidden;
-}
-
-
-
-/* =========================================================
-   MAIN PAGE
-========================================================= */
-
-.page {
-    width: min( 1500px, 94% );
-    margin: 0 auto;
-    padding: 20px 0 55px;
-}
-
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero {
+.profiles-wrap {
     position: relative;
-    min-height: 540px;
-    border-radius: 30px;
-    overflow: hidden;
-    border: 1px solid rgba( 255, 255, 255, .18 );
-    box-shadow: 0 30px 100px rgba( 0, 0, 0, .55 );
-    /*
-       IMPORTANT
-
-       Your supplied image must be here:
-       
-       assets/home/
-       akhil-manasa-watchlist.png
-    */
-
-    background-image: linear-gradient( to bottom, rgba(0,0,0,.02) 0%, rgba(0,0,0,.04) 35%, rgba(5,7,12,.15) 55%, rgba(5,7,12,.96) 100% ), url( "assets/home/akhil-manasa-watchlist.png" );
-    background-size: cover;
-    background-position: center top;
-    background-repeat: no-repeat;
-}
-
-
-
-/* =========================================================
-   HERO OVERLAY
-========================================================= */
-
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient( 90deg, rgba(5,7,12,.05), transparent 55%, rgba(5,7,12,.20) );
-    pointer-events: none;
-}
-
-
-
-/* =========================================================
-   HERO CONTENT
-========================================================= */
-
-.hero-content {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    padding: 35px 42px 32px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 30px;
-    background: linear-gradient( to top, rgba(5,7,12,.98), rgba(5,7,12,.78), rgba(5,7,12,.25), transparent );
-}
-
-
-
-/* =========================================================
-   HERO TITLE
-========================================================= */
-
-.hero-title {
-    max-width: 850px;
-}
-
-
-    .hero-title h1 {
-        font-size: clamp( 34px, 5vw, 64px );
-        line-height: 1;
-        font-weight: 900;
-        letter-spacing: -2px;
-        background: linear-gradient( 90deg, #ff7a00, #ffe600, #69e36b, #35d9ff, #9c72ff, #ff5da2 );
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        text-shadow: 0 10px 35px rgba( 0, 0, 0, .65 );
-    }
-
-
-    .hero-title p {
-        margin-top: 12px;
-        color: #d7dbe4;
-        font-size: 16px;
-    }
-
-
-
-/* =========================================================
-   OVERALL PROGRESS
-========================================================= */
-
-.overall-progress {
-    width: 320px;
-    min-width: 280px;
-    padding: 18px;
-    border-radius: 17px;
-    border: 1px solid rgba( 255, 255, 255, .18 );
-    background: rgba( 7, 9, 14, .76 );
-    backdrop-filter: blur(12px);
-}
-
-
-
-.overall-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-
-    .overall-top strong {
-        font-size: 23px;
-    }
-
-
-    .overall-top span {
-        color: #c5cad5;
-        font-size: 13px;
-    }
-
-
-
-/* =========================================================
-   PROGRESS BAR
-========================================================= */
-
-.progress-bar {
     width: 100%;
-    height: 9px;
-    border-radius: 99px;
-    overflow: hidden;
-    background: rgba( 255, 255, 255, .10 );
 }
 
 
-.progress-fill {
-    width: 0%;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient( 90deg, #ef3340, #ff7a00, #ffe600, #42e8ff, #b879ff, #ff5da2 );
-    transition: width .4s ease;
-}
-
-
-
-/* =========================================================
-   UNIVERSE SECTION
-========================================================= */
-
-.universe-section {
-    margin-top: 38px;
-}
-
-
-
-.section-heading h2 {
-    font-size: 30px;
-    font-weight: 800;
-    letter-spacing: -.5px;
-}
-
-
-.section-heading p {
-    margin-top: 7px;
-    color: #aeb4c2;
-    font-size: 14px;
-}
-
-
-
-/* =========================================================
-   PROFILE CONTAINER
-========================================================= */
-
-.profiles-container {
-    position: relative;
-    margin-top: 20px;
-}
-
-
-
-/* =========================================================
-   PROFILE SLIDER
-========================================================= */
+/* THE ACTUAL SLIDER */
 
 .profiles {
     display: flex;
-    gap: 20px;
+    flex-wrap: nowrap;
+    gap: 18px;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 10px 55px 25px;
     scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 8px 50px 25px;
     scrollbar-width: none;
     cursor: grab;
-    touch-action: pan-y;
+    touch-action: pan-x;
+    user-select: none;
 }
 
 
@@ -257,95 +38,88 @@ body {
     }
 
 
-
 /* =========================================================
    PROFILE CARD
-========================================================= */
+   ========================================================= */
 
-.profile-card {
+.profile {
     position: relative;
-    flex: 0 0 245px;
+    flex: 0 0 255px;
+    width: 255px;
     height: 350px;
-    border-radius: 22px;
+    border-radius: 24px;
     overflow: hidden;
     cursor: pointer;
-    background: #10131b;
+    scroll-snap-align: start;
     border: 1px solid var(--accent);
-    box-shadow: 0 15px 45px rgba( 0, 0, 0, .35 );
-    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    background: linear-gradient( 145deg, var(--accent), var(--accent2) 45%, #080a10 100% );
+    box-shadow: 0 15px 45px rgba(0,0,0,.35);
+    transition: transform .25s ease, box-shadow .25s ease;
     isolation: isolate;
 }
 
 
-    .profile-card:hover {
-        transform: translateY(-10px) scale(1.025);
-        box-shadow: 0 25px 65px rgba( 0, 0, 0, .65 );
+    .profile:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 60px rgba(0,0,0,.6);
     }
-
 
 
 /* =========================================================
    PROFILE BACKGROUND
-========================================================= */
+   ========================================================= */
 
-.profile-background {
+.profile-bg {
     position: absolute;
     inset: 0;
+    background: radial-gradient( circle at 50% 20%, rgba(255,255,255,.16), transparent 30% ), linear-gradient( 135deg, var(--accent), var(--accent2) );
     z-index: -2;
-    background-image: linear-gradient( to bottom, rgba(0,0,0,.02), rgba(0,0,0,.08) 35%, rgba(0,0,0,.95) 100% ), var(--profile-image), linear-gradient( 135deg, var(--accent), var(--accent2), #080a10 );
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     transition: transform .5s ease;
 }
 
 
-.profile-card:hover
-.profile-background {
+.profile:hover .profile-bg {
     transform: scale(1.08);
 }
 
 
-
 /* =========================================================
-   PROFILE OVERLAY
-========================================================= */
+   DARK OVERLAY
+   ========================================================= */
 
 .profile-overlay {
     position: absolute;
     inset: 0;
+    background: linear-gradient( to bottom, rgba(0,0,0,.02), rgba(0,0,0,.15) 35%, rgba(0,0,0,.96) 92% );
     z-index: -1;
-    background: linear-gradient( to bottom, rgba(0,0,0,.04), rgba(0,0,0,.12) 35%, rgba(0,0,0,.95) 100% );
 }
-
 
 
 /* =========================================================
    PROFILE ICON
-========================================================= */
+   ========================================================= */
 
-.profile-icon {
+.profile-symbol {
     position: absolute;
-    top: 28px;
-    left: 28px;
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
+    top: 24px;
+    left: 24px;
+    width: 70px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 50%;
     font-size: 34px;
-    background: rgba( 5, 7, 12, .72 );
+    background: rgba(0,0,0,.42);
     border: 2px solid var(--accent);
-    box-shadow: 0 0 25px rgba( 0, 0, 0, .65 );
+    box-shadow: 0 8px 25px rgba(0,0,0,.4);
     backdrop-filter: blur(10px);
 }
 
 
-
 /* =========================================================
    PROFILE CONTENT
-========================================================= */
+   ========================================================= */
 
 .profile-content {
     position: absolute;
@@ -356,235 +130,165 @@ body {
 }
 
 
-    .profile-content h3 {
-        font-size: 24px;
-        font-weight: 850;
+    .profile-content h2 {
+        font-size: 27px;
+        line-height: 1.1;
         margin-bottom: 8px;
+        color: #fff;
     }
 
 
     .profile-content p {
-        color: #d0d4dd;
-        font-size: 12px;
+        font-size: 13px;
         line-height: 1.45;
+        color: #d9dce4;
+        min-height: 40px;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
 
 
-
 /* =========================================================
-   PROFILE STATS
-========================================================= */
+   PROFILE META
+   ========================================================= */
 
-.profile-stats {
+.profile-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 17px;
+    margin-top: 15px;
+    color: #ddd;
     font-size: 13px;
 }
 
 
-    .profile-stats span {
-        color: #b9bec9;
-    }
-
-
-    .profile-stats strong {
-        color: var(--accent);
+    .profile-meta strong {
+        color: #fff;
         font-size: 15px;
     }
 
 
-
 /* =========================================================
-   PROFILE PROGRESS
-========================================================= */
+   MINI PROGRESS
+   ========================================================= */
 
-.profile-bar {
+.mini-bar {
+    width: 100%;
     height: 7px;
-    margin-top: 8px;
-    border-radius: 99px;
+    margin-top: 9px;
     overflow: hidden;
-    background: rgba( 255, 255, 255, .12 );
+    border-radius: 999px;
+    background: rgba(255,255,255,.15);
 }
 
 
-.profile-bar-fill {
+.mini-fill {
     height: 100%;
-    border-radius: inherit;
+    border-radius: 999px;
     background: linear-gradient( 90deg, var(--accent), var(--accent2) );
     transition: width .4s ease;
 }
 
 
-
 /* =========================================================
-   SLIDER BUTTONS
-========================================================= */
+   ARROWS
+   ========================================================= */
 
-.slider-button {
+.nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
+    z-index: 20;
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 1px solid rgba( 255, 255, 255, .22 );
-    background: rgba( 5, 7, 12, .88 );
-    color: #ffffff;
-    font-size: 31px;
+    border: 1px solid rgba(255,255,255,.25);
+    background: rgba(5,7,12,.85);
+    color: #fff;
+    font-size: 30px;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     backdrop-filter: blur(12px);
-    transition: .2s ease;
+    transition: background .2s ease, transform .2s ease;
 }
 
 
-    .slider-button:hover {
+    .nav:hover {
+        background: rgba(255,255,255,.15);
         transform: translateY(-50%) scale(1.08);
-        background: rgba( 255, 255, 255, .13 );
     }
 
 
-.slider-left {
-    left: 5px;
-}
+    .nav.left {
+        left: 2px;
+    }
 
 
-.slider-right {
-    right: 5px;
-}
-
-
-
-/* =========================================================
-   HINT
-========================================================= */
-
-.slider-hint {
-    text-align: center;
-    margin-top: 2px;
-    color: #777e8d;
-    font-size: 12px;
-}
-
+    .nav.right {
+        right: 2px;
+    }
 
 
 /* =========================================================
-   ERROR
-========================================================= */
+   EMPTY STATE
+   ========================================================= */
 
-.data-error {
-    flex: 0 0 420px;
-    padding: 30px;
-    border: 1px dashed rgba( 255, 255, 255, .22 );
-    border-radius: 18px;
+.empty {
+    min-width: 100%;
+    padding: 35px;
+    border: 1px dashed rgba(255,255,255,.2);
+    border-radius: 20px;
     color: #aaa;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 
-    .data-error h3 {
-        color: #ffffff;
-        margin-bottom: 8px;
+    .empty strong {
+        color: #fff;
+        font-size: 18px;
     }
-
-
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-footer {
-    text-align: center;
-    margin-top: 35px;
-    color: #727887;
-    font-size: 13px;
-}
-
-
-    footer span {
-        margin: 0 8px;
-        color: #b879ff;
-    }
-
 
 
 /* =========================================================
    MOBILE
-========================================================= */
+   ========================================================= */
 
-@media ( max-width: 800px ) {
-
-    .page {
-        width: 94%;
-    }
-
-
-    .hero {
-        min-height: 520px;
-        border-radius: 22px;
-    }
-
-
-    .hero-content {
-        display: block;
-        padding: 25px;
-    }
-
-
-    .hero-title h1 {
-        font-size: clamp( 32px, 10vw, 52px );
-    }
-
-
-    .overall-progress {
-        width: 100%;
-        min-width: 0;
-        margin-top: 20px;
-    }
-
-
-    .profile-card {
-        flex-basis: 230px;
-        height: 330px;
-    }
-
-
-    .slider-button {
-        display: none;
-    }
-
+@media (max-width: 700px) {
 
     .profiles {
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-}
-
-
-
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
-@media ( max-width: 500px ) {
-
-    .hero {
-        min-height: 480px;
+        padding-left: 45px;
+        padding-right: 45px;
+        gap: 14px;
     }
 
 
-    .section-heading h2 {
-        font-size: 25px;
+    .profile {
+        flex-basis: 235px;
+        width: 235px;
+        height: 320px;
     }
 
 
-    .profile-card {
-        flex-basis: 215px;
+    .nav {
+        width: 42px;
+        height: 42px;
+        font-size: 26px;
     }
+
+
+        .nav.left {
+            left: 0;
+        }
+
+
+        .nav.right {
+            right: 0;
+        }
 }

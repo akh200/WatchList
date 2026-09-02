@@ -1,14 +1,12 @@
 (function () {
-
     "use strict";
 
-
     /* =========================================================
-       ELEMENTS
-    ========================================================= */
+       AKHIL & MANASA WATCHLIST
+       HOMEPAGE CONTROLLER
+       ========================================================= */
 
-    const profiles =
-        document.getElementById("profiles");
+    const profiles = document.getElementById("profiles");
 
     const overallPercent =
         document.getElementById("overallPercent");
@@ -27,172 +25,85 @@
 
 
     /* =========================================================
-       STORAGE
-    ========================================================= */
-
-    const STORAGE_KEY =
-        "watchlist-progress";
-
-
-    let state = {};
-
-    try {
-
-        state = JSON.parse(
-            localStorage.getItem(STORAGE_KEY) || "{}"
-        );
-
-    } catch (error) {
-
-        state = {};
-
-    }
-
-
-    /* =========================================================
-       GET UNIVERSES
-       
-       Supports BOTH:
-       
-       const universes = [...]
-       
-       const UNIVERSES = [...]
-       
-       This is the reason the old version was showing
-       "No universes found".
-    ========================================================= */
+       DATA
+       Supports:
+       - groups
+       - sections
+       - categories
+       ========================================================= */
 
     function getUniverses() {
-
-        try {
-
-            if (
-                typeof universes !== "undefined" &&
-                Array.isArray(universes)
-            ) {
-
-                return universes;
-
-            }
-
-        } catch (error) {
-            // Ignore
-        }
-
-
-        try {
-
-            if (
-                typeof UNIVERSES !== "undefined" &&
-                Array.isArray(UNIVERSES)
-            ) {
-
-                return UNIVERSES;
-
-            }
-
-        } catch (error) {
-            // Ignore
-        }
-
-
-        if (
-            Array.isArray(window.universes)
-        ) {
-
-            return window.universes;
-
-        }
-
 
         if (
             Array.isArray(window.UNIVERSES)
         ) {
-
             return window.UNIVERSES;
-
         }
 
+        if (
+            Array.isArray(window.universes)
+        ) {
+            return window.universes;
+        }
 
         return [];
-
     }
 
-
-    /* =========================================================
-       UNIVERSE GROUPS
-    ========================================================= */
 
     function getGroups(universe) {
 
-        if (
-            Array.isArray(universe.groups)
-        ) {
-
-            return universe.groups;
-
-        }
-
-
-        if (
-            Array.isArray(universe.sections)
-        ) {
-
-            return universe.sections;
-
-        }
-
-
-        if (
-            Array.isArray(universe.categories)
-        ) {
-
-            return universe.categories;
-
-        }
-
-
-        return [];
+        return (
+            universe.groups ||
+            universe.sections ||
+            universe.categories ||
+            []
+        );
 
     }
 
-
-    /* =========================================================
-       ITEMS
-    ========================================================= */
 
     function getItems(universe) {
 
         const groups =
             getGroups(universe);
 
-
         const items = [];
 
+        groups.forEach(
+            function (group) {
 
-        groups.forEach(function (group) {
+                if (
+                    Array.isArray(group.items)
+                ) {
 
-            const groupItems =
-                group.items ||
-                group.movies ||
-                group.titles ||
-                [];
+                    items.push(
+                        ...group.items
+                    );
 
+                }
 
-            if (
-                Array.isArray(groupItems)
-            ) {
+                else if (
+                    Array.isArray(group.movies)
+                ) {
 
-                groupItems.forEach(function (item) {
+                    items.push(
+                        ...group.movies
+                    );
 
-                    items.push(item);
+                }
 
-                });
+                else if (
+                    Array.isArray(group.titles)
+                ) {
+
+                    items.push(
+                        ...group.titles
+                    );
+
+                }
 
             }
-
-        });
-
+        );
 
         return items;
 
@@ -200,77 +111,155 @@
 
 
     /* =========================================================
-       ALL ITEMS
-    ========================================================= */
+       LOCAL STORAGE
+       =========================================================
 
-    function getAllItems() {
+       Universe page saves progress like:
 
-        const list =
-            getUniverses();
+       watchlist-progress-marvel
+       watchlist-progress-dc
+       watchlist-progress-horror
+       etc.
 
+       Older versions may use:
 
-        const result = [];
+       watchlist-status-ID
 
+       or:
 
-        list.forEach(function (universe) {
-
-            getItems(universe).forEach(function (item) {
-
-                result.push(item);
-
-            });
-
-        });
+       watchlist-progress
+       ========================================================= */
 
 
-        return result;
+    function readJSON(key) {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem(key) || "{}"
+            );
+
+        }
+
+        catch (error) {
+
+            return {};
+
+        }
 
     }
 
 
-    /* =========================================================
-       STATUS
-    ========================================================= */
+    /*
+       Get status from ALL supported storage formats.
+    */
 
-    function getStatus(item) {
+    function getStatus(movieId) {
 
-        if (!item || !item.id) {
+        /* -----------------------------------------
+           NEW / UNIVERSE-SPECIFIC STORAGE
+           ----------------------------------------- */
 
-            return "not-watched";
+        const universes =
+            getUniverses();
+
+
+        for (
+            const universe of universes
+        ) {
+
+            const key =
+                "watchlist-progress-" +
+                universe.id;
+
+            const progress =
+                readJSON(key);
+
+            if (
+                progress &&
+                progress[movieId]
+            ) {
+
+                return progress[movieId];
+
+            }
 
         }
 
 
-        return (
-            state[item.id] ||
+        /* -----------------------------------------
+           OLD STATUS STORAGE
+           ----------------------------------------- */
+
+        const oldStatus =
             localStorage.getItem(
-                "watchlist-status-" + item.id
-            ) ||
-            "not-watched"
-        );
+                "watchlist-status-" +
+                movieId
+            );
+
+        if (
+            oldStatus
+        ) {
+
+            return oldStatus;
+
+        }
+
+
+        /* -----------------------------------------
+           OLD GLOBAL STORAGE
+           ----------------------------------------- */
+
+        const oldGlobal =
+            readJSON(
+                "watchlist-progress"
+            );
+
+        if (
+            oldGlobal &&
+            oldGlobal[movieId]
+        ) {
+
+            return oldGlobal[movieId];
+
+        }
+
+
+        return "not-watched";
 
     }
 
 
     /* =========================================================
-       ESCAPE HTML
-    ========================================================= */
+       GET ALL MOVIES
+       ========================================================= */
 
-    function escapeHTML(value) {
+    function getAllItems() {
 
-        return String(value || "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        const universes =
+            getUniverses();
+
+        const all =
+            [];
+
+        universes.forEach(
+            function (universe) {
+
+                all.push(
+                    ...getItems(universe)
+                );
+
+            }
+        );
+
+        return all;
 
     }
 
 
     /* =========================================================
        ICONS
-    ========================================================= */
+       ========================================================= */
 
     const icons = {
 
@@ -282,31 +271,39 @@
 
         hp: "🪄",
 
-        "wizard-world": "🪄",
-
         wizard: "🪄",
+
+        "wizard-world": "🪄",
 
         anime: "☯",
 
-        "sci-fi-fantasy": "✦",
-
-        scifi: "✦",
-
-        fantasy: "🐉",
-
         starwars: "✦",
 
+        "star-wars": "✦",
+
         startrek: "🚀",
+
+        "star-trek": "🚀",
 
         transformers: "🤖",
 
         monsterverse: "🦖",
+
+        "monster-verse": "🦖",
+
+        missionimpossible: "🎯",
+
+        "mission-impossible": "🎯",
+
+        invincible: "★",
 
         jurassic: "🦕",
 
         pirates: "☠",
 
         narnia: "🦁",
+
+        fastfurious: "🏎",
 
         "fast-furious": "🏎",
 
@@ -318,9 +315,9 @@
 
         avatar: "🌊",
 
-        "planet-of-the-apes": "🦍",
-
         apes: "🦍",
+
+        "planet-of-the-apes": "🦍",
 
         conjuring: "🕯",
 
@@ -328,24 +325,26 @@
 
         scream: "🔪",
 
+        bond: "007",
+
         "james-bond": "007",
 
-        bond: "007"
+        "sci-fi-fantasy": "✦"
 
     };
 
 
     /* =========================================================
-       COLORS
-    ========================================================= */
+       FALLBACK COLORS
+       ========================================================= */
 
     const colors = [
 
-        "#e6483f",
+        "#ef3340",
 
-        "#3e7bfa",
+        "#2e86ff",
 
-        "#9b59ff",
+        "#b34cff",
 
         "#e7a91a",
 
@@ -355,26 +354,65 @@
 
         "#52d273",
 
-        "#ef4f91"
+        "#ff4fbd"
 
     ];
 
 
     /* =========================================================
+       ESCAPE HTML
+       ========================================================= */
+
+    function escapeHTML(value) {
+
+        return String(
+            value ?? ""
+        )
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /* =========================================================
        ICON
-    ========================================================= */
+       ========================================================= */
 
     function getIcon(universe) {
 
         const id =
             String(
                 universe.id || ""
-            ).toLowerCase();
-
+            )
+                .toLowerCase()
+                .trim();
 
         return (
-            icons[id] ||
             universe.icon ||
+            icons[id] ||
             "🎬"
         );
 
@@ -382,68 +420,59 @@
 
 
     /* =========================================================
-       UNIVERSE PROGRESS
-    ========================================================= */
+       UNIVERSE COUNT
+       ========================================================= */
 
-    function getUniverseProgress(universe) {
+    function countUniverse(
+        universe
+    ) {
 
         const items =
             getItems(universe);
 
+        let watched =
+            0;
 
-        let watched = 0;
-
-        let halfway = 0;
-
-
-        items.forEach(function (item) {
-
-            const status =
-                getStatus(item);
+        let halfway =
+            0;
 
 
-            if (
-                status === "watched"
-            ) {
+        items.forEach(
+            function (item) {
 
-                watched++;
+                const status =
+                    getStatus(item.id);
+
+                if (
+                    status === "watched"
+                ) {
+
+                    watched++;
+
+                }
+
+                if (
+                    status === "halfway"
+                ) {
+
+                    halfway++;
+
+                }
 
             }
-
-
-            if (
-                status === "halfway" ||
-                status === "in-progress"
-            ) {
-
-                halfway++;
-
-            }
-
-        });
-
-
-        const total =
-            items.length;
-
-
-        const percentage =
-            total > 0
-                ? Math.round(
-                    (watched / total) * 100
-                )
-                : 0;
+        );
 
 
         return {
 
-            watched: watched,
+            total:
+                items.length,
 
-            halfway: halfway,
+            watched:
+                watched,
 
-            total: total,
-
-            percentage: percentage
+            halfway:
+                halfway
 
         };
 
@@ -451,156 +480,122 @@
 
 
     /* =========================================================
-       CREATE PROFILE
-    ========================================================= */
+       CREATE PROFILE CARD
+       ========================================================= */
 
-    function createProfile(
+    function createProfileCard(
         universe,
         index
     ) {
 
-        const progress =
-            getUniverseProgress(
+        const counts =
+            countUniverse(
                 universe
             );
 
 
+        const percentage =
+            counts.total > 0
+
+                ? Math.round(
+                    (
+                        counts.watched /
+                        counts.total
+                    ) * 100
+                )
+
+                : 0;
+
+
         const card =
             document.createElement(
-                "button"
+                "article"
             );
 
 
-        card.type = "button";
-
         card.className =
-            "profile-card";
-
-
-        const accent =
-            universe.accent ||
-            colors[
-            index %
-            colors.length
-            ];
-
-
-        const accent2 =
-            universe.accent2 ||
-            colors[
-            (index + 1) %
-            colors.length
-            ];
+            "profile";
 
 
         card.style.setProperty(
             "--accent",
-            accent
+            universe.accent ||
+            colors[
+            index %
+            colors.length
+            ]
         );
 
 
         card.style.setProperty(
             "--accent2",
-            accent2
+            universe.accent2 ||
+            colors[
+            (
+                index + 1
+            ) %
+            colors.length
+            ]
         );
 
 
-        const id =
-            encodeURIComponent(
-                universe.id ||
-                universe.key ||
-                universe.slug ||
-                ""
+        const icon =
+            getIcon(
+                universe
             );
 
 
-        /* =====================================================
-           PROFILE CONTENT
-        ===================================================== */
-
-        card.innerHTML = `
-
-            <div class="profile-background">
-
-                <div class="profile-glow"></div>
-
-            </div>
-
-
-            <div class="profile-top">
-
-                <div class="profile-icon">
-
-                    ${escapeHTML(
-            getIcon(universe)
-        )}
-
-                </div>
-
-            </div>
-
-
-            <div class="profile-content">
-
-                <h3>
-
-                    ${escapeHTML(
+        const name =
             universe.name ||
             universe.title ||
             universe.id ||
-            "Universe"
-        )}
-
-                </h3>
+            "Universe";
 
 
-                <p>
-
-                    ${escapeHTML(
+        const description =
             universe.tagline ||
             universe.description ||
-            "Your cinematic universe awaits."
-        )}
+            "Your cinematic universe awaits.";
 
+
+        card.innerHTML = `
+
+            <div class="profile-bg"></div>
+
+            <div class="profile-overlay"></div>
+
+            <div class="profile-symbol">
+                ${icon}
+            </div>
+
+            <div class="profile-content">
+
+                <h2>
+                    ${escapeHTML(name)}
+                </h2>
+
+                <p>
+                    ${escapeHTML(description)}
                 </p>
-
 
                 <div class="profile-meta">
 
                     <span>
-
-                        ${progress.watched}
-                        /
-                        ${progress.total}
-                        watched
-
+                        ${counts.total} titles
                     </span>
 
-
                     <strong>
-
-                        ${progress.percentage}%
-
+                        ${percentage}%
                     </strong>
 
                 </div>
 
-
-                <div class="profile-bar">
+                <div class="mini-bar">
 
                     <div
-                        class="profile-fill"
-                        style="
-                            width:${progress.percentage}%;
-                        ">
-                    </div>
-
-                </div>
-
-
-                <div class="profile-open">
-
-                    ENTER UNIVERSE →
+                        class="mini-fill"
+                        style="width:${percentage}%"
+                    ></div>
 
                 </div>
 
@@ -610,8 +605,8 @@
 
 
         /* =====================================================
-           OPEN UNIVERSE
-        ===================================================== */
+           CLICK → UNIVERSE
+           ===================================================== */
 
         card.addEventListener(
             "click",
@@ -625,7 +620,9 @@
 
                 window.location.href =
                     "universe.html?universe=" +
-                    id;
+                    encodeURIComponent(
+                        universe.id
+                    );
 
             }
         );
@@ -637,94 +634,46 @@
 
 
     /* =========================================================
-       RENDER PROFILES
-    ========================================================= */
+       UPDATE HOMEPAGE OVERALL PROGRESS
+       ========================================================= */
 
-    function renderProfiles() {
-
-        const list =
-            getUniverses();
-
-
-        profiles.innerHTML = "";
-
-
-        if (
-            !list.length
-        ) {
-
-            profiles.innerHTML = `
-
-                <div class="empty">
-
-                    <h3>
-                        No universes found
-                    </h3>
-
-                    <p>
-                        Your data.js was loaded,
-                        but no universe array was found.
-                    </p>
-
-                    <small>
-                        Make sure data.js contains
-                        either "const universes = [...]"
-                        or "const UNIVERSES = [...]".
-                    </small>
-
-                </div>
-
-            `;
-
-
-            updateOverall();
-
-            return;
-
-        }
-
-
-        list.forEach(
-            function (universe, index) {
-
-                profiles.appendChild(
-                    createProfile(
-                        universe,
-                        index
-                    )
-                );
-
-            }
-        );
-
-
-        updateOverall();
-
-    }
-
-
-    /* =========================================================
-       OVERALL PROGRESS
-    ========================================================= */
-
-    function updateOverall() {
+    function updateOverallProgress() {
 
         const items =
             getAllItems();
 
 
-        let watched = 0;
+        let watched =
+            0;
+
+
+        let halfway =
+            0;
 
 
         items.forEach(
             function (item) {
 
+                const status =
+                    getStatus(
+                        item.id
+                    );
+
+
                 if (
-                    getStatus(item) ===
-                    "watched"
+                    status === "watched"
                 ) {
 
                     watched++;
+
+                }
+
+
+                if (
+                    status === "halfway"
+                ) {
+
+                    halfway++;
 
                 }
 
@@ -736,159 +685,411 @@
             items.length;
 
 
+        /*
+           Homepage percentage counts
+           watched titles only.
+
+           Halfway is displayed nowhere on
+           homepage but remains supported.
+        */
+
         const percentage =
             total > 0
+
                 ? Math.round(
-                    (watched / total) * 100
+                    (
+                        watched /
+                        total
+                    ) * 100
                 )
+
                 : 0;
 
 
-        overallPercent.textContent =
-            percentage + "%";
+        if (
+            overallPercent
+        ) {
+
+            overallPercent.textContent =
+                percentage +
+                "%";
+
+        }
 
 
-        overallCount.textContent =
-            watched +
-            " / " +
-            total +
-            " titles watched";
+        if (
+            overallCount
+        ) {
+
+            overallCount.textContent =
+                watched +
+                " / " +
+                total +
+                " titles watched";
+
+        }
 
 
-        overallFill.style.width =
-            percentage + "%";
+        if (
+            overallFill
+        ) {
+
+            overallFill.style.width =
+                percentage +
+                "%";
+
+        }
 
     }
 
 
     /* =========================================================
-       ARROW NAVIGATION
-    ========================================================= */
+       RENDER PROFILES
+       ========================================================= */
 
-    prevBtn.addEventListener(
-        "click",
-        function () {
+    function renderProfiles() {
 
-            profiles.scrollBy({
+        if (!profiles) {
 
-                left: -600,
-
-                behavior: "smooth"
-
-            });
+            return;
 
         }
-    );
 
 
-    nextBtn.addEventListener(
-        "click",
-        function () {
+        profiles.innerHTML =
+            "";
 
-            profiles.scrollBy({
 
-                left: 600,
+        const universes =
+            getUniverses();
 
-                behavior: "smooth"
 
-            });
+        if (
+            !universes.length
+        ) {
+
+            profiles.innerHTML = `
+
+                <div class="empty">
+
+                    <strong>
+                        No universes found
+                    </strong>
+
+                    <span>
+                        Make sure data.js is beside index.html.
+                    </span>
+
+                </div>
+
+            `;
+
+            updateOverallProgress();
+
+            return;
 
         }
-    );
+
+
+        universes.forEach(
+            function (
+                universe,
+                index
+            ) {
+
+                profiles.appendChild(
+
+                    createProfileCard(
+                        universe,
+                        index
+                    )
+
+                );
+
+            }
+        );
+
+
+        updateOverallProgress();
+
+    }
+
+
+    /* =========================================================
+       CAROUSEL
+       ========================================================= */
+
+    function getScrollAmount() {
+
+        if (!profiles) {
+
+            return 500;
+
+        }
+
+
+        const firstCard =
+            profiles.querySelector(
+                ".profile"
+            );
+
+
+        if (!firstCard) {
+
+            return 500;
+
+        }
+
+
+        const style =
+            window.getComputedStyle(
+                profiles
+            );
+
+
+        const gap =
+            parseFloat(
+                style.columnGap ||
+                style.gap ||
+                18
+            );
+
+
+        return (
+            firstCard.offsetWidth +
+            gap
+        ) * 2;
+
+    }
+
+
+    if (
+        nextBtn
+    ) {
+
+        nextBtn.addEventListener(
+            "click",
+            function () {
+
+                profiles.scrollBy({
+
+                    left:
+                        getScrollAmount(),
+
+                    behavior:
+                        "smooth"
+
+                });
+
+            }
+        );
+
+    }
+
+
+    if (
+        prevBtn
+    ) {
+
+        prevBtn.addEventListener(
+            "click",
+            function () {
+
+                profiles.scrollBy({
+
+                    left:
+                        -getScrollAmount(),
+
+                    behavior:
+                        "smooth"
+
+                });
+
+            }
+        );
+
+    }
 
 
     /* =========================================================
        MOUSE DRAG / TOUCH SWIPE
-    ========================================================= */
+       ========================================================= */
 
-    let dragging = false;
+    let isDragging =
+        false;
 
-    let startX = 0;
+    let startX =
+        0;
 
-    let startScroll = 0;
-
-
-    profiles.addEventListener(
-        "pointerdown",
-        function (event) {
-
-            dragging = true;
-
-            startX =
-                event.clientX;
-
-            startScroll =
-                profiles.scrollLeft;
-
-            profiles.classList.add(
-                "dragging"
-            );
-
-        }
-    );
+    let startScrollLeft =
+        0;
 
 
-    window.addEventListener(
-        "pointerup",
-        function () {
+    if (
+        profiles
+    ) {
 
-            dragging = false;
+        profiles.addEventListener(
+            "pointerdown",
+            function (event) {
+
+                isDragging =
+                    true;
+
+                startX =
+                    event.clientX;
+
+                startScrollLeft =
+                    profiles.scrollLeft;
+
+                profiles.classList.add(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        profiles.addEventListener(
+            "pointermove",
+            function (event) {
+
+                if (
+                    !isDragging
+                ) {
+
+                    return;
+
+                }
+
+
+                const distance =
+                    event.clientX -
+                    startX;
+
+
+                profiles.scrollLeft =
+                    startScrollLeft -
+                    distance;
+
+            }
+        );
+
+
+        function stopDragging() {
+
+            isDragging =
+                false;
 
             profiles.classList.remove(
                 "dragging"
             );
 
         }
-    );
 
 
-    window.addEventListener(
-        "pointermove",
+        profiles.addEventListener(
+            "pointerup",
+            stopDragging
+        );
+
+
+        profiles.addEventListener(
+            "pointercancel",
+            stopDragging
+        );
+
+
+        profiles.addEventListener(
+            "pointerleave",
+            stopDragging
+        );
+
+    }
+
+
+    /* =========================================================
+       KEYBOARD NAVIGATION
+       ========================================================= */
+
+    document.addEventListener(
+        "keydown",
         function (event) {
 
-            if (!dragging) {
+            if (
+                event.key === "ArrowRight"
+            ) {
 
-                return;
+                if (
+                    document.activeElement ===
+                    document.body
+                ) {
+
+                    profiles.scrollBy({
+
+                        left:
+                            getScrollAmount(),
+
+                        behavior:
+                            "smooth"
+
+                    });
+
+                }
 
             }
 
 
-            const distance =
-                event.clientX -
-                startX;
+            if (
+                event.key === "ArrowLeft"
+            ) {
 
+                if (
+                    document.activeElement ===
+                    document.body
+                ) {
 
-            profiles.scrollLeft =
-                startScroll -
-                distance * 1.2;
+                    profiles.scrollBy({
+
+                        left:
+                            -getScrollAmount(),
+
+                        behavior:
+                            "smooth"
+
+                    });
+
+                }
+
+            }
 
         }
     );
 
 
     /* =========================================================
-       STORAGE UPDATE
-    ========================================================= */
+       LIVE UPDATE
+       ========================================================= */
 
     window.addEventListener(
         "storage",
         function () {
 
-            try {
+            renderProfiles();
 
-                state =
-                    JSON.parse(
-                        localStorage.getItem(
-                            STORAGE_KEY
-                        ) || "{}"
-                    );
+        }
+    );
 
-            } catch (error) {
 
-                state = {};
+    /*
+       When returning from universe.html
+       and the homepage becomes visible again,
+       refresh the numbers.
+    */
 
-            }
-
+    window.addEventListener(
+        "pageshow",
+        function () {
 
             renderProfiles();
 
@@ -897,8 +1098,8 @@
 
 
     /* =========================================================
-       START
-    ========================================================= */
+       INITIAL LOAD
+       ========================================================= */
 
     renderProfiles();
 
