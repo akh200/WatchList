@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>WatchList — Universe</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+
+        .universe-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 45px 32px 70px;
+        }
+
+
+        .back-button {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            padding: 10px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            margin-bottom: 45px;
+            transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+
+
+            .back-button:hover {
+                color: var(--text);
+                border-color: var(--accent);
+                transform: translateX(-3px);
+            }
+
+
+        .universe-header {
+            position: relative;
+            padding: 35px;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            background: linear-gradient( 135deg, var(--surface), #0d1017 );
+        }
+
+
+            .universe-header::before {
+                content: "";
+                position: absolute;
+                width: 450px;
+                height: 450px;
+                right: -180px;
+                top: -220px;
+                border-radius: 50%;
+                background: var(--accent);
+                opacity: 0.13;
+                filter: blur(30px);
+            }
+
+
+        .universe-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+
+        .universe-title {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(2.7rem, 7vw, 5rem);
+            line-height: 1;
+            letter-spacing: -0.05em;
+        }
+
+
+        .universe-tagline {
+            max-width: 650px;
+            margin: 15px 0 0;
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
+
+
+        .universe-progress {
+            margin-top: 30px;
+            max-width: 600px;
+        }
+
+
+        .universe-progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 9px;
+            color: var(--text-dim);
+            font-size: 0.82rem;
+        }
+
+
+        .universe-progress-bar {
+            height: 8px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: var(--surface-2);
+        }
+
+
+        .universe-progress-fill {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient( 90deg, var(--accent), var(--accent-2) );
+            transition: width 0.4s ease;
+        }
+
+
+        .movie-section {
+            margin-top: 55px;
+        }
+
+
+        .movie-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+
+            .movie-section-header h2 {
+                margin: 0;
+                font-family: var(--font-display);
+                font-size: 1.7rem;
+            }
+
+
+            .movie-section-header p {
+                margin: 5px 0 0;
+                color: var(--text-faint);
+                font-size: 0.82rem;
+            }
+
+
+        .movie-group {
+            margin-bottom: 35px;
+        }
+
+
+        .movie-group-title {
+            margin: 0 0 15px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--text-dim);
+        }
+
+
+        .movie-list {
+            display: grid;
+            gap: 10px;
+        }
+
+
+        .movie-card {
+            display: grid;
+            grid-template-columns: 55px 1fr auto;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: var(--surface);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+
+            .movie-card:hover {
+                transform: translateX(4px);
+                border-color: var(--accent);
+            }
+
+
+        .movie-number {
+            display: grid;
+            place-items: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: var(--surface-2);
+            color: var(--text-faint);
+            font-family: var(--font-display);
+            font-weight: 700;
+        }
+
+
+        .movie-title {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: 1rem;
+        }
+
+
+        .movie-year {
+            margin-left: 8px;
+            color: var(--text-faint);
+            font-size: 0.78rem;
+            font-weight: 400;
+        }
+
+
+        .movie-description {
+            margin: 5px 0 0;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+
+        .movie-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+
+        .trailer-button {
+            padding: 8px 13px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.76rem;
+        }
+
+
+            .trailer-button:hover {
+                color: var(--text);
+                border-color: var(--accent);
+            }
+
+
+        .status-button {
+            padding: 8px 13px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--surface-2);
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.76rem;
+        }
+
+
+            .status-button:hover {
+                color: var(--text);
+                border-color: var(--accent);
+            }
+
+
+        .empty-state {
+            padding: 35px;
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            color: var(--text-dim);
+            text-align: center;
+        }
+
+
+        @media (max-width: 700px) {
+
+            .universe-page {
+                padding: 30px 20px 50px;
+            }
+
+
+            .universe-header {
+                padding: 25px;
+            }
+
+
+            .movie-card {
+                grid-template-columns: 45px 1fr;
+            }
+
+
+            .movie-actions {
+                grid-column: 2;
+            }
+
+
+            .movie-number {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <main id="universePage"
+          class="universe-page">
+
+        ```
+        <button id="backButton"
+                class="back-button"
+                type="button">
+            ← Back to Universes
+        </button>
+
+
+        <section class="universe-header">
+
+            <div class="universe-header-content">
+
+                <p class="header-kicker">
+                    UNIVERSE
+                </p>
+
+
+                <h1 id="universeTitle"
+                    class="universe-title">
+                    Loading...
+                </h1>
+
+
+                <p id="universeTagline"
+                   class="universe-tagline">
+                </p>
+
+
+                <div class="universe-progress">
+
+                    <div class="universe-progress-info">
+
+                        <span>
+                            Your progress
+                        </span>
+
+                        <span id="universeProgressText">
+                            0 / 0 watched
+                        </span>
+
+                    </div>
+
+
+                    <div class="universe-progress-bar">
+
+                        <div id="universeProgressFill"
+                             class="universe-progress-fill">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="movie-section">
+
+            <div class="movie-section-header">
+
+                <div>
+
+                    <h2>
+                        Watch Order
+                    </h2>
+
+                    <p>
+                        Follow the universe from beginning to end.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="movieGroups">
+
+                <!-- Groups will be generated here -->
+
+            </div>
+
+        </section>
+        ```
+
+    </main>
+
+    <script src="data.js"></script>
+
+    <script src="universe.js"></script>
+
+</body>
+
+</html>
