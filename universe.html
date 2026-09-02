@@ -7,6 +7,7 @@
     <title>WatchList</title>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,230 +16,224 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            background: radial-gradient(circle at top left, #242424 0%, #090909 45%, #000000 100%);
             color: white;
             min-height: 100vh;
+            background: radial-gradient(circle at 10% 10%, #3b0d0d, transparent 35%), radial-gradient(circle at 90% 20%, #111c42, transparent 35%), linear-gradient(135deg, #050505, #101010);
         }
 
         /* HEADER */
 
         header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 20px 5%;
+            height: 75px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0, 0, 0, 0.85);
+            padding: 0 5%;
+            background: rgba(0,0,0,.75);
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,.1);
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 27px;
             font-weight: 900;
-            letter-spacing: -1px;
         }
 
             .logo span {
                 color: #e50914;
             }
 
-        .back-btn {
+        .back {
             border: none;
-            background: rgba(255,255,255,0.12);
-            color: white;
             padding: 10px 18px;
             border-radius: 20px;
+            color: white;
+            background: rgba(255,255,255,.12);
             cursor: pointer;
-            font-size: 14px;
         }
 
-            .back-btn:hover {
-                background: rgba(255,255,255,0.22);
+            .back:hover {
+                background: rgba(255,255,255,.25);
             }
 
         /* HERO */
 
         .hero {
-            padding: 60px 5% 35px;
+            padding: 55px 5% 30px;
         }
 
             .hero h1 {
-                font-size: clamp(35px, 5vw, 65px);
+                font-size: clamp(40px,6vw,70px);
                 font-weight: 900;
-                margin-bottom: 10px;
+                margin-bottom: 12px;
             }
 
             .hero p {
-                color: #bdbdbd;
+                max-width: 750px;
+                color: #bbb;
                 font-size: 17px;
-                max-width: 700px;
                 line-height: 1.6;
             }
 
         /* PROGRESS */
 
-        .progress-box {
-            margin: 10px 5% 35px;
+        .progress {
+            margin: 10px 5% 30px;
             padding: 20px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 18px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
         }
 
-        .progress-top {
+        .progressTop {
             display: flex;
             justify-content: space-between;
             margin-bottom: 12px;
-            color: #ddd;
-            font-size: 14px;
         }
 
-        .progress-bar {
+        .progressBar {
             width: 100%;
             height: 9px;
-            border-radius: 10px;
-            background: #272727;
+            background: #292929;
+            border-radius: 20px;
             overflow: hidden;
         }
 
-        .progress-fill {
+        .progressFill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #e50914, #ff7a00);
-            transition: width 0.4s ease;
+            background: linear-gradient( 90deg, #e50914, #ff8a00 );
+            transition: .4s;
         }
 
-        /* CONTROLS */
+        /* FILTER */
 
-        .controls {
+        .filters {
             padding: 0 5% 30px;
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .filter-btn {
+        .filter {
             border: none;
-            color: white;
-            background: #222;
             padding: 10px 18px;
             border-radius: 20px;
+            background: #252525;
+            color: white;
             cursor: pointer;
         }
 
-            .filter-btn.active {
+            .filter.active {
                 background: #e50914;
             }
 
-        /* MOVIES */
+        /* GROUP */
 
-        .movie-container {
-            padding: 0 5% 60px;
+        .group {
+            padding: 0 5% 45px;
         }
 
-        .movie-grid {
+        .groupTitle {
+            font-size: 25px;
+            margin-bottom: 18px;
+        }
+
+        /* MOVIES */
+
+        .movies {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fill,minmax(230px,1fr));
             gap: 25px;
         }
 
         /* CARD */
 
-        .movie-card {
-            position: relative;
+        .card {
             overflow: hidden;
-            min-height: 470px;
             border-radius: 18px;
-            background: linear-gradient( 180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025) );
-            border: 1px solid rgba(255,255,255,0.09);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            background: linear-gradient( 180deg, rgba(255,255,255,.1), rgba(255,255,255,.03) );
+            border: 1px solid rgba(255,255,255,.1);
+            transition: .25s;
         }
 
-            .movie-card:hover {
+            .card:hover {
                 transform: translateY(-8px);
-                box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+                box-shadow: 0 20px 50px rgba(0,0,0,.5);
             }
 
         .poster {
             width: 100%;
-            height: 310px;
+            height: 320px;
             object-fit: cover;
-            display: block;
-            background: #151515;
+            background: #171717;
         }
 
-        .movie-info {
+        .info {
             padding: 17px;
         }
 
-        .movie-title {
+        .title {
             font-size: 19px;
             font-weight: 800;
-            margin-bottom: 7px;
+            margin-bottom: 6px;
         }
 
-        .movie-year {
-            color: #aaa;
+        .year {
+            color: #999;
             font-size: 13px;
             margin-bottom: 10px;
         }
 
         .description {
-            color: #c7c7c7;
+            color: #c8c8c8;
             font-size: 13px;
             line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
             min-height: 78px;
         }
 
         /* STATUS */
 
-        .status-row {
-            margin-top: 14px;
+        .status {
             display: flex;
-            gap: 7px;
-            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 15px;
         }
 
-        .status-btn {
-            flex: 1;
-            min-width: 70px;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 5px;
-            font-size: 11px;
-            cursor: pointer;
-            color: white;
-            background: #292929;
-        }
-
-            .status-btn:hover {
-                background: #444;
+            .status button {
+                flex: 1;
+                border: none;
+                padding: 8px 4px;
+                border-radius: 8px;
+                background: #292929;
+                color: white;
+                font-size: 11px;
+                cursor: pointer;
             }
 
-            .status-btn.selected {
-                background: #e50914;
-            }
+                .status button:hover {
+                    background: #444;
+                }
 
-        .trailer-btn {
+                .status button.selected {
+                    background: #e50914;
+                }
+
+        /* TRAILER */
+
+        .trailer {
             width: 100%;
             margin-top: 9px;
             padding: 10px;
             border: none;
             border-radius: 9px;
-            background: #fff;
-            color: #000;
+            background: white;
+            color: black;
             font-weight: bold;
             cursor: pointer;
         }
 
-            .trailer-btn:hover {
+            .trailer:hover {
                 background: #ddd;
             }
 
@@ -248,56 +243,44 @@
             margin-top: 10px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
 
         .star {
+            color: #555;
             font-size: 18px;
             cursor: pointer;
-            color: #555;
         }
 
             .star.active {
                 color: #ffd21f;
             }
 
-        /* SECTION */
-
-        .section-title {
-            margin: 30px 0 20px;
-            font-size: 25px;
-            font-weight: 800;
-        }
-
         /* ERROR */
 
         .error {
-            margin: 30px 5%;
+            margin: 40px 5%;
             padding: 25px;
             border-radius: 15px;
-            background: rgba(255,0,0,0.08);
-            border: 1px solid rgba(255,0,0,0.25);
-            color: #ffaaaa;
+            background: rgba(255,0,0,.1);
+            border: 1px solid rgba(255,0,0,.3);
+            color: #ffb0b0;
         }
 
         /* MOBILE */
 
-        @media(max-width: 600px) {
+        @media(max-width:600px) {
 
-            .movie-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .movies {
+                grid-template-columns: repeat(2,1fr);
                 gap: 12px;
-            }
-
-            .movie-card {
-                min-height: 420px;
             }
 
             .poster {
                 height: 250px;
             }
 
-            .movie-title {
+            .title {
                 font-size: 15px;
             }
 
@@ -305,14 +288,16 @@
                 font-size: 11px;
             }
 
-            .status-btn {
+            .status button {
                 font-size: 9px;
             }
         }
     </style>
 </head>
 
+
 <body>
+
 
     <header>
 
@@ -320,8 +305,11 @@
             WATCH<span>LIST</span>
         </div>
 
-        <button class="back-btn" onclick="goBack()">
+        <button class="back"
+                onclick="location.href='index.html'">
+
             ← Profiles
+
         </button>
 
     </header>
@@ -329,35 +317,35 @@
 
     <section class="hero">
 
-        <h1 id="universeTitle">
+        <h1 id="title">
             Loading...
         </h1>
 
-        <p id="universeDescription">
+        <p id="description">
             Loading universe...
         </p>
 
     </section>
 
 
-    <section class="progress-box">
+    <section class="progress">
 
-        <div class="progress-top">
+        <div class="progressTop">
 
-            <span id="progressText">
+            <span id="count">
                 0 / 0 watched
             </span>
 
-            <span id="progressPercent">
+            <span id="percent">
                 0%
             </span>
 
         </div>
 
-        <div class="progress-bar">
+        <div class="progressBar">
 
             <div id="progressFill"
-                 class="progress-fill">
+                 class="progressFill">
             </div>
 
         </div>
@@ -365,729 +353,807 @@
     </section>
 
 
-    <div class="controls">
+    <div class="filters">
 
-        <button class="filter-btn active"
-                onclick="setFilter('all', this)">
+        <button class="filter active"
+                onclick="filterMovies('all',this)">
             All
         </button>
 
-        <button class="filter-btn"
-                onclick="setFilter('unwatched', this)">
+        <button class="filter"
+                onclick="filterMovies('unwatched',this)">
             Unwatched
         </button>
 
-        <button class="filter-btn"
-                onclick="setFilter('watched', this)">
+        <button class="filter"
+                onclick="filterMovies('watched',this)">
             Watched
         </button>
 
-        <button class="filter-btn"
-                onclick="setFilter('half', this)">
+        <button class="filter"
+                onclick="filterMovies('half',this)">
             Half Completed
         </button>
 
     </div>
 
 
-    <main class="movie-container">
+    <main id="content"></main>
 
-        <div id="movieContainer"
-             class="movie-grid">
-        </div>
 
-    </main>
-
+    <!-- IMPORTANT -->
 
     <script src="data.js"></script>
 
+
     <script>
 
+/*
+==================================================
+GET UNIVERSE FROM URL
+==================================================
+*/
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const universeId =
+    params.get("universe");
+
+
+/*
+==================================================
+FIND UNIVERSE FROM YOUR ACTUAL DATA.JS
+==================================================
+*/
+
+const universe =
+    UNIVERSES.find(
+        u => u.id === universeId
+    );
+
+
+/*
+==================================================
+CHECK
+==================================================
+*/
+
+if (!universe) {
+
+    document.getElementById("title")
+        .textContent =
+        "Universe Not Found";
+
+    document.getElementById("description")
+        .textContent =
+        "Could not find: " + universeId;
+
+    document.getElementById("content")
+        .innerHTML = `
+
+            <div class="error">
+
+                <h2>Universe not found</h2>
+
+                <br>
+
+                <p>
+                    Looking for:
+                    <strong>
+                        ${universeId}
+                    </strong>
+                </p>
+
+                <br>
+
+                <p>
+                    Check the id inside data.js.
+                </p>
+
+            </div>
+
+        `;
+
+} else {
+
+    loadUniverse();
+
+}
+
+
+/*
+==================================================
+LOCAL STORAGE
+==================================================
+*/
+
+let state =
+    JSON.parse(
+        localStorage.getItem(
+            "watchlist-progress"
+        ) || "{}"
+    );
+
+
+/*
+==================================================
+SAVE
+==================================================
+*/
+
+function save() {
+
+    localStorage.setItem(
+        "watchlist-progress",
+        JSON.stringify(state)
+    );
+
+}
+
+
+/*
+==================================================
+MOVIE ID
+==================================================
+*/
+
+function movieKey(movie) {
+
+    return movie.id;
+
+}
+
+
+/*
+==================================================
+GET STATUS
+==================================================
+*/
+
+function getStatus(movie) {
+
+    return (
+        state[movieKey(movie)] ||
+        "unwatched"
+    );
+
+}
+
+
+/*
+==================================================
+SET STATUS
+==================================================
+*/
+
+function setStatus(movie,status) {
+
+    state[movieKey(movie)] =
+        status;
+
+    save();
+
+    loadUniverse();
+
+}
+
+
+/*
+==================================================
+RATING
+==================================================
+*/
+
+function getRating(movie) {
+
+    return Number(
+        localStorage.getItem(
+            "rating-" +
+            movieKey(movie)
+        ) || 0
+    );
+
+}
+
+
+function setRating(movie,rating) {
+
+    localStorage.setItem(
+
+        "rating-" +
+        movieKey(movie),
+
+        rating
+
+    );
+
+    loadUniverse();
+
+}
+
+
+/*
+==================================================
+FILTER
+==================================================
+*/
+
+let currentFilter = "all";
+
+
+function filterMovies(filter,button) {
+
+    currentFilter =
+        filter;
+
+
+    document
+        .querySelectorAll(".filter")
+        .forEach(
+            b =>
+            b.classList.remove("active")
+        );
+
+
+    button.classList.add("active");
+
+
+    loadUniverse();
+
+}
+
+
+/*
+==================================================
+GET ALL ITEMS
+==================================================
+*/
+
+function getAllItems() {
+
+    let all = [];
+
+
+    universe.groups.forEach(
+        group => {
+
+            group.items.forEach(
+                movie => {
+
+                    all.push(movie);
+
+                }
+            );
+
+        }
+    );
+
+
+    return all;
+
+}
+
+
+/*
+==================================================
+LOAD UNIVERSE
+==================================================
+*/
+
+function loadUniverse() {
+
     /*
-     * ==========================================
-     * WATCHLIST UNIVERSE PAGE
-     * ==========================================
-     */
+    TITLE
+    */
 
-    let currentFilter = "all";
-
-    let currentUniverse = null;
-
-    let movies = [];
+    document.getElementById(
+        "title"
+    ).textContent =
+        universe.name;
 
 
     /*
-     * GET UNIVERSE FROM URL
-     *
-     * Example:
-     *
-     * universe.html?universe=marvel
-     */
+    DESCRIPTION
+    */
 
-    const params = new URLSearchParams(window.location.search);
-
-    const universeKey =
-        params.get("universe");
-
-
-    /*
-     * FIND DATA
-     */
-
-    function findUniverse() {
-
-        if (!universeKey) {
-            return null;
-        }
-
-        /*
-         * Supports:
-         *
-         * universes.marvel
-         *
-         * or
-         *
-         * UNIVERSES.marvel
-         *
-         * or
-         *
-         * universeData.marvel
-         */
-
-        if (
-            typeof universes !== "undefined" &&
-            universes[universeKey]
-        ) {
-            return universes[universeKey];
-        }
-
-        if (
-            typeof UNIVERSES !== "undefined" &&
-            UNIVERSES[universeKey]
-        ) {
-            return UNIVERSES[universeKey];
-        }
-
-        if (
-            typeof universeData !== "undefined" &&
-            universeData[universeKey]
-        ) {
-            return universeData[universeKey];
-        }
-
-        return null;
-    }
+    document.getElementById(
+        "description"
+    ).textContent =
+        universe.tagline ||
+        "Your personal " +
+        universe.name +
+        " watchlist.";
 
 
     /*
-     * INITIALIZE
-     */
+    PROGRESS
+    */
 
-    function initialize() {
-
-        currentUniverse = findUniverse();
+    updateProgress();
 
 
-        if (!currentUniverse) {
+    /*
+    CONTENT
+    */
 
-            document.getElementById("movieContainer").innerHTML = `
-
-                <div class="error">
-
-                    <h2>Universe not found</h2>
-
-                    <p>
-                        The universe
-                        <strong>${universeKey || "unknown"}</strong>
-                        could not be found in data.js.
-                    </p>
-
-                    <br>
-
-                    <p>
-                        Check that your data.js contains:
-                    </p>
-
-                    <br>
-
-                    <code>
-                        marvel: { ... }
-                    </code>
-
-                </div>
-
-            `;
-
-            return;
-        }
+    const content =
+        document.getElementById(
+            "content"
+        );
 
 
-        /*
-         * TITLE
-         */
-
-        document.getElementById("universeTitle").textContent =
-            currentUniverse.name ||
-            currentUniverse.title ||
-            universeKey.toUpperCase();
+    content.innerHTML = "";
 
 
-        /*
-         * DESCRIPTION
-         */
+    /*
+    GROUPS
+    */
 
-        document.getElementById("universeDescription").textContent =
-            currentUniverse.description ||
-            "Explore the complete collection from this universe.";
+    universe.groups.forEach(
+        group => {
 
-
-        /*
-         * MOVIES
-         */
-
-        movies =
-            currentUniverse.movies ||
-            currentUniverse.titles ||
-            currentUniverse.items ||
-            [];
-
-
-        /*
-         * RELEASE ORDER
-         */
-
-        movies = [...movies].sort(function(a, b) {
-
-            const yearA =
-                Number(
-                    a.year ||
-                    a.releaseYear ||
-                    a.release ||
-                    9999
+            const section =
+                document.createElement(
+                    "section"
                 );
 
-            const yearB =
-                Number(
-                    b.year ||
-                    b.releaseYear ||
-                    b.release ||
-                    9999
+
+            section.className =
+                "group";
+
+
+            const heading =
+                document.createElement(
+                    "h2"
                 );
 
-            return yearA - yearB;
 
-        });
-
-
-        renderMovies();
-
-        updateProgress();
-
-    }
+            heading.className =
+                "groupTitle";
 
 
-    /*
-     * GET MOVIE ID
-     */
-
-    function getMovieId(movie, index) {
-
-        return (
-            movie.id ||
-            movie.slug ||
-            (
-                universeKey +
-                "-" +
-                index
-            )
-        );
-
-    }
+            heading.textContent =
+                group.title;
 
 
-    /*
-     * LOCAL STORAGE
-     */
-
-    function getStatus(id) {
-
-        return (
-            localStorage.getItem(
-                "watchlist-status-" + id
-            ) || "unwatched"
-        );
-
-    }
+            section.appendChild(
+                heading
+            );
 
 
-    function setStatus(id, status) {
-
-        localStorage.setItem(
-            "watchlist-status-" + id,
-            status
-        );
-
-        renderMovies();
-
-        updateProgress();
-
-    }
+            const grid =
+                document.createElement(
+                    "div"
+                );
 
 
-    /*
-     * RATINGS
-     */
-
-    function getRating(id) {
-
-        return Number(
-            localStorage.getItem(
-                "watchlist-rating-" + id
-            ) || 0
-        );
-
-    }
+            grid.className =
+                "movies";
 
 
-    function setRating(id, rating) {
+            group.items.forEach(
+                movie => {
 
-        localStorage.setItem(
-            "watchlist-rating-" + id,
-            rating
-        );
-
-        renderMovies();
-
-    }
+                    const status =
+                        getStatus(movie);
 
 
-    /*
-     * FILTER
-     */
+                    /*
+                    FILTER
+                    */
 
-    function setFilter(filter, button) {
-
-        currentFilter = filter;
-
-
-        document
-            .querySelectorAll(".filter-btn")
-            .forEach(function(btn) {
-
-                btn.classList.remove("active");
-
-            });
+                    if (
+                        currentFilter ===
+                        "watched" &&
+                        status !== "watched"
+                    ) {
+                        return;
+                    }
 
 
-        button.classList.add("active");
+                    if (
+                        currentFilter ===
+                        "unwatched" &&
+                        status !== "unwatched"
+                    ) {
+                        return;
+                    }
 
 
-        renderMovies();
-
-    }
-
-
-    /*
-     * IMAGE
-     */
-
-    function getImage(movie) {
-
-        return (
-            movie.image ||
-            movie.poster ||
-            movie.posterUrl ||
-            movie.background ||
-            movie.imageUrl ||
-            "https://via.placeholder.com/500x750/151515/ffffff?text=No+Poster"
-        );
-
-    }
+                    if (
+                        currentFilter ===
+                        "half" &&
+                        status !== "half"
+                    ) {
+                        return;
+                    }
 
 
-    /*
-     * DESCRIPTION
-     */
+                    grid.appendChild(
+                        createCard(movie)
+                    );
 
-    function getDescription(movie) {
-
-        return (
-            movie.description ||
-            movie.synopsis ||
-            movie.summary ||
-            "Description coming soon."
-        );
-
-    }
+                }
+            );
 
 
-    /*
-     * TRAILER
-     */
+            section.appendChild(
+                grid
+            );
 
-    function getTrailer(movie) {
 
-        /*
-         * If data.js already contains
-         * a YouTube trailer URL, use it.
-         */
+            content.appendChild(
+                section
+            );
 
-        if (movie.trailer) {
-            return movie.trailer;
         }
+    );
 
-        if (movie.trailerUrl) {
-            return movie.trailerUrl;
-        }
-
-        if (movie.youtube) {
-            return movie.youtube;
-        }
+}
 
 
-        /*
-         * Otherwise create a YouTube
-         * search for the movie trailer.
-         */
+/*
+==================================================
+CREATE CARD
+==================================================
+*/
 
-        const title =
-            movie.title ||
-            movie.name ||
-            "";
+function createCard(movie) {
 
-        return (
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "card";
+
+
+    const status =
+        getStatus(movie);
+
+
+    const rating =
+        getRating(movie);
+
+
+    /*
+    IMAGE
+    */
+
+    const image =
+        movie.image ||
+        movie.poster ||
+        "https://via.placeholder.com/500x750/151515/ffffff?text=" +
+        encodeURIComponent(
+            movie.title
+        );
+
+
+    /*
+    DESCRIPTION
+    */
+
+    const description =
+        movie.description ||
+        "Description coming soon.";
+
+
+    /*
+    TRAILER
+    */
+
+    const trailer =
+        movie.trailer ||
+        (
             "https://www.youtube.com/results?search_query=" +
             encodeURIComponent(
-                title + " official trailer"
+                movie.title +
+                " official trailer"
             )
         );
 
-    }
+
+    card.innerHTML = `
+
+        <img
+            class="poster"
+            src="${image}"
+            alt="${escapeHTML(movie.title)}"
+            onerror="
+                this.src='https://via.placeholder.com/500x750/151515/ffffff?text=No+Poster'
+            "
+        >
+
+        <div class="info">
+
+            <div class="title">
+                ${escapeHTML(movie.title)}
+            </div>
+
+            <div class="year">
+                ${movie.year || ""}
+            </div>
+
+            <div class="description">
+                ${escapeHTML(description)}
+            </div>
+
+
+            <div class="status">
+
+                <button
+                    class="${status === "unwatched" ? "selected" : ""}"
+                    data-status="unwatched">
+
+                    Not Watched
+
+                </button>
+
+                <button
+                    class="${status === "half" ? "selected" : ""}"
+                    data-status="half">
+
+                    Half
+
+                </button>
+
+                <button
+                    class="${status === "watched" ? "selected" : ""}"
+                    data-status="watched">
+
+                    Watched
+
+                </button>
+
+            </div>
+
+
+            <button
+                class="trailer">
+
+                ▶ Watch Trailer
+
+            </button>
+
+
+            <div class="rating">
+
+                <span>Rating:</span>
+
+                ${createStars(movie,rating)}
+
+            </div>
+
+        </div>
+
+    `;
 
 
     /*
-     * RENDER MOVIES
-     */
+    STATUS BUTTONS
+    */
 
-    function renderMovies() {
+    card
+        .querySelectorAll(
+            ".status button"
+        )
+        .forEach(
+            button => {
 
-        const container =
-            document.getElementById(
-                "movieContainer"
-            );
+                button.addEventListener(
+                    "click",
+                    () => {
 
+                        setStatus(
+                            movie,
+                            button.dataset.status
+                        );
 
-        container.innerHTML = "";
+                    }
+                );
 
-
-        if (!movies.length) {
-
-            container.innerHTML = `
-
-                <div class="error">
-
-                    <h2>No movies found</h2>
-
-                    <p>
-                        This universe currently has
-                        no movie data in data.js.
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        movies.forEach(function(movie, index) {
-
-            const id =
-                getMovieId(movie, index);
-
-
-            const status =
-                getStatus(id);
-
-
-            /*
-             * FILTER
-             */
-
-            if (
-                currentFilter === "watched" &&
-                status !== "watched"
-            ) {
-                return;
             }
+        );
 
 
-            if (
-                currentFilter === "unwatched" &&
-                status !== "unwatched"
-            ) {
-                return;
+    /*
+    TRAILER
+    */
+
+    card
+        .querySelector(
+            ".trailer"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                window.open(
+                    trailer,
+                    "_blank"
+                );
+
             }
+        );
 
 
-            if (
-                currentFilter === "half" &&
-                status !== "half"
-            ) {
-                return;
+    /*
+    RATING
+    */
+
+    card
+        .querySelectorAll(
+            ".star"
+        )
+        .forEach(
+            star => {
+
+                star.addEventListener(
+                    "click",
+                    () => {
+
+                        setRating(
+                            movie,
+                            Number(
+                                star.dataset.rating
+                            )
+                        );
+
+                    }
+                );
+
             }
+        );
 
 
-            const title =
-                movie.title ||
-                movie.name ||
-                "Untitled";
+    return card;
+
+}
 
 
-            const year =
-                movie.year ||
-                movie.releaseYear ||
-                movie.release ||
-                "";
+/*
+==================================================
+STARS
+==================================================
+*/
+
+function createStars(movie,rating) {
+
+    let html = "";
 
 
-            const image =
-                getImage(movie);
+    for (
+        let i = 1;
+        i <= 5;
+        i++
+    ) {
 
+        html += `
 
-            const description =
-                getDescription(movie);
+            <span
+                class="star ${i <= rating ? "active" : ""}"
+                data-rating="${i}">
 
+                ★
 
-            const trailer =
-                getTrailer(movie);
+            </span>
 
-
-            const rating =
-                getRating(id);
-
-
-            const card =
-                document.createElement("article");
-
-
-            card.className =
-                "movie-card";
-
-
-            card.innerHTML = `
-
-                <img
-                    class="poster"
-                    src="${image}"
-                    alt="${escapeHtml(title)}"
-                    onerror="this.src='https://via.placeholder.com/500x750/151515/ffffff?text=No+Poster'"
-                >
-
-                <div class="movie-info">
-
-                    <div class="movie-title">
-                        ${escapeHtml(title)}
-                    </div>
-
-                    <div class="movie-year">
-                        ${year}
-                    </div>
-
-                    <div class="description">
-                        ${escapeHtml(description)}
-                    </div>
-
-                    <div class="status-row">
-
-                        <button
-                            class="status-btn ${status === "unwatched" ? "selected" : ""}"
-                            onclick="setStatus('${id}', 'unwatched')">
-
-                            Not Watched
-
-                        </button>
-
-                        <button
-                            class="status-btn ${status === "half" ? "selected" : ""}"
-                            onclick="setStatus('${id}', 'half')">
-
-                            Half
-
-                        </button>
-
-                        <button
-                            class="status-btn ${status === "watched" ? "selected" : ""}"
-                            onclick="setStatus('${id}', 'watched')">
-
-                            Watched
-
-                        </button>
-
-                    </div>
-
-
-                    <button
-                        class="trailer-btn"
-                        onclick="window.open('${trailer}', '_blank')">
-
-                        ▶ Watch Trailer
-
-                    </button>
-
-
-                    <div class="rating">
-
-                        <span>Rating:</span>
-
-                        ${createStars(id, rating)}
-
-                    </div>
-
-                </div>
-
-            `;
-
-
-            container.appendChild(card);
-
-        });
+        `;
 
     }
 
 
-    /*
-     * STARS
-     */
+    return html;
 
-    function createStars(id, rating) {
-
-        let html = "";
+}
 
 
-        for (let i = 1; i <= 5; i++) {
+/*
+==================================================
+PROGRESS
+==================================================
+*/
 
-            html += `
+function updateProgress() {
 
-                <span
-                    class="star ${i <= rating ? "active" : ""}"
-                    onclick="setRating('${id}', ${i})">
-
-                    ★
-
-                </span>
-
-            `;
-
-        }
+    const all =
+        getAllItems();
 
 
-        return html;
-
-    }
-
-
-    /*
-     * PROGRESS
-     */
-
-    function updateProgress() {
-
-        if (!movies.length) {
-            return;
-        }
+    const total =
+        all.length;
 
 
-        let watched = 0;
+    let watched = 0;
 
 
-        movies.forEach(function(movie, index) {
-
-            const id =
-                getMovieId(movie, index);
-
+    all.forEach(
+        movie => {
 
             if (
-                getStatus(id) === "watched"
+                getStatus(movie) ===
+                "watched"
             ) {
+
                 watched++;
+
             }
 
-        });
-
-
-        const total =
-            movies.length;
-
-
-        const percent =
-            Math.round(
-                (watched / total) * 100
-            );
-
-
-        document.getElementById(
-            "progressText"
-        ).textContent =
-            watched +
-            " / " +
-            total +
-            " watched";
-
-
-        document.getElementById(
-            "progressPercent"
-        ).textContent =
-            percent + "%";
-
-
-        document.getElementById(
-            "progressFill"
-        ).style.width =
-            percent + "%";
-
-    }
-
-
-    /*
-     * HTML SAFETY
-     */
-
-    function escapeHtml(text) {
-
-        if (!text) {
-            return "";
         }
-
-        return String(text)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-
-    }
+    );
 
 
-    /*
-     * BACK BUTTON
-     */
-
-    function goBack() {
-
-        window.location.href =
-            "index.html";
-
-    }
+    const percentage =
+        total === 0
+        ? 0
+        : Math.round(
+            watched /
+            total *
+            100
+        );
 
 
-    /*
-     * START
-     */
+    document.getElementById(
+        "count"
+    ).textContent =
+        watched +
+        " / " +
+        total +
+        " watched";
 
-    initialize();
+
+    document.getElementById(
+        "percent"
+    ).textContent =
+        percentage +
+        "%";
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        percentage +
+        "%";
+
+}
+
+
+/*
+==================================================
+HTML ESCAPE
+==================================================
+*/
+
+function escapeHTML(text) {
+
+    return String(text || "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
 
     </script>
 
