@@ -10,7 +10,6 @@
 
     <title>WatchList</title>
 
-
     <style>
 
         * {
@@ -21,350 +20,363 @@
 
 
         body {
-            min-height: 100vh;
             font-family: Arial, Helvetica, sans-serif;
-            color: white;
-            background: radial-gradient( circle at 10% 0%, var(--accent), transparent 25% ), radial-gradient( circle at 90% 10%, var(--accent2), transparent 25% ), #080808;
-        }
-
-
-        .page {
             min-height: 100vh;
-            background: rgba(0,0,0,.55);
+            background: radial-gradient( circle at 10% 10%, rgba(255, 0, 80, .15), transparent 30% ), radial-gradient( circle at 90% 20%, rgba(0, 120, 255, .15), transparent 30% ), #080808;
+            color: white;
         }
 
 
-        /* =========================
-           HEADER
-        ========================= */
+        /* =====================================================
+           PAGE
+        ===================================================== */
 
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        #universePage {
+            --accent: #e50914;
+            --accent-2: #ffb000;
+            min-height: 100vh;
+        }
+
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: auto;
+            padding: 35px 0 80px;
+        }
+
+
+        /* =====================================================
+           TOP BAR
+        ===================================================== */
+
+        .topbar {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 18px 5%;
-            background: rgba(5,5,5,.85);
-            backdrop-filter: blur(18px);
-            border-bottom: 1px solid rgba(255,255,255,.1);
+            align-items: center;
+            margin-bottom: 40px;
         }
 
 
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
+            letter-spacing: -1px;
         }
 
 
             .logo span {
-                color: #e50914;
+                color: var(--accent);
             }
 
 
         .back-button {
             border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
+            background: rgba(255,255,255,.08);
             color: white;
-            background: rgba(255,255,255,.12);
+            padding: 11px 18px;
+            border-radius: 30px;
             cursor: pointer;
+            font-size: 14px;
+            transition: .25s;
         }
 
 
             .back-button:hover {
-                background: rgba(255,255,255,.25);
+                background: var(--accent);
+                transform: translateX(-3px);
             }
 
 
-        /* =========================
+        /* =====================================================
            HERO
-        ========================= */
+        ===================================================== */
 
         .hero {
-            width: 90%;
-            max-width: 1400px;
-            margin: auto;
-            padding: 60px 0 30px;
+            padding: 45px 35px;
+            border-radius: 30px;
+            background: linear-gradient( 135deg, color-mix( in srgb, var(--accent) 30%, #111 ), rgba(255,255,255,.04) );
+            border: 1px solid rgba(255,255,255,.1);
+            margin-bottom: 35px;
+            position: relative;
+            overflow: hidden;
         }
 
 
+            .hero::after {
+                content: "";
+                position: absolute;
+                width: 300px;
+                height: 300px;
+                right: -100px;
+                top: -100px;
+                border-radius: 50%;
+                background: var(--accent);
+                opacity: .15;
+                filter: blur(40px);
+            }
+
+
             .hero h1 {
-                font-size: clamp( 42px, 7vw, 80px );
+                font-size: clamp( 40px, 7vw, 76px );
                 font-weight: 900;
-                background: linear-gradient( 90deg, white, var(--accent2), white );
+                letter-spacing: -3px;
+                background: linear-gradient( 90deg, var(--accent), var(--accent-2), white );
                 -webkit-background-clip: text;
                 background-clip: text;
                 color: transparent;
+                margin-bottom: 12px;
             }
 
 
             .hero p {
-                margin-top: 12px;
-                max-width: 800px;
-                color: #bbb;
+                color: #aaa;
                 font-size: 18px;
-                line-height: 1.6;
             }
 
 
-        /* =========================
+        /* =====================================================
            PROGRESS
-        ========================= */
+        ===================================================== */
 
         .progress-box {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 18px;
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.1);
+            margin-top: 30px;
         }
 
 
         .progress-text {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
-            color: #ddd;
+            gap: 20px;
+            color: #ccc;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
 
 
         .progress {
-            height: 10px;
+            height: 12px;
             border-radius: 20px;
             overflow: hidden;
-            background: #222;
+            background: rgba(255,255,255,.08);
         }
 
 
-        .progress-fill {
-            width: 0%;
+        #universeProgressFill {
             height: 100%;
+            width: 0%;
             border-radius: 20px;
-            background: linear-gradient( 90deg, var(--accent), var(--accent2), #fff );
+            background: linear-gradient( 90deg, var(--accent), var(--accent-2) );
             transition: width .4s ease;
         }
 
 
-        /* =========================
-           ORDER
-        ========================= */
+        /* =====================================================
+           MOVIE GROUP
+        ===================================================== */
 
-        .controls {
-            width: 90%;
-            max-width: 1400px;
-            margin: 10px auto 30px;
+        .movie-group {
+            margin-top: 45px;
+        }
+
+
+        .movie-group-title {
+            font-size: 25px;
+            margin-bottom: 18px;
+            color: #eee;
+        }
+
+
+        /* =====================================================
+           MOVIE LIST
+        ===================================================== */
+
+        .movie-list {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+
+        /* =====================================================
+           MOVIE CARD
+        ===================================================== */
+
+        .movie-card {
+            display: grid;
+            grid-template-columns: 55px 1fr auto;
+            gap: 20px;
             align-items: center;
+            padding: 22px;
+            border-radius: 20px;
+            background: linear-gradient( 135deg, rgba(255,255,255,.055), rgba(255,255,255,.025) );
+            border: 1px solid rgba(255,255,255,.08);
+            transition: transform .25s, border .25s, box-shadow .25s;
+        }
+
+
+            .movie-card:hover {
+                transform: translateY(-3px);
+                border-color: var(--accent);
+                box-shadow: 0 15px 40px rgba(0,0,0,.3);
+            }
+
+
+        /* =====================================================
+           NUMBER
+        ===================================================== */
+
+        .movie-number {
+            width: 45px;
+            height: 45px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient( 135deg, var(--accent), var(--accent-2) );
+            font-weight: 900;
+        }
+
+
+        /* =====================================================
+           INFO
+        ===================================================== */
+
+        .movie-title {
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+
+        .movie-year {
+            color: #888;
+            font-size: 14px;
+            font-weight: normal;
+            margin-left: 6px;
+        }
+
+
+        .movie-description {
+            color: #999;
+            line-height: 1.5;
+            font-size: 14px;
+            max-width: 700px;
+        }
+
+
+        /* =====================================================
+           DETAILS
+        ===================================================== */
+
+        .movie-details {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
             gap: 15px;
             flex-wrap: wrap;
         }
 
 
-        .filters {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-
-        .filter {
-            border: none;
-            padding: 9px 15px;
-            border-radius: 20px;
-            background: #252525;
-            color: white;
-            cursor: pointer;
-        }
-
-
-            .filter.active {
-                background: var(--accent);
-            }
-
-
-        /* =========================
-           GROUPS
-        ========================= */
-
-        #movieGroups {
-            width: 90%;
-            max-width: 1400px;
-            margin: auto;
-            padding-bottom: 80px;
-        }
-
-
-        .movie-group {
-            margin-bottom: 45px;
-        }
-
-
-        .movie-group-title {
-            font-size: 27px;
-            margin-bottom: 18px;
-            color: var(--accent2);
-        }
-
-
-        .movie-list {
-            display: grid;
-            gap: 16px;
-        }
-
-
-        /* =========================
-           MOVIE CARD
-        ========================= */
-
-        .movie-card {
-            display: grid;
-            grid-template-columns: 55px 1fr auto;
-            align-items: center;
-            gap: 20px;
-            padding: 20px;
-            border-radius: 18px;
-            background: linear-gradient( 110deg, rgba(255,255,255,.08), rgba(255,255,255,.025) );
-            border: 1px solid rgba(255,255,255,.1);
-            transition: transform .2s ease, border .2s ease;
-        }
-
-
-            .movie-card:hover {
-                transform: translateX(5px);
-                border-color: var(--accent);
-            }
-
-
-        .movie-number {
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 13px;
-            background: rgba(255,255,255,.07);
-            color: var(--accent2);
-            font-weight: bold;
-        }
-
-
-        .movie-title {
-            font-size: 19px;
-            font-weight: 800;
-        }
-
-
-        .movie-year {
-            margin-left: 10px;
-            color: #777;
-            font-size: 13px;
-            font-weight: normal;
-        }
-
-
-        .movie-description {
-            margin-top: 8px;
-            max-width: 850px;
-            color: #aaa;
-            font-size: 14px;
-            line-height: 1.55;
-        }
-
-
-        /* =========================
-           DETAILS
-        ========================= */
-
-        .movie-details {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-
-        .trailer-button {
-            border: none;
-            padding: 10px 14px;
-            border-radius: 10px;
-            background: #fff;
-            color: #111;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-
-            .trailer-button:hover {
-                background: var(--accent2);
-                color: white;
-            }
-
-
-        .status-button {
-            min-width: 125px;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-
-        .status-not-watched {
-            background: #333;
-        }
-
-
-        .status-halfway {
-            background: #e39b00;
-        }
-
-
-        .status-watched {
-            background: #199447;
-        }
-
-
-        /* =========================
+        /* =====================================================
            RATING
-        ========================= */
+        ===================================================== */
 
         .rating-wrapper {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 3px;
         }
 
 
         .rating-label {
-            display: none;
+            font-size: 10px;
+            color: #777;
+            text-transform: uppercase;
+        }
+
+
+        .rating-stars {
+            display: flex;
+            gap: 1px;
         }
 
 
         .rating-star {
             border: none;
-            background: none;
-            color: #555;
-            font-size: 20px;
-            padding: 0;
+            background: transparent;
+            color: #777;
             cursor: pointer;
+            font-size: 20px;
+            padding: 0 2px;
         }
 
 
-            .rating-star:hover,
-            .rating-star:focus {
-                color: #ffd21f;
+            .rating-star:hover {
+                color: #ffd43b;
             }
 
 
-        /* =========================
-           MOBILE
-        ========================= */
+        /* =====================================================
+           TRAILER
+        ===================================================== */
 
-        @media(max-width:800px) {
+        .trailer-button {
+            border: 1px solid rgba(255,255,255,.15);
+            background: rgba(255,255,255,.06);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+
+            .trailer-button:hover {
+                background: #ff0000;
+                border-color: #ff0000;
+            }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .status-button {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            min-width: 125px;
+            transition: .2s;
+        }
+
+
+        .status-not-watched {
+            background: rgba(255,255,255,.08);
+            color: #bbb;
+        }
+
+
+        .status-halfway {
+            background: #f5a900;
+            color: #111;
+        }
+
+
+        .status-watched {
+            background: #25c26e;
+            color: white;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media ( max-width: 800px ) {
 
             .movie-card {
                 grid-template-columns: 45px 1fr;
@@ -372,37 +384,38 @@
 
 
             .movie-details {
-                grid-column: 1 / -1;
-                flex-wrap: wrap;
+                grid-column: 2;
+                justify-content: flex-start;
+            }
+
+
+            .hero {
+                padding: 30px 22px;
             }
         }
 
 
-        @media(max-width:550px) {
+        @media ( max-width: 550px ) {
 
-            .hero {
-                padding-top: 40px;
+            .container {
+                width: 94%;
             }
 
 
             .movie-card {
-                padding: 15px;
+                padding: 16px;
             }
 
 
-            .movie-title {
-                font-size: 16px;
+            .movie-details {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
 
-            .movie-description {
-                font-size: 12px;
-            }
-
-
-            .trailer-button,
-            .status-button {
-                font-size: 11px;
+            .progress-text {
+                flex-direction: column;
+                gap: 5px;
             }
         }
     </style>
@@ -412,114 +425,90 @@
 
 <body>
 
+    <div id="universePage">
 
-    <div id="universePage"
-         class="page">
-
-
-        <header>
-
-            <div class="logo">
-
-                WATCH<span>LIST</span>
-
-            </div>
+        <div class="container">
 
 
-            <button id="backButton"
-                    class="back-button">
+            <!-- TOP BAR -->
 
-                ← Profiles
+            <div class="topbar">
 
-            </button>
+                <div class="logo">
 
-        </header>
-
-
-        <section class="hero">
-
-            <h1 id="universeTitle">
-                Loading...
-            </h1>
-
-
-            <p id="universeTagline">
-                Loading universe...
-            </p>
-
-
-            <div class="progress-box">
-
-                <div class="progress-text">
-
-                    <span>
-                        Your Progress
-                    </span>
-
-                    <span id="universeProgressText">
-                        0 watched ·
-                        0 halfway ·
-                        0 remaining
-                    </span>
+                    WATCH<span>LIST</span>
 
                 </div>
 
 
-                <div class="progress">
+                <button id="backButton"
+                        class="back-button"
+                        type="button">
+                    ← Profiles
+                </button>
 
-                    <div id="universeProgressFill"
-                         class="progress-fill">
+            </div>
+
+
+
+            <!-- HERO -->
+
+            <section class="hero">
+
+                <h1 id="universeTitle">
+                    Loading...
+                </h1>
+
+                <p id="universeTagline">
+                    Loading universe...
+                </p>
+
+
+                <div class="progress-box">
+
+                    <div class="progress-text">
+
+                        <span>
+                            Your Progress
+                        </span>
+
+                        <span id="universeProgressText">
+                            0 watched ·
+                            0 halfway ·
+                            0 remaining
+                        </span>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <div id="universeProgressFill"></div>
+
                     </div>
 
                 </div>
 
-            </div>
-
-        </section>
+            </section>
 
 
-        <section class="controls">
+
+            <!-- MOVIES -->
+
+            <main id="movieGroups">
+
+            </main>
 
 
-            <div class="filters">
-
-                <button class="filter active"
-                        data-filter="all">
-                    All
-                </button>
-
-
-                <button class="filter"
-                        data-filter="not-watched">
-                    ○ Not Watched
-                </button>
-
-
-                <button class="filter"
-                        data-filter="halfway">
-                    ◐ Halfway
-                </button>
-
-
-                <button class="filter"
-                        data-filter="watched">
-                    ✓ Watched
-                </button>
-
-            </div>
-
-
-        </section>
-
-
-        <main id="movieGroups">
-        </main>
-
+        </div>
 
     </div>
 
 
-    <!-- IMPORTANT ORDER -->
+
+    <!-- IMPORTANT:
+         data.js MUST load before universe.js
+    -->
 
     <script src="data.js"></script>
 
