@@ -1,297 +1,98 @@
-(function () {
 
-  "use strict";
+(function(){
+"use strict";
 
-  const profilesEl = document.getElementById("profiles");
-  const overallPctEl = document.getElementById("overallPct");
-  const overallCountEl = document.getElementById("overallCount");
-  const profileCountEl = document.getElementById("profileCount");
+const profiles = document.getElementById("profiles");
+const overallPct = document.getElementById("overallPct");
+const overallCount = document.getElementById("overallCount");
+const overallFill = document.getElementById("overallFill");
 
-  const STORAGE_KEY = "watchlist-progress";
+function dataRoot(){
+  if(Array.isArray(window.universes)) return window.universes;
+  if(Array.isArray(window.UNIVERSES)) return window.UNIVERSES;
+  return [];
+}
+function groupsOf(u){
+  return u.groups || u.sections || u.categories || [];
+}
+function itemsOf(u){
+  return groupsOf(u).flatMap(g => g.items || g.movies || g.titles || []);
+}
+function allItems(){ return dataRoot().flatMap(itemsOf); }
+function status(id){ return localStorage.getItem("watchlist-status-"+id) || "not-watched"; }
 
-  let state = {};
+function legacyState(){
+  try { return JSON.parse(localStorage.getItem("watchlist-progress") || "{}"); }
+  catch(e){ return {}; }
+}
+const oldState=legacyState();
+function currentStatus(id){ return status(id)!=="not-watched" ? status(id) : (oldState[id] || "not-watched"); }
 
-  try {
-    state = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || "{}"
-    );
-  } catch (error) {
-    state = {};
+const icons={
+  marvel:"⚡",dc:"🦇",transformers:"🤖","john-wick":"♠","mission-impossible":"🎯",
+  horror:"👻","wizard-world":"🪄",wizard:"🪄",anime:"☯","sci-fi-fantasy":"✦",
+  monsterverse:"🦖",invincible:"★",jurassic:"🦕",pirates:"☠",narnia:"🦁",
+  "fast-furious":"🏎","terminator":"🤖",avatar:"🌊","planet-of-the-apes":"🦍",
+  conjuring:"🕯",insidious:"🚪",scream:"🔪","james-bond":"007"
+};
+const colors=["#ef3340","#2e86ff","#b34cff","#e7a91a","#19c6d6","#ff7a18","#52d273"];
+
+function artFor(u){
+  return u.profileImage || u.image || u.background || u.hero || "";
+}
+function safe(s){
+  return String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function createCard(u,index){
+  const items=itemsOf(u);
+  const watched=items.filter(i=>currentStatus(i.id)==="watched").length;
+  const pct=items.length?Math.round(watched/items.length*100):0;
+  const id=String(u.id||"").toLowerCase();
+  const accent=u.accent || colors[index%colors.length];
+  const card=document.createElement("article");
+  card.className="profile";
+  card.style.setProperty("--accent",accent);
+  const art=artFor(u);
+  if(art) card.querySelector; // placeholder before innerHTML
+  card.innerHTML=`
+    <div class="profile-art" ${art?`style="--art:url('${String(art).replace(/'/g,"\\'")}')"`:""}></div>
+    <div class="profile-icon">${icons[id]||"🎬"}</div>
+    <div class="profile-content">
+      <h3>${safe(u.name||u.title||u.id||"Universe")}</h3>
+      <p>${safe(u.tagline||u.description||"Your cinematic universe awaits.")}</p>
+      <div class="meta"><span>${items.length} titles</span><strong>${pct}%</strong></div>
+      <div class="mini"><div style="width:${pct}%"></div></div>
+    </div>`;
+  card.addEventListener("click",()=>location.href="universe.html?universe="+encodeURIComponent(u.id));
+  return card;
+}
+function render(){
+  const data=dataRoot();
+  profiles.innerHTML="";
+  if(!data.length){
+    profiles.innerHTML='<div class="empty">No universes found. Make sure data.js is beside index.html.</div>';
+    updateOverall();
+    return;
   }
-
-
-  function allItems() {
-
-    return UNIVERSES.flatMap(function (universe) {
-
-      return universe.groups.flatMap(function (group) {
-
-        return group.items;
-
-      });
-
-    });
-
-  }
-
-
-  function getUniverseProgress(universe) {
-
-    const items = universe.groups.flatMap(function (group) {
-
-      return group.items;
-
-    });
-
-
-    const watched = items.filter(function (item) {
-
-      return state[item.id] === "watched";
-
-    }).length;
-
-
-    const halfway = items.filter(function (item) {
-
-      return state[item.id] === "halfway";
-
-    }).length;
-
-
-    const total = items.length;
-
-
-    const percentage = total
-      ? Math.round((watched / total) * 100)
-      : 0;
-
-
-    return {
-      watched: watched,
-      halfway: halfway,
-      total: total,
-      percentage: percentage
-    };
-
-  }
-
-
-  const ICONS = {
-
-    bolt:
-      '<svg viewBox="0 0 24 24">' +
-      '<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/>' +
-      '</svg>',
-
-    shield:
-      '<svg viewBox="0 0 24 24">' +
-      '<path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z"/>' +
-      '</svg>',
-
-    wand:
-      '<svg viewBox="0 0 24 24">' +
-      '<path d="M3 21 15 9" stroke="currentColor" stroke-width="1.8"/>' +
-      '<path d="M17 3l1.5 3.5L22 8l-3.5 1.5L17 13l-1.5-3.5L12 8l3.5-1.5L17 3Z"/>' +
-      '</svg>',
-
-    star:
-      '<svg viewBox="0 0 24 24">' +
-      '<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/>' +
-      '</svg>'
-
-  };
-
-
-  function createProfile(universe) {
-
-    const progress = getUniverseProgress(universe);
-
-    const card = document.createElement("button");
-
-    card.className = "profile-card";
-
-    card.type = "button";
-
-    card.style.setProperty(
-      "--accent",
-      universe.accent
-    );
-
-    card.style.setProperty(
-      "--accent-2",
-      universe.accent2
-    );
-
-
-    card.addEventListener("click", function () {
-
-      localStorage.setItem(
-        "selected-universe",
-        universe.id
-      );
-
-      window.location.href = "universe.html";
-
-    });
-
-
-    const icon =
-      ICONS[universe.icon] || ICONS.star;
-
-
-    let halfwayText = "";
-
-    if (progress.halfway > 0) {
-
-      halfwayText =
-        "<span>" +
-        progress.halfway +
-        " halfway</span>";
-
-    }
-
-
-    card.innerHTML =
-
-      '<div class="profile-background"></div>' +
-
-      '<div class="profile-content">' +
-
-        '<div class="profile-icon">' +
-          icon +
-        '</div>' +
-
-        '<div class="profile-info">' +
-
-          '<h3>' +
-            universe.name +
-          '</h3>' +
-
-          '<p>' +
-            universe.tagline +
-          '</p>' +
-
-        '</div>' +
-
-        '<div class="profile-stats">' +
-
-          '<div class="profile-progress">' +
-
-            '<div class="profile-progress-fill" ' +
-              'style="width:' +
-              progress.percentage +
-              '%">' +
-            '</div>' +
-
-          '</div>' +
-
-          '<div class="profile-numbers">' +
-
-            '<span>' +
-              progress.watched +
-              "/" +
-              progress.total +
-              " watched" +
-            '</span>' +
-
-            halfwayText +
-
-          '</div>' +
-
-        '</div>' +
-
-        '<div class="profile-arrow">→</div>' +
-
-      '</div>';
-
-
-    return card;
-
-  }
-
-
-  function renderProfiles() {
-
-    profilesEl.innerHTML = "";
-
-
-    UNIVERSES.forEach(function (universe) {
-
-      profilesEl.appendChild(
-        createProfile(universe)
-      );
-
-    });
-
-
-    profileCountEl.textContent =
-      UNIVERSES.length + " universes";
-
-  }
-
-
-  function updateOverallProgress() {
-
-    const items = allItems();
-
-
-    const watched = items.filter(function (item) {
-
-      return state[item.id] === "watched";
-
-    }).length;
-
-
-    const total = items.length;
-
-
-    const percentage = total
-      ? Math.round((watched / total) * 100)
-      : 0;
-
-
-    overallPctEl.textContent =
-      percentage + "%";
-
-
-    overallCountEl.textContent =
-      watched + " / " + total;
-
-  }
-
-
-  document
-    .getElementById("resetAll")
-    .addEventListener("click", function () {
-
-      const confirmed =
-        window.confirm(
-          "Reset all WatchList progress?"
-        );
-
-
-      if (!confirmed) {
-        return;
-      }
-
-
-      state = {};
-
-
-      localStorage.removeItem(
-        STORAGE_KEY
-      );
-
-
-      renderProfiles();
-
-      updateOverallProgress();
-
-    });
-
-
-  renderProfiles();
-
-  updateOverallProgress();
-
-})();s
+  data.forEach((u,i)=>profiles.appendChild(createCard(u,i)));
+  updateOverall();
+}
+function updateOverall(){
+  const items=allItems();
+  const watched=items.filter(i=>currentStatus(i.id)==="watched").length;
+  const pct=items.length?Math.round(watched/items.length*100):0;
+  overallPct.textContent=pct+"%";
+  overallCount.textContent=watched+" / "+items.length+" titles watched";
+  overallFill.style.width=pct+"%";
+}
+document.getElementById("prevBtn").onclick=()=>profiles.scrollBy({left:-550,behavior:"smooth"});
+document.getElementById("nextBtn").onclick=()=>profiles.scrollBy({left:550,behavior:"smooth"});
+
+let down=false,startX=0,scroll=0;
+profiles.addEventListener("pointerdown",e=>{down=true;startX=e.clientX;scroll=profiles.scrollLeft;profiles.classList.add("dragging")});
+window.addEventListener("pointerup",()=>{down=false;profiles.classList.remove("dragging")});
+window.addEventListener("pointermove",e=>{if(!down)return;profiles.scrollLeft=scroll-(e.clientX-startX)*1.15});
+
+window.addEventListener("storage",render);
+render();
+})();
