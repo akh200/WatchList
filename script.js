@@ -4,7 +4,7 @@
 
 
     /* =========================================================
-       PAGE ELEMENTS
+       ELEMENTS
     ========================================================= */
 
     const profiles =
@@ -19,30 +19,84 @@
     const overallFill =
         document.getElementById("overallFill");
 
-    const previousButton =
+    const prevBtn =
         document.getElementById("prevBtn");
 
-    const nextButton =
+    const nextBtn =
         document.getElementById("nextBtn");
 
+
+    /* =========================================================
+       STORAGE
+    ========================================================= */
+
+    const STORAGE_KEY =
+        "watchlist-progress";
+
+
+    let state = {};
+
+    try {
+
+        state = JSON.parse(
+            localStorage.getItem(STORAGE_KEY) || "{}"
+        );
+
+    } catch (error) {
+
+        state = {};
+
+    }
 
 
     /* =========================================================
        GET UNIVERSES
        
-       Your current data.js uses:
+       Supports BOTH:
        
        const universes = [...]
        
-       This also supports older:
-       
        const UNIVERSES = [...]
+       
+       This is the reason the old version was showing
+       "No universes found".
     ========================================================= */
 
     function getUniverses() {
 
+        try {
+
+            if (
+                typeof universes !== "undefined" &&
+                Array.isArray(universes)
+            ) {
+
+                return universes;
+
+            }
+
+        } catch (error) {
+            // Ignore
+        }
+
+
+        try {
+
+            if (
+                typeof UNIVERSES !== "undefined" &&
+                Array.isArray(UNIVERSES)
+            ) {
+
+                return UNIVERSES;
+
+            }
+
+        } catch (error) {
+            // Ignore
+        }
+
+
         if (
-            typeof window.universes !== "undefined" &&
             Array.isArray(window.universes)
         ) {
 
@@ -52,7 +106,6 @@
 
 
         if (
-            typeof window.UNIVERSES !== "undefined" &&
             Array.isArray(window.UNIVERSES)
         ) {
 
@@ -66,27 +119,26 @@
     }
 
 
-
     /* =========================================================
-       GET GROUPS
+       UNIVERSE GROUPS
     ========================================================= */
 
     function getGroups(universe) {
-
-        if (
-            Array.isArray(universe.sections)
-        ) {
-
-            return universe.sections;
-
-        }
-
 
         if (
             Array.isArray(universe.groups)
         ) {
 
             return universe.groups;
+
+        }
+
+
+        if (
+            Array.isArray(universe.sections)
+        ) {
+
+            return universe.sections;
 
         }
 
@@ -105,9 +157,8 @@
     }
 
 
-
     /* =========================================================
-       GET ALL MOVIES / SERIES
+       ITEMS
     ========================================================= */
 
     function getItems(universe) {
@@ -116,49 +167,58 @@
             getGroups(universe);
 
 
-        let result = [];
+        const items = [];
 
 
         groups.forEach(function (group) {
 
-            if (
-                Array.isArray(group.items)
-            ) {
-
-                result =
-                    result.concat(
-                        group.items
-                    );
-
-                return;
-
-            }
+            const groupItems =
+                group.items ||
+                group.movies ||
+                group.titles ||
+                [];
 
 
             if (
-                Array.isArray(group.movies)
+                Array.isArray(groupItems)
             ) {
 
-                result =
-                    result.concat(
-                        group.movies
-                    );
+                groupItems.forEach(function (item) {
 
-                return;
+                    items.push(item);
+
+                });
 
             }
 
+        });
 
-            if (
-                Array.isArray(group.titles)
-            ) {
 
-                result =
-                    result.concat(
-                        group.titles
-                    );
+        return items;
 
-            }
+    }
+
+
+    /* =========================================================
+       ALL ITEMS
+    ========================================================= */
+
+    function getAllItems() {
+
+        const list =
+            getUniverses();
+
+
+        const result = [];
+
+
+        list.forEach(function (universe) {
+
+            getItems(universe).forEach(function (item) {
+
+                result.push(item);
+
+            });
 
         });
 
@@ -168,96 +228,28 @@
     }
 
 
-
     /* =========================================================
-       ALL ITEMS
+       STATUS
     ========================================================= */
 
-    function getAllItems() {
+    function getStatus(item) {
 
-        const universes =
-            getUniverses();
+        if (!item || !item.id) {
+
+            return "not-watched";
+
+        }
 
 
-        let result = [];
-
-
-        universes.forEach(
-            function (universe) {
-
-                result =
-                    result.concat(
-                        getItems(universe)
-                    );
-
-            }
+        return (
+            state[item.id] ||
+            localStorage.getItem(
+                "watchlist-status-" + item.id
+            ) ||
+            "not-watched"
         );
 
-
-        return result;
-
     }
-
-
-
-    /* =========================================================
-       STATUS STORAGE
-       
-       Supports the status system already used by your
-       universe page.
-    ========================================================= */
-
-    function getStatus(id) {
-
-        const newStatus =
-            localStorage.getItem(
-                "watchlist-status-" + id
-            );
-
-
-        if (
-            newStatus
-        ) {
-
-            return newStatus;
-
-        }
-
-
-        /*
-           Older storage format
-        */
-
-        try {
-
-            const old =
-                JSON.parse(
-                    localStorage.getItem(
-                        "watchlist-progress"
-                    ) || "{}"
-                );
-
-
-            if (
-                old[id]
-            ) {
-
-                return old[id];
-
-            }
-
-        }
-        catch (error) {
-
-            // Ignore invalid old storage
-
-        }
-
-
-        return "not-watched";
-
-    }
-
 
 
     /* =========================================================
@@ -266,44 +258,18 @@
 
     function escapeHTML(value) {
 
-        return String(
-            value === undefined ||
-                value === null
-                ? ""
-                : value
-        )
-
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-
-            .replace(
-                /</g,
-                "&lt;"
-            )
-
-            .replace(
-                />/g,
-                "&gt;"
-            )
-
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-
-            .replace(
-                /'/g,
-                "&#039;"
-            );
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
     }
 
 
-
     /* =========================================================
-       PROFILE ICONS
+       ICONS
     ========================================================= */
 
     const icons = {
@@ -314,23 +280,23 @@
 
         horror: "👻",
 
+        hp: "🪄",
+
         "wizard-world": "🪄",
 
         wizard: "🪄",
-
-        hp: "🪄",
 
         anime: "☯",
 
         "sci-fi-fantasy": "✦",
 
-        "sci-fi": "🚀",
+        scifi: "✦",
 
         fantasy: "🐉",
 
         starwars: "✦",
 
-        "star-wars": "✦",
+        startrek: "🚀",
 
         transformers: "🤖",
 
@@ -344,35 +310,42 @@
 
         "fast-furious": "🏎",
 
+        johnwick: "♠",
+
+        "john-wick": "♠",
+
         terminator: "🤖",
 
         avatar: "🌊",
 
-        "john-wick": "♠",
+        "planet-of-the-apes": "🦍",
 
-        "mission-impossible": "🎯",
+        apes: "🦍",
 
-        jamesbond: "007",
+        conjuring: "🕯",
+
+        insidious: "🚪",
+
+        scream: "🔪",
 
         "james-bond": "007",
 
-        invincible: "★"
+        bond: "007"
 
     };
 
 
-
     /* =========================================================
-       PROFILE COLORS
+       COLORS
     ========================================================= */
 
     const colors = [
 
-        "#ef3340",
+        "#e6483f",
 
-        "#2878ff",
+        "#3e7bfa",
 
-        "#b44cff",
+        "#9b59ff",
 
         "#e7a91a",
 
@@ -382,115 +355,37 @@
 
         "#52d273",
 
-        "#e83e8c"
+        "#ef4f91"
 
     ];
 
 
-
     /* =========================================================
-       PROFILE IMAGE
-       
-       Priority:
-       
-       profileImage
-       profile
-       image
-       background
-       hero
+       ICON
     ========================================================= */
 
-    function getProfileImage(
-        universe
-    ) {
-
-        if (
-            universe.profileImage
-        ) {
-
-            return universe.profileImage;
-
-        }
-
-
-        if (
-            universe.profile
-        ) {
-
-            return universe.profile;
-
-        }
-
-
-        if (
-            universe.image
-        ) {
-
-            return universe.image;
-
-        }
-
-
-        if (
-            universe.background
-        ) {
-
-            return universe.background;
-
-        }
-
-
-        if (
-            universe.hero
-        ) {
-
-            return universe.hero;
-
-        }
-
-
-        return "";
-
-    }
-
-
-
-    /* =========================================================
-       PROFILE ICON
-    ========================================================= */
-
-    function getIcon(
-        universe
-    ) {
+    function getIcon(universe) {
 
         const id =
             String(
-                universe.id ||
-                ""
-            )
-                .toLowerCase()
-                .replace(
-                    /[\s_]+/g,
-                    "-"
-                );
+                universe.id || ""
+            ).toLowerCase();
 
 
         return (
             icons[id] ||
+            universe.icon ||
             "🎬"
         );
 
     }
 
 
-
     /* =========================================================
-       PROFILE PROGRESS
+       UNIVERSE PROGRESS
     ========================================================= */
 
-    function getUniverseProgress(
-        universe
-    ) {
+    function getUniverseProgress(universe) {
 
         const items =
             getItems(universe);
@@ -501,87 +396,82 @@
         let halfway = 0;
 
 
-        items.forEach(
-            function (item) {
+        items.forEach(function (item) {
 
-                const state =
-                    getStatus(
-                        item.id
-                    );
+            const status =
+                getStatus(item);
 
 
-                if (
-                    state ===
-                    "watched"
-                ) {
+            if (
+                status === "watched"
+            ) {
 
-                    watched++;
-
-                }
-
-
-                else if (
-                    state ===
-                    "halfway"
-                ) {
-
-                    halfway++;
-
-                }
+                watched++;
 
             }
-        );
+
+
+            if (
+                status === "halfway" ||
+                status === "in-progress"
+            ) {
+
+                halfway++;
+
+            }
+
+        });
 
 
         const total =
             items.length;
 
 
-        const progress =
-            total
+        const percentage =
+            total > 0
                 ? Math.round(
-                    (
-                        watched +
-                        halfway * 0.5
-                    )
-                    /
-                    total
-                    *
-                    100
+                    (watched / total) * 100
                 )
                 : 0;
 
 
         return {
 
-            total,
+            watched: watched,
 
-            watched,
+            halfway: halfway,
 
-            halfway,
+            total: total,
 
-            progress
+            percentage: percentage
 
         };
 
     }
 
 
-
     /* =========================================================
-       CREATE PROFILE CARD
+       CREATE PROFILE
     ========================================================= */
 
-    function createProfileCard(
+    function createProfile(
         universe,
         index
     ) {
 
-        const card =
-            document.createElement(
-                "article"
+        const progress =
+            getUniverseProgress(
+                universe
             );
 
+
+        const card =
+            document.createElement(
+                "button"
+            );
+
+
+        card.type = "button";
 
         card.className =
             "profile-card";
@@ -595,6 +485,14 @@
             ];
 
 
+        const accent2 =
+            universe.accent2 ||
+            colors[
+            (index + 1) %
+            colors.length
+            ];
+
+
         card.style.setProperty(
             "--accent",
             accent
@@ -603,70 +501,41 @@
 
         card.style.setProperty(
             "--accent2",
-            universe.accent2 ||
-            accent
+            accent2
         );
 
 
-        const image =
-            getProfileImage(
-                universe
+        const id =
+            encodeURIComponent(
+                universe.id ||
+                universe.key ||
+                universe.slug ||
+                ""
             );
 
 
-        if (image) {
-
-            card.style.setProperty(
-                "--profile-image",
-                "url('" +
-                String(image)
-                    .replace(
-                        /'/g,
-                        "\\'"
-                    ) +
-                "')"
-            );
-
-        }
-
-
-
-        const stats =
-            getUniverseProgress(
-                universe
-            );
-
-
-        const name =
-            universe.name ||
-            universe.title ||
-            universe.id ||
-            "Universe";
-
-
-        const description =
-            universe.tagline ||
-            universe.description ||
-            "Your cinematic universe awaits.";
-
-
-        const icon =
-            getIcon(
-                universe
-            );
-
-
+        /* =====================================================
+           PROFILE CONTENT
+        ===================================================== */
 
         card.innerHTML = `
 
-            <div class="profile-background"></div>
+            <div class="profile-background">
 
-            <div class="profile-overlay"></div>
+                <div class="profile-glow"></div>
+
+            </div>
 
 
-            <div class="profile-icon">
+            <div class="profile-top">
 
-                ${icon}
+                <div class="profile-icon">
+
+                    ${escapeHTML(
+            getIcon(universe)
+        )}
+
+                </div>
 
             </div>
 
@@ -676,7 +545,10 @@
                 <h3>
 
                     ${escapeHTML(
-            name
+            universe.name ||
+            universe.title ||
+            universe.id ||
+            "Universe"
         )}
 
                 </h3>
@@ -685,25 +557,29 @@
                 <p>
 
                     ${escapeHTML(
-            description
+            universe.tagline ||
+            universe.description ||
+            "Your cinematic universe awaits."
         )}
 
                 </p>
 
 
-                <div class="profile-stats">
+                <div class="profile-meta">
 
                     <span>
 
-                        ${stats.total}
-                        titles
+                        ${progress.watched}
+                        /
+                        ${progress.total}
+                        watched
 
                     </span>
 
 
                     <strong>
 
-                        ${stats.progress}%
+                        ${progress.percentage}%
 
                     </strong>
 
@@ -713,11 +589,18 @@
                 <div class="profile-bar">
 
                     <div
-                        class="profile-bar-fill"
+                        class="profile-fill"
                         style="
-                            width:${stats.progress}%;
-                        "
-                    ></div>
+                            width:${progress.percentage}%;
+                        ">
+                    </div>
+
+                </div>
+
+
+                <div class="profile-open">
+
+                    ENTER UNIVERSE →
 
                 </div>
 
@@ -726,9 +609,8 @@
         `;
 
 
-
         /* =====================================================
-           CLICK → UNIVERSE PAGE
+           OPEN UNIVERSE
         ===================================================== */
 
         card.addEventListener(
@@ -743,9 +625,7 @@
 
                 window.location.href =
                     "universe.html?universe=" +
-                    encodeURIComponent(
-                        universe.id
-                    );
+                    id;
 
             }
         );
@@ -756,37 +636,41 @@
     }
 
 
-
     /* =========================================================
        RENDER PROFILES
     ========================================================= */
 
     function renderProfiles() {
 
-        const universes =
+        const list =
             getUniverses();
 
 
-        profiles.innerHTML =
-            "";
+        profiles.innerHTML = "";
 
 
         if (
-            !universes.length
+            !list.length
         ) {
 
             profiles.innerHTML = `
 
-                <div class="data-error">
+                <div class="empty">
 
                     <h3>
                         No universes found
                     </h3>
 
                     <p>
-                        Make sure data.js is in
-                        the same folder as index.html.
+                        Your data.js was loaded,
+                        but no universe array was found.
                     </p>
+
+                    <small>
+                        Make sure data.js contains
+                        either "const universes = [...]"
+                        or "const UNIVERSES = [...]".
+                    </small>
 
                 </div>
 
@@ -795,26 +679,19 @@
 
             updateOverall();
 
-
             return;
 
         }
 
 
-
-        universes.forEach(
-            function (
-                universe,
-                index
-            ) {
+        list.forEach(
+            function (universe, index) {
 
                 profiles.appendChild(
-
-                    createProfileCard(
+                    createProfile(
                         universe,
                         index
                     )
-
                 );
 
             }
@@ -824,7 +701,6 @@
         updateOverall();
 
     }
-
 
 
     /* =========================================================
@@ -839,34 +715,16 @@
 
         let watched = 0;
 
-        let halfway = 0;
-
 
         items.forEach(
             function (item) {
 
-                const state =
-                    getStatus(
-                        item.id
-                    );
-
-
                 if (
-                    state ===
+                    getStatus(item) ===
                     "watched"
                 ) {
 
                     watched++;
-
-                }
-
-
-                else if (
-                    state ===
-                    "halfway"
-                ) {
-
-                    halfway++;
 
                 }
 
@@ -879,23 +737,15 @@
 
 
         const percentage =
-            total
+            total > 0
                 ? Math.round(
-                    (
-                        watched +
-                        halfway * 0.5
-                    )
-                    /
-                    total
-                    *
-                    100
+                    (watched / total) * 100
                 )
                 : 0;
 
 
         overallPercent.textContent =
-            percentage +
-            "%";
+            percentage + "%";
 
 
         overallCount.textContent =
@@ -906,24 +756,22 @@
 
 
         overallFill.style.width =
-            percentage +
-            "%";
+            percentage + "%";
 
     }
 
 
-
     /* =========================================================
-       LEFT / RIGHT BUTTONS
+       ARROW NAVIGATION
     ========================================================= */
 
-    previousButton.addEventListener(
+    prevBtn.addEventListener(
         "click",
         function () {
 
             profiles.scrollBy({
 
-                left: -550,
+                left: -600,
 
                 behavior: "smooth"
 
@@ -933,13 +781,13 @@
     );
 
 
-    nextButton.addEventListener(
+    nextBtn.addEventListener(
         "click",
         function () {
 
             profiles.scrollBy({
 
-                left: 550,
+                left: 600,
 
                 behavior: "smooth"
 
@@ -947,18 +795,17 @@
 
         }
     );
-
 
 
     /* =========================================================
-       DRAG WITH MOUSE
+       MOUSE DRAG / TOUCH SWIPE
     ========================================================= */
 
     let dragging = false;
 
     let startX = 0;
 
-    let startingScroll = 0;
+    let startScroll = 0;
 
 
     profiles.addEventListener(
@@ -970,24 +817,32 @@
             startX =
                 event.clientX;
 
-            startingScroll =
+            startScroll =
                 profiles.scrollLeft;
-
 
             profiles.classList.add(
                 "dragging"
-            );
-
-
-            profiles.setPointerCapture(
-                event.pointerId
             );
 
         }
     );
 
 
-    profiles.addEventListener(
+    window.addEventListener(
+        "pointerup",
+        function () {
+
+            dragging = false;
+
+            profiles.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+
+    window.addEventListener(
         "pointermove",
         function (event) {
 
@@ -1004,49 +859,36 @@
 
 
             profiles.scrollLeft =
-                startingScroll -
-                distance * 1.15;
+                startScroll -
+                distance * 1.2;
 
         }
     );
-
-
-    profiles.addEventListener(
-        "pointerup",
-        function () {
-
-            dragging = false;
-
-            profiles.classList.remove(
-                "dragging"
-            );
-
-        }
-    );
-
-
-    profiles.addEventListener(
-        "pointercancel",
-        function () {
-
-            dragging = false;
-
-            profiles.classList.remove(
-                "dragging"
-            );
-
-        }
-    );
-
 
 
     /* =========================================================
-       UPDATE WHEN STORAGE CHANGES
+       STORAGE UPDATE
     ========================================================= */
 
     window.addEventListener(
         "storage",
         function () {
+
+            try {
+
+                state =
+                    JSON.parse(
+                        localStorage.getItem(
+                            STORAGE_KEY
+                        ) || "{}"
+                    );
+
+            } catch (error) {
+
+                state = {};
+
+            }
+
 
             renderProfiles();
 
@@ -1054,12 +896,10 @@
     );
 
 
-
     /* =========================================================
-       INITIAL LOAD
+       START
     ========================================================= */
 
     renderProfiles();
-
 
 })();

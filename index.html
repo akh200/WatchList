@@ -2,53 +2,38 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Akhil & Manasa WatchList</title>
 
-    <link rel="stylesheet"
-          href="styles.css">
-
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 
 <body>
 
-    <main class="page">
-
+    <div class="page">
 
         <!-- =====================================================
              HOME / HERO
+             The image already contains:
+             "Akhil & Manasa WatchList"
+             So DO NOT add another heading over it.
         ====================================================== -->
 
-        <section class="hero"
-                 aria-label="Akhil and Manasa WatchList">
+        <section class="hero" aria-label="Akhil and Manasa WatchList Home">
 
             <div class="hero-overlay"></div>
 
+            <div class="hero-bottom">
 
-            <div class="hero-content">
-
-                <div class="hero-title">
-
-                    <h1>
-                        Akhil &amp; Manasa WatchList
-                    </h1>
-
+                <div class="hero-message">
                     <p>
                         Our universe. Our watchlist. Our journey. ❤️
                     </p>
-
                 </div>
 
-
-                <!-- OVERALL PROGRESS -->
-
-                <div class="overall-progress">
+                <div class="overall">
 
                     <div class="overall-top">
 
@@ -62,11 +47,11 @@
 
                     </div>
 
+                    <div class="bar">
 
-                    <div class="progress-bar">
-
-                        <div class="progress-fill"
-                             id="overallFill"></div>
+                        <div class="fill"
+                             id="overallFill">
+                        </div>
 
                     </div>
 
@@ -77,15 +62,13 @@
         </section>
 
 
-
         <!-- =====================================================
-             UNIVERSES
+             UNIVERSE PROFILES
         ====================================================== -->
 
         <section class="universe-section">
 
-
-            <div class="section-heading">
+            <div class="section-head">
 
                 <div>
 
@@ -103,44 +86,43 @@
             </div>
 
 
+            <div class="profiles-wrapper">
 
-            <!-- PROFILE SLIDER -->
-
-            <div class="profiles-container">
-
-
-                <button class="slider-button slider-left"
+                <button class="nav-button left"
                         id="prevBtn"
+                        type="button"
                         aria-label="Previous universe">
+
                     ‹
+
                 </button>
 
 
                 <div class="profiles"
                      id="profiles">
-                    <!-- JavaScript creates profiles here -->
+
                 </div>
 
 
-                <button class="slider-button slider-right"
+                <button class="nav-button right"
                         id="nextBtn"
+                        type="button"
                         aria-label="Next universe">
-                    ›
-                </button>
 
+                    ›
+
+                </button>
 
             </div>
 
 
             <div class="slider-hint">
 
-                ← Drag / swipe sideways →
+                ← Drag / Swipe Sideways →
 
             </div>
 
-
         </section>
-
 
 
         <!-- =====================================================
@@ -155,24 +137,17 @@
 
         </footer>
 
-
-    </main>
-
+    </div>
 
 
     <!-- =========================================================
-         DATA FIRST
+         IMPORTANT:
+         data.js MUST LOAD BEFORE script.js
     ========================================================== -->
 
     <script src="data.js"></script>
 
-
-    <!-- =========================================================
-         HOME PAGE LOGIC
-    ========================================================== -->
-
     <script src="script.js"></script>
-
 
 </body>
 
