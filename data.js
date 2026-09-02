@@ -19,7 +19,6 @@ const UNIVERSES = [
       {
         title: "Phase 1 – 3: The Infinity Saga",
         items: [
-          { id: "mcu-iron-man", title: "Iron Man", year: 2009 },
           { id: "mcu-iron-man-2", title: "Iron Man 2", year: 2010 },
           { id: "mcu-thor", title: "Thor", year: 2011 },
           { id: "mcu-cap-1", title: "Captain America: The First Avenger", year: 2011 },
