@@ -6,41 +6,122 @@
     ============================================================
     WATCHLIST - UNIVERSE PAGE
     ============================================================
-    Reads the universe from:
+    URL format:
 
         universe.html?universe=marvel
 
-    Also supports:
+    Data comes from:
 
-        universe.html?id=marvel
+        data.js
 
+    Expected structure:
+
+        UNIVERSES
+          └── universe
+                ├── id
+                ├── name
+                ├── tagline
+                ├── accent
+                ├── accent2
+                └── groups
+                      └── items
     ============================================================
     */
+
+
+    /* =========================================================
+       STORAGE
+    ========================================================= */
 
     var STORAGE_KEY = "watchlist-progress";
 
 
+    var state = {};
+
+    try {
+
+        state = JSON.parse(
+            localStorage.getItem(STORAGE_KEY) || "{}"
+        );
+
+    } catch (error) {
+
+        state = {};
+
+    }
+
+
 
     /* =========================================================
-       GET UNIVERSE ID FROM URL
+       GET UNIVERSE FROM URL
     ========================================================= */
 
-    var params = new URLSearchParams(window.location.search);
+    var params =
+        new URLSearchParams(
+            window.location.search
+        );
+
 
     var universeId =
         params.get("universe") ||
-        params.get("id");
+        params.get("id") ||
+        localStorage.getItem(
+            "selected-universe"
+        );
 
 
 
     /* =========================================================
-       FALLBACK TO LOCAL STORAGE
+       CHECK DATA.JS
     ========================================================= */
 
-    if (!universeId) {
+    if (
+        typeof UNIVERSES === "undefined" ||
+        !Array.isArray(UNIVERSES)
+    ) {
 
-        universeId =
-            localStorage.getItem("selected-universe");
+        document.body.innerHTML = `
+
+            <div style="
+                min-height:100vh;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:#080808;
+                color:white;
+                font-family:Arial,sans-serif;
+                text-align:center;
+                padding:30px;
+            ">
+
+                <div>
+
+                    <h1>
+                        WatchList Data Error
+                    </h1>
+
+                    <p style="
+                        color:#aaa;
+                        margin-top:15px;
+                    ">
+                        data.js could not be loaded.
+                    </p>
+
+                    <p style="
+                        color:#777;
+                        margin-top:8px;
+                    ">
+                        Make sure data.js is in the same
+                        folder as universe.html.
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
 
     }
 
@@ -51,22 +132,24 @@
     ========================================================= */
 
     var universe =
-        UNIVERSES.find(function (item) {
+        UNIVERSES.find(
+            function (item) {
 
-            return item.id === universeId;
+                return item.id === universeId;
 
-        });
+            }
+        );
 
 
 
     /* =========================================================
-       IF UNIVERSE DOES NOT EXIST
+       UNIVERSE NOT FOUND
     ========================================================= */
 
     if (!universe) {
 
         document.body.innerHTML = `
-        
+
             <div style="
                 min-height:100vh;
                 display:flex;
@@ -82,7 +165,7 @@
                 <div>
 
                     <h1 style="
-                        font-size:42px;
+                        font-size:40px;
                         margin-bottom:15px;
                     ">
                         Universe Not Found
@@ -93,7 +176,9 @@
                         margin-bottom:25px;
                     ">
                         The universe
-                        <strong>${universeId || "unknown"}</strong>
+                        <strong>
+                            ${universeId || "unknown"}
+                        </strong>
                         could not be found in data.js.
                     </p>
 
@@ -136,55 +221,54 @@
 
 
     /* =========================================================
-       LOAD SAVED WATCH STATUS
-    ========================================================= */
-
-    var state = {};
-
-    try {
-
-        state =
-            JSON.parse(
-                localStorage.getItem(STORAGE_KEY) || "{}"
-            );
-
-    } catch (error) {
-
-        state = {};
-
-    }
-
-
-
-    /* =========================================================
        ELEMENTS
     ========================================================= */
 
     var page =
-        document.getElementById("universePage");
+        document.getElementById(
+            "universePage"
+        );
+
 
     var title =
-        document.getElementById("universeTitle");
+        document.getElementById(
+            "universeTitle"
+        );
+
 
     var tagline =
-        document.getElementById("universeTagline");
+        document.getElementById(
+            "universeTagline"
+        );
+
 
     var progressFill =
-        document.getElementById("universeProgressFill");
+        document.getElementById(
+            "universeProgressFill"
+        );
+
 
     var progressText =
-        document.getElementById("universeProgressText");
+        document.getElementById(
+            "universeProgressText"
+        );
+
 
     var movieGroups =
-        document.getElementById("movieGroups");
+        document.getElementById(
+            "movieGroups"
+        );
+
 
     var backButton =
-        document.getElementById("backButton");
+        document.getElementById(
+            "backButton"
+        );
 
 
 
     /* =========================================================
-       CHECK REQUIRED ELEMENTS
+       ELEMENT CHECK
     ========================================================= */
 
     if (
@@ -197,25 +281,25 @@
     ) {
 
         document.body.innerHTML = `
-        
+
             <div style="
-                padding:40px;
-                font-family:Arial;
-                color:white;
-                background:#080808;
                 min-height:100vh;
+                padding:40px;
+                background:#080808;
+                color:white;
+                font-family:Arial,sans-serif;
             ">
 
-                <h1>WatchList Page Error</h1>
+                <h1>
+                    WatchList Page Error
+                </h1>
 
-                <p>
+                <p style="
+                    color:#aaa;
+                    margin-top:15px;
+                ">
                     universe.html is missing one or more
                     required elements.
-                </p>
-
-                <p>
-                    Please replace universe.html with the
-                    version I provided.
                 </p>
 
             </div>
@@ -229,13 +313,14 @@
 
 
     /* =========================================================
-       COLORS
+       THEME COLORS
     ========================================================= */
 
     page.style.setProperty(
         "--accent",
         universe.accent || "#e50914"
     );
+
 
     page.style.setProperty(
         "--accent-2",
@@ -249,7 +334,8 @@
     ========================================================= */
 
     title.textContent =
-        universe.name;
+        universe.name || "WatchList";
+
 
     tagline.textContent =
         universe.tagline || "";
@@ -257,19 +343,36 @@
 
 
     /* =========================================================
-       GET ALL ITEMS
+       GET ALL MOVIES / SHOWS
     ========================================================= */
 
     function getAllItems() {
 
         var items = [];
 
+
+        if (
+            !universe.groups ||
+            !Array.isArray(universe.groups)
+        ) {
+
+            return items;
+
+        }
+
+
         universe.groups.forEach(
             function (group) {
 
-                if (!group.items) {
+                if (
+                    !group.items ||
+                    !Array.isArray(group.items)
+                ) {
+
                     return;
+
                 }
+
 
                 group.items.forEach(
                     function (item) {
@@ -282,6 +385,7 @@
             }
         );
 
+
         return items;
 
     }
@@ -289,7 +393,7 @@
 
 
     /* =========================================================
-       SAVE
+       SAVE STATE
     ========================================================= */
 
     function saveState() {
@@ -304,7 +408,7 @@
 
 
     /* =========================================================
-       STATUS
+       GET STATUS
     ========================================================= */
 
     function getStatus(item) {
@@ -318,19 +422,29 @@
 
 
 
+    /* =========================================================
+       STATUS TEXT
+    ========================================================= */
+
     function getStatusText(status) {
 
-        if (status === "watched") {
+        if (
+            status === "watched"
+        ) {
 
             return "✓ Watched";
 
         }
 
-        if (status === "halfway") {
+
+        if (
+            status === "halfway"
+        ) {
 
             return "◐ Halfway";
 
         }
+
 
         return "○ Not Watched";
 
@@ -338,19 +452,29 @@
 
 
 
+    /* =========================================================
+       NEXT STATUS
+    ========================================================= */
+
     function getNextStatus(status) {
 
-        if (status === "not-watched") {
+        if (
+            status === "not-watched"
+        ) {
 
             return "halfway";
 
         }
 
-        if (status === "halfway") {
+
+        if (
+            status === "halfway"
+        ) {
 
             return "watched";
 
         }
+
 
         return "not-watched";
 
@@ -359,13 +483,18 @@
 
 
     /* =========================================================
-       PROGRESS
+       UPDATE PROGRESS
     ========================================================= */
 
     function updateProgress() {
 
         var items =
             getAllItems();
+
+
+        var total =
+            items.length;
+
 
         var watched =
             items.filter(
@@ -379,6 +508,7 @@
                 }
             ).length;
 
+
         var halfway =
             items.filter(
                 function (item) {
@@ -391,18 +521,20 @@
                 }
             ).length;
 
-        var total =
-            items.length;
 
         var remaining =
             total -
             watched -
             halfway;
 
+
         var percentage =
-            total
+            total > 0
                 ? Math.round(
-                    (watched / total) * 100
+                    (
+                        watched /
+                        total
+                    ) * 100
                 )
                 : 0;
 
@@ -430,13 +562,19 @@
     function getRating(item) {
 
         return (
-            state[item.id + "-rating"] ||
-            0
+            state[
+                item.id +
+                "-rating"
+            ] || 0
         );
 
     }
 
 
+
+    /* =========================================================
+       CREATE RATING STARS
+    ========================================================= */
 
     function createStars(
         item,
@@ -444,6 +582,7 @@
     ) {
 
         container.innerHTML = "";
+
 
         var currentRating =
             getRating(item);
@@ -460,18 +599,24 @@
                     "button"
                 );
 
-            star.type = "button";
+
+            star.type =
+                "button";
+
 
             star.className =
                 "rating-star";
+
 
             star.textContent =
                 i <= currentRating
                     ? "★"
                     : "☆";
 
+
             star.dataset.rating =
                 String(i);
+
 
             star.title =
                 "Rate " +
@@ -525,15 +670,42 @@
 
     function openTrailer(item) {
 
+        /*
+         * If a trailer URL exists in data.js,
+         * use it.
+         */
+
+        if (
+            item.trailer &&
+            typeof item.trailer ===
+            "string"
+        ) {
+
+            window.open(
+                item.trailer,
+                "_blank"
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Otherwise search YouTube.
+         */
+
         var query =
             encodeURIComponent(
                 item.title +
                 " official trailer"
             );
 
+
         var url =
             "https://www.youtube.com/results?search_query=" +
             query;
+
 
         window.open(
             url,
@@ -558,64 +730,86 @@
                 "article"
             );
 
+
         card.className =
             "movie-card";
 
 
 
-        /* NUMBER */
+        /* -----------------------------------------------------
+           NUMBER
+        ----------------------------------------------------- */
 
         var numberEl =
             document.createElement(
                 "div"
             );
 
+
         numberEl.className =
             "movie-number";
+
 
         numberEl.textContent =
             number;
 
 
 
-        /* INFO */
+        /* -----------------------------------------------------
+           INFO
+        ----------------------------------------------------- */
 
         var info =
             document.createElement(
                 "div"
             );
 
+
         info.className =
             "movie-info";
 
 
 
-        /* TITLE */
+        /* -----------------------------------------------------
+           TITLE
+        ----------------------------------------------------- */
 
         var heading =
             document.createElement(
                 "h3"
             );
 
+
         heading.className =
             "movie-title";
 
+
         heading.textContent =
-            item.title;
+            item.title ||
+            "Untitled";
 
 
-        if (item.year) {
+
+        /* YEAR */
+
+        if (
+            item.year
+        ) {
 
             var year =
                 document.createElement(
                     "span"
                 );
 
+
             year.className =
                 "movie-year";
 
+
             year.textContent =
-                " " + item.year;
+                " " +
+                item.year;
+
 
             heading.appendChild(
                 year
@@ -625,12 +819,15 @@
 
 
 
-        /* DESCRIPTION */
+        /* -----------------------------------------------------
+           DESCRIPTION
+        ----------------------------------------------------- */
 
         var description =
             document.createElement(
                 "p"
             );
+
 
         description.className =
             "movie-description";
@@ -646,30 +843,37 @@
             heading
         );
 
+
         info.appendChild(
             description
         );
 
 
 
-        /* DETAILS */
+        /* -----------------------------------------------------
+           DETAILS
+        ----------------------------------------------------- */
 
         var details =
             document.createElement(
                 "div"
             );
 
+
         details.className =
             "movie-details";
 
 
 
-        /* RATING */
+        /* -----------------------------------------------------
+           RATING
+        ----------------------------------------------------- */
 
         var ratingWrapper =
             document.createElement(
                 "div"
             );
+
 
         ratingWrapper.className =
             "rating-wrapper";
@@ -680,8 +884,10 @@
                 "span"
             );
 
+
         ratingLabel.className =
             "rating-label";
+
 
         ratingLabel.textContent =
             "Your Rating";
@@ -692,6 +898,7 @@
                 "div"
             );
 
+
         stars.className =
             "rating-stars";
 
@@ -699,6 +906,7 @@
         ratingWrapper.appendChild(
             ratingLabel
         );
+
 
         ratingWrapper.appendChild(
             stars
@@ -712,18 +920,23 @@
 
 
 
-        /* TRAILER */
+        /* -----------------------------------------------------
+           TRAILER BUTTON
+        ----------------------------------------------------- */
 
         var trailer =
             document.createElement(
                 "button"
             );
 
+
         trailer.type =
             "button";
 
+
         trailer.className =
             "trailer-button";
+
 
         trailer.textContent =
             "▶ Trailer";
@@ -740,18 +953,23 @@
 
 
 
-        /* STATUS */
+        /* -----------------------------------------------------
+           STATUS BUTTON
+        ----------------------------------------------------- */
 
         var status =
             document.createElement(
                 "button"
             );
 
+
         status.type =
             "button";
 
+
         status.className =
             "status-button";
+
 
 
         function updateStatus() {
@@ -761,7 +979,9 @@
 
 
             status.textContent =
-                getStatusText(current);
+                getStatusText(
+                    current
+                );
 
 
             status.classList.remove(
@@ -823,7 +1043,9 @@
 
                 saveState();
 
+
                 updateStatus();
+
 
                 updateProgress();
 
@@ -832,13 +1054,19 @@
 
 
 
+        /* -----------------------------------------------------
+           ADD DETAILS
+        ----------------------------------------------------- */
+
         details.appendChild(
             ratingWrapper
         );
 
+
         details.appendChild(
             trailer
         );
+
 
         details.appendChild(
             status
@@ -846,13 +1074,19 @@
 
 
 
+        /* -----------------------------------------------------
+           ADD CARD
+        ----------------------------------------------------- */
+
         card.appendChild(
             numberEl
         );
 
+
         card.appendChild(
             info
         );
+
 
         card.appendChild(
             details
@@ -866,13 +1100,42 @@
 
 
     /* =========================================================
-       RENDER
+       RENDER UNIVERSE
     ========================================================= */
 
     function render() {
 
         movieGroups.innerHTML =
             "";
+
+
+        if (
+            !universe.groups ||
+            !Array.isArray(
+                universe.groups
+            )
+        ) {
+
+            movieGroups.innerHTML = `
+
+                <div style="
+                    padding:30px;
+                    border-radius:20px;
+                    background:rgba(255,255,255,.05);
+                    color:#aaa;
+                ">
+                    No movies or shows have been
+                    added to this universe yet.
+                </div>
+
+            `;
+
+            updateProgress();
+
+            return;
+
+        }
+
 
         var movieNumber =
             1;
@@ -886,6 +1149,7 @@
                         "section"
                     );
 
+
                 groupSection.className =
                     "movie-group";
 
@@ -895,11 +1159,14 @@
                         "h2"
                     );
 
+
                 groupTitle.className =
                     "movie-group-title";
 
+
                 groupTitle.textContent =
-                    group.title;
+                    group.title ||
+                    "Watch Order";
 
 
                 var list =
@@ -907,34 +1174,45 @@
                         "div"
                     );
 
+
                 list.className =
                     "movie-list";
 
 
-                group.items.forEach(
-                    function (item) {
+                if (
+                    group.items &&
+                    Array.isArray(
+                        group.items
+                    )
+                ) {
 
-                        var card =
-                            createMovieCard(
-                                item,
-                                movieNumber
+                    group.items.forEach(
+                        function (item) {
+
+                            var card =
+                                createMovieCard(
+                                    item,
+                                    movieNumber
+                                );
+
+
+                            list.appendChild(
+                                card
                             );
 
 
-                        list.appendChild(
-                            card
-                        );
+                            movieNumber++;
 
+                        }
+                    );
 
-                        movieNumber++;
-
-                    }
-                );
+                }
 
 
                 groupSection.appendChild(
                     groupTitle
                 );
+
 
                 groupSection.appendChild(
                     list
@@ -959,7 +1237,9 @@
        BACK BUTTON
     ========================================================= */
 
-    if (backButton) {
+    if (
+        backButton
+    ) {
 
         backButton.addEventListener(
             "click",
