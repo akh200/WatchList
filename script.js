@@ -1,12 +1,21 @@
 (function () {
     "use strict";
 
-    /* =========================================================
+    /*
+    ============================================================
        AKHIL & MANASA WATCHLIST
        HOMEPAGE CONTROLLER
-       ========================================================= */
+       
+       IMPORTANT:
+       data.js uses:
+           const universes = [...]
 
-    const profiles = document.getElementById("profiles");
+       So we access `universes` directly.
+    ============================================================
+    */
+
+    const profiles =
+        document.getElementById("profiles");
 
     const overallPercent =
         document.getElementById("overallPercent");
@@ -24,15 +33,35 @@
         document.getElementById("nextBtn");
 
 
-    /* =========================================================
-       DATA
-       Supports:
-       - groups
-       - sections
-       - categories
-       ========================================================= */
+    /*
+    ============================================================
+       GET UNIVERSES
+    ============================================================
+    */
 
     function getUniverses() {
+
+        /*
+        data.js currently defines:
+
+            const universes = [...]
+
+        Because it is a normal script, it is NOT necessarily
+        available as window.universes.
+
+        Therefore use the variable directly.
+        */
+
+        if (
+            typeof universes !== "undefined" &&
+            Array.isArray(universes)
+        ) {
+            return universes;
+        }
+
+        /*
+        Compatibility with older versions.
+        */
 
         if (
             Array.isArray(window.UNIVERSES)
@@ -50,6 +79,12 @@
     }
 
 
+    /*
+    ============================================================
+       GET GROUPS / SECTIONS
+    ============================================================
+    */
+
     function getGroups(universe) {
 
         return (
@@ -62,12 +97,19 @@
     }
 
 
+    /*
+    ============================================================
+       GET ITEMS
+    ============================================================
+    */
+
     function getItems(universe) {
 
         const groups =
             getGroups(universe);
 
         const items = [];
+
 
         groups.forEach(
             function (group) {
@@ -105,31 +147,17 @@
             }
         );
 
+
         return items;
 
     }
 
 
-    /* =========================================================
-       LOCAL STORAGE
-       =========================================================
-
-       Universe page saves progress like:
-
-       watchlist-progress-marvel
-       watchlist-progress-dc
-       watchlist-progress-horror
-       etc.
-
-       Older versions may use:
-
-       watchlist-status-ID
-
-       or:
-
-       watchlist-progress
-       ========================================================= */
-
+    /*
+    ============================================================
+       READ JSON SAFELY
+    ============================================================
+    */
 
     function readJSON(key) {
 
@@ -151,29 +179,52 @@
 
 
     /*
-       Get status from ALL supported storage formats.
+    ============================================================
+       GET MOVIE STATUS
+       
+       Supports ALL versions of our WatchList storage.
+    ============================================================
     */
 
     function getStatus(movieId) {
 
-        /* -----------------------------------------
-           NEW / UNIVERSE-SPECIFIC STORAGE
-           ----------------------------------------- */
-
-        const universes =
+        const allUniverses =
             getUniverses();
 
 
+        /*
+        --------------------------------------------------------
+           CURRENT STORAGE FORMAT
+           
+           watchlist-progress-marvel
+           watchlist-progress-dc
+           watchlist-progress-horror
+           etc.
+        --------------------------------------------------------
+        */
+
         for (
-            const universe of universes
+            const universe of allUniverses
         ) {
 
-            const key =
+            const universeId =
+                universe.id ||
+                universe.key ||
+                universe.slug;
+
+            if (!universeId) {
+                continue;
+            }
+
+
+            const storageKey =
                 "watchlist-progress-" +
-                universe.id;
+                universeId;
+
 
             const progress =
-                readJSON(key);
+                readJSON(storageKey);
+
 
             if (
                 progress &&
@@ -187,9 +238,13 @@
         }
 
 
-        /* -----------------------------------------
-           OLD STATUS STORAGE
-           ----------------------------------------- */
+        /*
+        --------------------------------------------------------
+           OLD STORAGE FORMAT
+           
+           watchlist-status-MOVIE-ID
+        --------------------------------------------------------
+        */
 
         const oldStatus =
             localStorage.getItem(
@@ -197,23 +252,27 @@
                 movieId
             );
 
-        if (
-            oldStatus
-        ) {
+
+        if (oldStatus) {
 
             return oldStatus;
 
         }
 
 
-        /* -----------------------------------------
-           OLD GLOBAL STORAGE
-           ----------------------------------------- */
+        /*
+        --------------------------------------------------------
+           OLDEST GLOBAL FORMAT
+           
+           watchlist-progress
+        --------------------------------------------------------
+        */
 
         const oldGlobal =
             readJSON(
                 "watchlist-progress"
             );
+
 
         if (
             oldGlobal &&
@@ -230,36 +289,41 @@
     }
 
 
-    /* =========================================================
-       GET ALL MOVIES
-       ========================================================= */
+    /*
+    ============================================================
+       GET ALL MOVIES / TITLES
+    ============================================================
+    */
 
     function getAllItems() {
 
-        const universes =
+        const allUniverses =
             getUniverses();
 
-        const all =
-            [];
+        const allItems = [];
 
-        universes.forEach(
+
+        allUniverses.forEach(
             function (universe) {
 
-                all.push(
+                allItems.push(
                     ...getItems(universe)
                 );
 
             }
         );
 
-        return all;
+
+        return allItems;
 
     }
 
 
-    /* =========================================================
+    /*
+    ============================================================
        ICONS
-       ========================================================= */
+    ============================================================
+    */
 
     const icons = {
 
@@ -334,34 +398,31 @@
     };
 
 
-    /* =========================================================
+    /*
+    ============================================================
        FALLBACK COLORS
-       ========================================================= */
+    ============================================================
+    */
 
     const colors = [
 
         "#ef3340",
-
         "#2e86ff",
-
         "#b34cff",
-
         "#e7a91a",
-
         "#19c6d6",
-
         "#ff7a18",
-
         "#52d273",
-
         "#ff4fbd"
 
     ];
 
 
-    /* =========================================================
+    /*
+    ============================================================
        ESCAPE HTML
-       ========================================================= */
+    ============================================================
+    */
 
     function escapeHTML(value) {
 
@@ -397,18 +458,23 @@
     }
 
 
-    /* =========================================================
+    /*
+    ============================================================
        ICON
-       ========================================================= */
+    ============================================================
+    */
 
     function getIcon(universe) {
 
         const id =
             String(
-                universe.id || ""
+                universe.id ||
+                universe.key ||
+                ""
             )
                 .toLowerCase()
                 .trim();
+
 
         return (
             universe.icon ||
@@ -419,29 +485,38 @@
     }
 
 
-    /* =========================================================
-       UNIVERSE COUNT
-       ========================================================= */
+    /*
+    ============================================================
+       COUNT ONE UNIVERSE
+    ============================================================
+    */
 
-    function countUniverse(
-        universe
-    ) {
+    function countUniverse(universe) {
 
         const items =
             getItems(universe);
 
-        let watched =
-            0;
+        let watched = 0;
 
-        let halfway =
-            0;
+        let halfway = 0;
 
 
         items.forEach(
             function (item) {
 
+                if (!item) {
+                    return;
+                }
+
+
+                const movieId =
+                    item.id ||
+                    item.key;
+
+
                 const status =
-                    getStatus(item.id);
+                    getStatus(movieId);
+
 
                 if (
                     status === "watched"
@@ -450,6 +525,7 @@
                     watched++;
 
                 }
+
 
                 if (
                     status === "halfway"
@@ -479,9 +555,11 @@
     }
 
 
-    /* =========================================================
+    /*
+    ============================================================
        CREATE PROFILE CARD
-       ========================================================= */
+    ============================================================
+    */
 
     function createProfileCard(
         universe,
@@ -531,9 +609,7 @@
             "--accent2",
             universe.accent2 ||
             colors[
-            (
-                index + 1
-            ) %
+            (index + 1) %
             colors.length
             ]
         );
@@ -604,9 +680,11 @@
         `;
 
 
-        /* =====================================================
-           CLICK → UNIVERSE
-           ===================================================== */
+        /*
+        ========================================================
+           OPEN UNIVERSE
+        ========================================================
+        */
 
         card.addEventListener(
             "click",
@@ -633,9 +711,11 @@
     }
 
 
-    /* =========================================================
+    /*
+    ============================================================
        UPDATE HOMEPAGE OVERALL PROGRESS
-       ========================================================= */
+    ============================================================
+    */
 
     function updateOverallProgress() {
 
@@ -643,21 +723,26 @@
             getAllItems();
 
 
-        let watched =
-            0;
+        let watched = 0;
 
-
-        let halfway =
-            0;
+        let halfway = 0;
 
 
         items.forEach(
             function (item) {
 
+                if (!item) {
+                    return;
+                }
+
+
+                const movieId =
+                    item.id ||
+                    item.key;
+
+
                 const status =
-                    getStatus(
-                        item.id
-                    );
+                    getStatus(movieId);
 
 
                 if (
@@ -686,11 +771,11 @@
 
 
         /*
-           Homepage percentage counts
-           watched titles only.
+        Homepage percentage is based on
+        WATCHED titles.
 
-           Halfway is displayed nowhere on
-           homepage but remains supported.
+        Halfway remains supported but does
+        not count as fully watched.
         */
 
         const percentage =
@@ -743,16 +828,16 @@
     }
 
 
-    /* =========================================================
+    /*
+    ============================================================
        RENDER PROFILES
-       ========================================================= */
+    ============================================================
+    */
 
     function renderProfiles() {
 
         if (!profiles) {
-
             return;
-
         }
 
 
@@ -760,12 +845,18 @@
             "";
 
 
-        const universes =
+        const allUniverses =
             getUniverses();
 
 
+        /*
+        --------------------------------------------------------
+           NO DATA
+        --------------------------------------------------------
+        */
+
         if (
-            !universes.length
+            !allUniverses.length
         ) {
 
             profiles.innerHTML = `
@@ -777,7 +868,8 @@
                     </strong>
 
                     <span>
-                        Make sure data.js is beside index.html.
+                        Make sure data.js is beside
+                        index.html.
                     </span>
 
                 </div>
@@ -791,7 +883,13 @@
         }
 
 
-        universes.forEach(
+        /*
+        --------------------------------------------------------
+           CREATE ALL PROFILE CARDS
+        --------------------------------------------------------
+        */
+
+        allUniverses.forEach(
             function (
                 universe,
                 index
@@ -815,16 +913,16 @@
     }
 
 
-    /* =========================================================
+    /*
+    ============================================================
        CAROUSEL
-       ========================================================= */
+    ============================================================
+    */
 
     function getScrollAmount() {
 
         if (!profiles) {
-
             return 500;
-
         }
 
 
@@ -835,9 +933,7 @@
 
 
         if (!firstCard) {
-
             return 500;
-
         }
 
 
@@ -863,9 +959,11 @@
     }
 
 
-    if (
-        nextBtn
-    ) {
+    /*
+    NEXT
+    */
+
+    if (nextBtn) {
 
         nextBtn.addEventListener(
             "click",
@@ -887,9 +985,11 @@
     }
 
 
-    if (
-        prevBtn
-    ) {
+    /*
+    PREVIOUS
+    */
+
+    if (prevBtn) {
 
         prevBtn.addEventListener(
             "click",
@@ -911,36 +1011,33 @@
     }
 
 
-    /* =========================================================
-       MOUSE DRAG / TOUCH SWIPE
-       ========================================================= */
+    /*
+    ============================================================
+       DRAG / SWIPE
+    ============================================================
+    */
 
-    let isDragging =
-        false;
+    let isDragging = false;
 
-    let startX =
-        0;
+    let startX = 0;
 
-    let startScrollLeft =
-        0;
+    let startScrollLeft = 0;
 
 
-    if (
-        profiles
-    ) {
+    if (profiles) {
 
         profiles.addEventListener(
             "pointerdown",
             function (event) {
 
-                isDragging =
-                    true;
+                isDragging = true;
 
                 startX =
                     event.clientX;
 
                 startScrollLeft =
                     profiles.scrollLeft;
+
 
                 profiles.classList.add(
                     "dragging"
@@ -954,12 +1051,8 @@
             "pointermove",
             function (event) {
 
-                if (
-                    !isDragging
-                ) {
-
+                if (!isDragging) {
                     return;
-
                 }
 
 
@@ -978,8 +1071,7 @@
 
         function stopDragging() {
 
-            isDragging =
-                false;
+            isDragging = false;
 
             profiles.classList.remove(
                 "dragging"
@@ -1008,22 +1100,41 @@
     }
 
 
-    /* =========================================================
-       KEYBOARD NAVIGATION
-       ========================================================= */
+    /*
+    ============================================================
+       KEYBOARD
+    ============================================================
+    */
 
     document.addEventListener(
         "keydown",
         function (event) {
 
+            /*
+            Don't interfere while typing.
+            */
+
+            const tag =
+                document.activeElement &&
+                document.activeElement.tagName;
+
+
+            if (
+                tag === "INPUT" ||
+                tag === "TEXTAREA" ||
+                tag === "SELECT"
+            ) {
+
+                return;
+
+            }
+
+
             if (
                 event.key === "ArrowRight"
             ) {
 
-                if (
-                    document.activeElement ===
-                    document.body
-                ) {
+                if (profiles) {
 
                     profiles.scrollBy({
 
@@ -1044,10 +1155,7 @@
                 event.key === "ArrowLeft"
             ) {
 
-                if (
-                    document.activeElement ===
-                    document.body
-                ) {
+                if (profiles) {
 
                     profiles.scrollBy({
 
@@ -1067,24 +1175,10 @@
     );
 
 
-    /* =========================================================
-       LIVE UPDATE
-       ========================================================= */
-
-    window.addEventListener(
-        "storage",
-        function () {
-
-            renderProfiles();
-
-        }
-    );
-
-
     /*
-       When returning from universe.html
-       and the homepage becomes visible again,
-       refresh the numbers.
+    ============================================================
+       REFRESH WHEN RETURNING TO HOMEPAGE
+    ============================================================
     */
 
     window.addEventListener(
@@ -1093,14 +1187,20 @@
 
             renderProfiles();
 
+            updateOverallProgress();
+
         }
     );
 
 
-    /* =========================================================
-       INITIAL LOAD
-       ========================================================= */
+    /*
+    ============================================================
+       START
+    ============================================================
+    */
 
     renderProfiles();
+
+    updateOverallProgress();
 
 })();
