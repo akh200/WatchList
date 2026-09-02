@@ -2,87 +2,71 @@
 
     "use strict";
 
+    /*
+    ============================================================
+    WATCHLIST - UNIVERSE PAGE
+    ============================================================
+    Reads the universe from:
 
-    /* =========================================
-       STORAGE
-    ========================================= */
+        universe.html?universe=marvel
 
-    var STORAGE_KEY =
-        "watchlist-progress";
+    Also supports:
+
+        universe.html?id=marvel
+
+    ============================================================
+    */
+
+    var STORAGE_KEY = "watchlist-progress";
 
 
-    var state = {};
+
+    /* =========================================================
+       GET UNIVERSE ID FROM URL
+    ========================================================= */
+
+    var params = new URLSearchParams(window.location.search);
+
+    var universeId =
+        params.get("universe") ||
+        params.get("id");
 
 
-    try {
 
-        state =
-            JSON.parse(
-                localStorage.getItem(
-                    STORAGE_KEY
-                ) || "{}"
-            );
+    /* =========================================================
+       FALLBACK TO LOCAL STORAGE
+    ========================================================= */
 
-    } catch (error) {
+    if (!universeId) {
 
-        state = {};
+        universeId =
+            localStorage.getItem("selected-universe");
 
     }
 
 
-    /* =========================================
-       GET UNIVERSE ID
-    ========================================= */
 
-    var params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-
-    /*
-     * Supports BOTH:
-     *
-     * universe.html?id=marvel
-     *
-     * and
-     *
-     * universe.html?universe=marvel
-     */
-
-    var universeId =
-        params.get("id") ||
-        params.get("universe") ||
-        localStorage.getItem(
-            "selected-universe"
-        );
-
-
-    /* =========================================
+    /* =========================================================
        FIND UNIVERSE
-    ========================================= */
+    ========================================================= */
 
     var universe =
-        UNIVERSES.find(
-            function (item) {
+        UNIVERSES.find(function (item) {
 
-                return (
-                    item.id ===
-                    universeId
-                );
+            return item.id === universeId;
 
-            }
-        );
+        });
 
 
-    /* =========================================
-       IF NOT FOUND
-    ========================================= */
+
+    /* =========================================================
+       IF UNIVERSE DOES NOT EXIST
+    ========================================================= */
 
     if (!universe) {
 
         document.body.innerHTML = `
-
+        
             <div style="
                 min-height:100vh;
                 display:flex;
@@ -90,45 +74,43 @@
                 justify-content:center;
                 background:#080808;
                 color:white;
-                font-family:Arial;
+                font-family:Arial,sans-serif;
                 text-align:center;
                 padding:30px;
             ">
 
                 <div>
 
-                    <h1>
+                    <h1 style="
+                        font-size:42px;
+                        margin-bottom:15px;
+                    ">
                         Universe Not Found
                     </h1>
 
                     <p style="
-                        margin-top:15px;
                         color:#aaa;
+                        margin-bottom:25px;
                     ">
-
-                        Could not find:
-                        <strong>
-                            ${universeId || "unknown"}
-                        </strong>
-
+                        The universe
+                        <strong>${universeId || "unknown"}</strong>
+                        could not be found in data.js.
                     </p>
 
-                    <button
-                        onclick="
-                            window.location.href='index.html'
-                        "
+                    <a
+                        href="index.html"
                         style="
-                            margin-top:25px;
+                            display:inline-block;
                             padding:12px 20px;
-                            border:0;
-                            border-radius:20px;
-                            cursor:pointer;
+                            border-radius:12px;
+                            background:#e50914;
+                            color:white;
+                            text-decoration:none;
+                            font-weight:bold;
                         "
                     >
-
                         ← Back to Profiles
-
-                    </button>
+                    </a>
 
                 </div>
 
@@ -141,106 +123,146 @@
     }
 
 
-    /* =========================================
+
+    /* =========================================================
+       SAVE SELECTED UNIVERSE
+    ========================================================= */
+
+    localStorage.setItem(
+        "selected-universe",
+        universe.id
+    );
+
+
+
+    /* =========================================================
+       LOAD SAVED WATCH STATUS
+    ========================================================= */
+
+    var state = {};
+
+    try {
+
+        state =
+            JSON.parse(
+                localStorage.getItem(STORAGE_KEY) || "{}"
+            );
+
+    } catch (error) {
+
+        state = {};
+
+    }
+
+
+
+    /* =========================================================
        ELEMENTS
-    ========================================= */
+    ========================================================= */
 
     var page =
-        document.getElementById(
-            "universePage"
-        );
-
+        document.getElementById("universePage");
 
     var title =
-        document.getElementById(
-            "universeTitle"
-        );
-
+        document.getElementById("universeTitle");
 
     var tagline =
-        document.getElementById(
-            "universeTagline"
-        );
-
+        document.getElementById("universeTagline");
 
     var progressFill =
-        document.getElementById(
-            "universeProgressFill"
-        );
-
+        document.getElementById("universeProgressFill");
 
     var progressText =
-        document.getElementById(
-            "universeProgressText"
-        );
-
+        document.getElementById("universeProgressText");
 
     var movieGroups =
-        document.getElementById(
-            "movieGroups"
-        );
-
+        document.getElementById("movieGroups");
 
     var backButton =
-        document.getElementById(
-            "backButton"
-        );
+        document.getElementById("backButton");
 
 
-    /* =========================================
+
+    /* =========================================================
+       CHECK REQUIRED ELEMENTS
+    ========================================================= */
+
+    if (
+        !page ||
+        !title ||
+        !tagline ||
+        !progressFill ||
+        !progressText ||
+        !movieGroups
+    ) {
+
+        document.body.innerHTML = `
+        
+            <div style="
+                padding:40px;
+                font-family:Arial;
+                color:white;
+                background:#080808;
+                min-height:100vh;
+            ">
+
+                <h1>WatchList Page Error</h1>
+
+                <p>
+                    universe.html is missing one or more
+                    required elements.
+                </p>
+
+                <p>
+                    Please replace universe.html with the
+                    version I provided.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    /* =========================================================
        COLORS
-    ========================================= */
+    ========================================================= */
 
     page.style.setProperty(
         "--accent",
-        universe.accent ||
-        "#e50914"
+        universe.accent || "#e50914"
     );
-
 
     page.style.setProperty(
-        "--accent2",
-        universe.accent2 ||
-        "#ff9900"
+        "--accent-2",
+        universe.accent2 || "#ffb000"
     );
 
 
-    /* =========================================
+
+    /* =========================================================
        HEADER
-    ========================================= */
+    ========================================================= */
 
     title.textContent =
         universe.name;
 
-
     tagline.textContent =
-        universe.tagline ||
-        "Your cinematic universe.";
+        universe.tagline || "";
 
 
-    /* =========================================
-       BACK BUTTON
-    ========================================= */
 
-    backButton.addEventListener(
-        "click",
-        function () {
-
-            window.location.href =
-                "index.html";
-
-        }
-    );
-
-
-    /* =========================================
-       ALL ITEMS
-    ========================================= */
+    /* =========================================================
+       GET ALL ITEMS
+    ========================================================= */
 
     function getAllItems() {
 
         var items = [];
-
 
         universe.groups.forEach(
             function (group) {
@@ -248,7 +270,6 @@
                 if (!group.items) {
                     return;
                 }
-
 
                 group.items.forEach(
                     function (item) {
@@ -261,15 +282,30 @@
             }
         );
 
-
         return items;
 
     }
 
 
-    /* =========================================
+
+    /* =========================================================
+       SAVE
+    ========================================================= */
+
+    function saveState() {
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(state)
+        );
+
+    }
+
+
+
+    /* =========================================================
        STATUS
-    ========================================= */
+    ========================================================= */
 
     function getStatus(item) {
 
@@ -281,136 +317,101 @@
     }
 
 
-    function setStatus(
-        item,
-        status
-    ) {
 
-        state[item.id] =
-            status;
+    function getStatusText(status) {
 
+        if (status === "watched") {
 
-        saveState();
+            return "✓ Watched";
 
-    }
+        }
 
+        if (status === "halfway") {
 
-    function saveState() {
+            return "◐ Halfway";
 
-        localStorage.setItem(
+        }
 
-            STORAGE_KEY,
-
-            JSON.stringify(
-                state
-            )
-
-        );
+        return "○ Not Watched";
 
     }
 
 
-    /* =========================================
-       RATING
-    ========================================= */
 
-    function getRating(item) {
+    function getNextStatus(status) {
 
-        return Number(
-            state[
-                item.id +
-                "-rating"
-            ] || 0
-        );
+        if (status === "not-watched") {
 
-    }
+            return "halfway";
 
+        }
 
-    function setRating(
-        item,
-        rating
-    ) {
+        if (status === "halfway") {
 
-        state[
-            item.id +
-            "-rating"
-        ] =
-            rating;
+            return "watched";
 
+        }
 
-        saveState();
+        return "not-watched";
 
     }
 
 
-    /* =========================================
+
+    /* =========================================================
        PROGRESS
-    ========================================= */
+    ========================================================= */
 
     function updateProgress() {
 
         var items =
             getAllItems();
 
-
         var watched =
             items.filter(
                 function (item) {
 
                     return (
-                        getStatus(item)
-                        ===
+                        state[item.id] ===
                         "watched"
                     );
 
                 }
             ).length;
 
-
         var halfway =
             items.filter(
                 function (item) {
 
                     return (
-                        getStatus(item)
-                        ===
+                        state[item.id] ===
                         "halfway"
                     );
 
                 }
             ).length;
 
-
         var total =
             items.length;
-
 
         var remaining =
             total -
             watched -
             halfway;
 
-
         var percentage =
             total
-            ?
-            Math.round(
-                watched /
-                total *
-                100
-            )
-            :
-            0;
+                ? Math.round(
+                    (watched / total) * 100
+                )
+                : 0;
 
 
         progressText.textContent =
-
             watched +
             " watched · " +
-
             halfway +
             " halfway · " +
-
             remaining +
             " remaining";
 
@@ -421,46 +422,30 @@
     }
 
 
-    /* =========================================
-       TRAILER
-    ========================================= */
 
-    function openTrailer(item) {
+    /* =========================================================
+       RATING
+    ========================================================= */
 
-        var query =
-            encodeURIComponent(
-                item.title +
-                " official trailer"
-            );
+    function getRating(item) {
 
-
-        var url =
-            "https://www.youtube.com/results?search_query=" +
-            query;
-
-
-        window.open(
-            url,
-            "_blank"
+        return (
+            state[item.id + "-rating"] ||
+            0
         );
 
     }
 
 
-    /* =========================================
-       RATING STARS
-    ========================================= */
 
     function createStars(
         item,
         container
     ) {
 
-        container.innerHTML =
-            "";
+        container.innerHTML = "";
 
-
-        var rating =
+        var currentRating =
             getRating(item);
 
 
@@ -475,24 +460,18 @@
                     "button"
                 );
 
-
-            star.type =
-                "button";
-
+            star.type = "button";
 
             star.className =
                 "rating-star";
 
-
             star.textContent =
-                i <= rating
-                ? "★"
-                : "☆";
-
+                i <= currentRating
+                    ? "★"
+                    : "☆";
 
             star.dataset.rating =
                 String(i);
-
 
             star.title =
                 "Rate " +
@@ -506,17 +485,19 @@
 
                     var value =
                         Number(
-                            event
-                                .currentTarget
+                            event.currentTarget
                                 .dataset
                                 .rating
                         );
 
 
-                    setRating(
-                        item,
-                        value
-                    );
+                    state[
+                        item.id +
+                        "-rating"
+                    ] = value;
+
+
+                    saveState();
 
 
                     createStars(
@@ -537,9 +518,35 @@
     }
 
 
-    /* =========================================
+
+    /* =========================================================
+       TRAILER
+    ========================================================= */
+
+    function openTrailer(item) {
+
+        var query =
+            encodeURIComponent(
+                item.title +
+                " official trailer"
+            );
+
+        var url =
+            "https://www.youtube.com/results?search_query=" +
+            query;
+
+        window.open(
+            url,
+            "_blank"
+        );
+
+    }
+
+
+
+    /* =========================================================
        CREATE MOVIE CARD
-    ========================================= */
+    ========================================================= */
 
     function createMovieCard(
         item,
@@ -551,9 +558,9 @@
                 "article"
             );
 
-
         card.className =
             "movie-card";
+
 
 
         /* NUMBER */
@@ -563,13 +570,12 @@
                 "div"
             );
 
-
         numberEl.className =
             "movie-number";
 
-
         numberEl.textContent =
-            String(number);
+            number;
+
 
 
         /* INFO */
@@ -579,16 +585,20 @@
                 "div"
             );
 
+        info.className =
+            "movie-info";
+
+
+
+        /* TITLE */
 
         var heading =
             document.createElement(
                 "h3"
             );
 
-
         heading.className =
             "movie-title";
-
 
         heading.textContent =
             item.title;
@@ -601,14 +611,11 @@
                     "span"
                 );
 
-
             year.className =
                 "movie-year";
 
-
             year.textContent =
-                item.year;
-
+                " " + item.year;
 
             heading.appendChild(
                 year
@@ -617,11 +624,13 @@
         }
 
 
+
+        /* DESCRIPTION */
+
         var description =
             document.createElement(
                 "p"
             );
-
 
         description.className =
             "movie-description";
@@ -629,17 +638,18 @@
 
         description.textContent =
             item.description ||
-            "Description coming soon.";
+            "Description will be added.";
+
 
 
         info.appendChild(
             heading
         );
 
-
         info.appendChild(
             description
         );
+
 
 
         /* DETAILS */
@@ -649,9 +659,9 @@
                 "div"
             );
 
-
         details.className =
             "movie-details";
+
 
 
         /* RATING */
@@ -661,9 +671,20 @@
                 "div"
             );
 
-
         ratingWrapper.className =
             "rating-wrapper";
+
+
+        var ratingLabel =
+            document.createElement(
+                "span"
+            );
+
+        ratingLabel.className =
+            "rating-label";
+
+        ratingLabel.textContent =
+            "Your Rating";
 
 
         var stars =
@@ -671,16 +692,24 @@
                 "div"
             );
 
+        stars.className =
+            "rating-stars";
+
+
+        ratingWrapper.appendChild(
+            ratingLabel
+        );
+
+        ratingWrapper.appendChild(
+            stars
+        );
+
 
         createStars(
             item,
             stars
         );
 
-
-        ratingWrapper.appendChild(
-            stars
-        );
 
 
         /* TRAILER */
@@ -690,14 +719,11 @@
                 "button"
             );
 
-
         trailer.type =
             "button";
 
-
         trailer.className =
             "trailer-button";
-
 
         trailer.textContent =
             "▶ Trailer";
@@ -707,12 +733,11 @@
             "click",
             function () {
 
-                openTrailer(
-                    item
-                );
+                openTrailer(item);
 
             }
         );
+
 
 
         /* STATUS */
@@ -722,19 +747,21 @@
                 "button"
             );
 
-
         status.type =
             "button";
-
 
         status.className =
             "status-button";
 
 
-        function refreshStatus() {
+        function updateStatus() {
 
             var current =
                 getStatus(item);
+
+
+            status.textContent =
+                getStatusText(current);
 
 
             status.classList.remove(
@@ -749,10 +776,6 @@
                 "watched"
             ) {
 
-                status.textContent =
-                    "✓ Watched";
-
-
                 status.classList.add(
                     "status-watched"
                 );
@@ -764,10 +787,6 @@
                 "halfway"
             ) {
 
-                status.textContent =
-                    "◐ Halfway";
-
-
                 status.classList.add(
                     "status-halfway"
                 );
@@ -775,10 +794,6 @@
             }
 
             else {
-
-                status.textContent =
-                    "○ Not Watched";
-
 
                 status.classList.add(
                     "status-not-watched"
@@ -789,7 +804,7 @@
         }
 
 
-        refreshStatus();
+        updateStatus();
 
 
         status.addEventListener(
@@ -800,44 +815,15 @@
                     getStatus(item);
 
 
-                var next;
+                state[item.id] =
+                    getNextStatus(
+                        current
+                    );
 
 
-                if (
-                    current ===
-                    "not-watched"
-                ) {
+                saveState();
 
-                    next =
-                        "halfway";
-
-                }
-
-                else if (
-                    current ===
-                    "halfway"
-                ) {
-
-                    next =
-                        "watched";
-
-                }
-
-                else {
-
-                    next =
-                        "not-watched";
-
-                }
-
-
-                setStatus(
-                    item,
-                    next
-                );
-
-
-                refreshStatus();
+                updateStatus();
 
                 updateProgress();
 
@@ -845,30 +831,28 @@
         );
 
 
+
         details.appendChild(
             ratingWrapper
         );
 
-
         details.appendChild(
             trailer
         );
-
 
         details.appendChild(
             status
         );
 
 
+
         card.appendChild(
             numberEl
         );
 
-
         card.appendChild(
             info
         );
-
 
         card.appendChild(
             details
@@ -880,87 +864,41 @@
     }
 
 
-    /* =========================================
-       FILTER
-    ========================================= */
 
-    var currentFilter =
-        "all";
-
+    /* =========================================================
+       RENDER
+    ========================================================= */
 
     function render() {
 
         movieGroups.innerHTML =
             "";
 
-
-        var number =
+        var movieNumber =
             1;
 
 
         universe.groups.forEach(
             function (group) {
 
-                var groupItems =
-                    group.items.filter(
-                        function (item) {
-
-                            if (
-                                currentFilter
-                                ===
-                                "all"
-                            ) {
-
-                                return true;
-
-                            }
-
-
-                            return (
-                                getStatus(item)
-                                ===
-                                currentFilter
-                            );
-
-                        }
-                    );
-
-
-                /*
-                 * Don't display an empty
-                 * group when filtering.
-                 */
-
-                if (
-                    groupItems.length === 0
-                ) {
-
-                    return;
-
-                }
-
-
-                var groupElement =
+                var groupSection =
                     document.createElement(
                         "section"
                     );
 
-
-                groupElement.className =
+                groupSection.className =
                     "movie-group";
 
 
-                var heading =
+                var groupTitle =
                     document.createElement(
                         "h2"
                     );
 
-
-                heading.className =
+                groupTitle.className =
                     "movie-group-title";
 
-
-                heading.textContent =
+                groupTitle.textContent =
                     group.title;
 
 
@@ -969,18 +907,17 @@
                         "div"
                     );
 
-
                 list.className =
                     "movie-list";
 
 
-                groupItems.forEach(
+                group.items.forEach(
                     function (item) {
 
                         var card =
                             createMovieCard(
                                 item,
-                                number
+                                movieNumber
                             );
 
 
@@ -989,24 +926,23 @@
                         );
 
 
-                        number++;
+                        movieNumber++;
 
                     }
                 );
 
 
-                groupElement.appendChild(
-                    heading
+                groupSection.appendChild(
+                    groupTitle
                 );
 
-
-                groupElement.appendChild(
+                groupSection.appendChild(
                     list
                 );
 
 
                 movieGroups.appendChild(
-                    groupElement
+                    groupSection
                 );
 
             }
@@ -1018,57 +954,30 @@
     }
 
 
-    /* =========================================
-       FILTER BUTTONS
-    ========================================= */
 
-    document
-        .querySelectorAll(
-            ".filter"
-        )
-        .forEach(
-            function (button) {
+    /* =========================================================
+       BACK BUTTON
+    ========================================================= */
 
-                button.addEventListener(
-                    "click",
-                    function () {
+    if (backButton) {
 
-                        document
-                            .querySelectorAll(
-                                ".filter"
-                            )
-                            .forEach(
-                                function (btn) {
+        backButton.addEventListener(
+            "click",
+            function () {
 
-                                    btn.classList.remove(
-                                        "active"
-                                    );
-
-                                }
-                            );
-
-
-                        button.classList.add(
-                            "active"
-                        );
-
-
-                        currentFilter =
-                            button.dataset.filter;
-
-
-                        render();
-
-                    }
-                );
+                window.location.href =
+                    "index.html";
 
             }
         );
 
+    }
 
-    /* =========================================
+
+
+    /* =========================================================
        START
-    ========================================= */
+    ========================================================= */
 
     render();
 
