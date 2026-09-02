@@ -1,475 +1,756 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WatchList — Your Cinematic Worlds</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>WatchList</title>
+
 
     <style>
+
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
 
         body {
-            margin: 0;
-            min-height: 100vh;
             font-family: Arial, Helvetica, sans-serif;
+            background: radial-gradient( circle at top left, rgba(255,0,100,.18), transparent 35% ), radial-gradient( circle at bottom right, rgba(0,100,255,.18), transparent 35% ), #080808;
             color: white;
-            background: radial-gradient(circle at 20% 10%, rgba(120, 70, 255, .28), transparent 30%), radial-gradient(circle at 80% 20%, rgba(0, 200, 255, .18), transparent 28%), linear-gradient(135deg, #080812, #10101d 50%, #080812);
+            min-height: 100vh;
         }
 
-            body::before {
-                content: "";
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                background: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-                background-size: 40px 40px;
-            }
+
+        .container {
+            width: 92%;
+            max-width: 1400px;
+            margin: auto;
+            padding: 35px 0 80px;
+        }
+
+
+        .back {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 10px 18px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.1);
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
 
         .hero {
+            padding: 50px 30px;
+            border-radius: 30px;
+            margin-bottom: 40px;
             position: relative;
-            padding: 70px 30px 45px;
-            text-align: center;
+            overflow: hidden;
+            background: linear-gradient( 135deg, rgba(255,0,80,.3), rgba(0,100,255,.2), rgba(100,0,255,.3) );
+            border: 1px solid rgba(255,255,255,.15);
+            backdrop-filter: blur(20px);
         }
+
 
             .hero h1 {
-                margin: 0;
-                font-size: clamp(38px, 6vw, 76px);
+                font-size: clamp(40px, 7vw, 80px);
                 font-weight: 900;
-                letter-spacing: -3px;
-                background: linear-gradient(90deg, #fff, #b99cff, #64dcff);
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
+                margin-bottom: 15px;
             }
+
 
             .hero p {
-                margin: 18px auto 0;
-                max-width: 700px;
-                color: #aaaabe;
+                max-width: 800px;
+                color: #ccc;
                 font-size: 18px;
+                line-height: 1.6;
             }
 
-        .progress-wrap {
-            width: min(700px, 90%);
-            margin: 32px auto 0;
+
+        .progress-box {
+            margin-top: 30px;
+            max-width: 600px;
         }
+
 
         .progress-info {
             display: flex;
             justify-content: space-between;
-            color: #bcbccc;
-            font-size: 14px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            color: #ccc;
         }
 
-        .progress-bar {
-            height: 8px;
-            border-radius: 99px;
-            background: rgba(255,255,255,.1);
+
+        .progress {
+            height: 12px;
+            background: #222;
+            border-radius: 20px;
             overflow: hidden;
         }
+
 
         .progress-fill {
-            width: 0%;
             height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #8b5cf6, #22d3ee);
-            transition: width .4s ease;
+            width: 0%;
+            background: linear-gradient( 90deg, #ff3b3b, #ff9900, #00e5ff, #8b5cff );
+            transition: width .5s ease;
         }
 
-        .controls {
-            position: relative;
-            z-index: 2;
-            width: min(1200px, 92%);
-            margin: 0 auto 35px;
-            display: flex;
-            gap: 12px;
+
+        .section {
+            margin-bottom: 50px;
         }
 
-        .search {
-            flex: 1;
-            padding: 15px 18px;
-            border-radius: 14px;
-            border: 1px solid rgba(255,255,255,.1);
-            outline: none;
-            color: white;
-            background: rgba(255,255,255,.07);
-            backdrop-filter: blur(15px);
-            font-size: 15px;
-        }
-
-            .search::placeholder {
-                color: #858598;
-            }
-
-        .profiles {
-            position: relative;
-            z-index: 2;
-            width: min(1400px, 94%);
-            margin: auto;
-            padding-bottom: 60px;
-        }
 
         .section-title {
-            margin: 0 0 22px;
-            font-size: 27px;
+            font-size: 32px;
+            margin-bottom: 20px;
         }
 
-        .grid {
+
+        .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 22px;
+            grid-template-columns: repeat( auto-fit, minmax(280px, 1fr) );
+            gap: 25px;
         }
 
-        .profile {
-            position: relative;
-            min-height: 220px;
+
+        .movie {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
             border-radius: 22px;
             overflow: hidden;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,.1);
-            background: linear-gradient(145deg, var(--accent), #111);
-            box-shadow: 0 18px 50px rgba(0,0,0,.35);
-            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+            transition: transform .3s ease, border .3s ease;
         }
 
-            .profile::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: radial-gradient(circle at 80% 20%, var(--accent2), transparent 35%), linear-gradient(145deg, transparent, rgba(0,0,0,.75));
-                opacity: .75;
-            }
 
-            .profile::after {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: radial-gradient(circle at 20% 80%, rgba(255,255,255,.15), transparent 25%);
-                pointer-events: none;
-            }
-
-            .profile:hover {
-                transform: translateY(-8px) scale(1.015);
+            .movie:hover {
+                transform: translateY(-7px);
                 border-color: rgba(255,255,255,.35);
-                box-shadow: 0 28px 65px rgba(0,0,0,.55);
             }
 
-        .profile-content {
+
+        .movie-poster {
+            height: 360px;
             position: relative;
-            z-index: 2;
-            height: 100%;
-            min-height: 220px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            background-size: cover;
+            background-position: center;
         }
 
-        .profile-icon {
-            width: 58px;
-            height: 58px;
-            border-radius: 18px;
-            display: grid;
-            place-items: center;
-            font-size: 28px;
-            background: rgba(255,255,255,.14);
-            border: 1px solid rgba(255,255,255,.2);
-            backdrop-filter: blur(10px);
-        }
 
-        .profile-name {
-            font-size: 25px;
-            font-weight: 900;
-            margin-top: 25px;
-        }
-
-        .profile-tagline {
-            color: rgba(255,255,255,.7);
-            font-size: 13px;
-            line-height: 1.5;
-            margin-top: 6px;
-        }
-
-        .profile-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .count {
-            color: rgba(255,255,255,.75);
-            font-size: 13px;
-        }
-
-        .open {
-            padding: 8px 12px;
-            border-radius: 10px;
-            background: rgba(255,255,255,.14);
-            font-size: 12px;
+        .movie-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: rgba(0,0,0,.75);
             font-weight: bold;
         }
 
+
+        .movie-info {
+            padding: 20px;
+        }
+
+
+        .movie-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+
+        .movie-year {
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+
+        .description {
+            color: #ccc;
+            line-height: 1.5;
+            font-size: 14px;
+            min-height: 80px;
+        }
+
+
+        .trailer {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 16px;
+            border-radius: 20px;
+            background: linear-gradient( 90deg, #ff1744, #ff5722 );
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+
+        .controls {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,.1);
+        }
+
+
+        .status-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+
+        .status-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            background: rgba(255,255,255,.1);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+
+            .status-btn:hover {
+                background: rgba(255,255,255,.2);
+            }
+
+
+            .status-btn.active {
+                background: linear-gradient( 90deg, #00c853, #00e5ff );
+                color: black;
+                font-weight: bold;
+            }
+
+
+        .rating {
+            margin-top: 12px;
+            display: flex;
+            gap: 5px;
+        }
+
+
+        .star {
+            cursor: pointer;
+            font-size: 23px;
+            opacity: .35;
+        }
+
+
+            .star.active {
+                opacity: 1;
+            }
+
+
         .empty {
-            display: none;
-            text-align: center;
-            color: #88889c;
             padding: 50px;
-        }
-
-        footer {
-            position: relative;
-            z-index: 2;
             text-align: center;
-            padding: 30px;
-            color: #686879;
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-            .hero {
-                padding-top: 45px;
-            }
-
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-
-            .profile {
-                min-height: 190px;
-            }
-
-            .profile-content {
-                min-height: 190px;
-                padding: 16px;
-            }
-
-            .profile-name {
-                font-size: 19px;
-            }
-
-            .profile-tagline {
-                display: none;
-            }
-
-            .profile-icon {
-                width: 45px;
-                height: 45px;
-                font-size: 22px;
-            }
+            color: #aaa;
         }
     </style>
+
 </head>
+
 
 <body>
 
-    <header class="hero">
-        <h1>YOUR CINEMATIC WORLDS</h1>
 
-        <p>
-            Choose a universe and continue your personal cinematic journey.
-        </p>
+    <div class="container">
 
-        <div class="progress-wrap">
-            <div class="progress-info">
-                <span id="progressPercent">0%</span>
-                <span id="progressText">0 / 0 titles watched</span>
-            </div>
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
-    </header>
+        <a class="back"
+           href="index.html">
 
-    <div class="controls">
-        <input class="search"
-               id="search"
-               type="text"
-               placeholder="Search your cinematic worlds...">
-    </div>
+            ← Back to Profiles
 
-    <main class="profiles">
+        </a>
 
-        <h2 class="section-title">PROFILES</h2>
 
-        <div class="grid" id="universeGrid"></div>
+        <div class="hero"
+             id="hero">
 
-        <div class="empty" id="empty">
-            No cinematic world found.
-        </div>
+            <h1 id="universeTitle">
+                WatchList
+            </h1>
 
-    </main>
+            <p id="universeDescription">
+            </p>
 
-    <footer>
-        WatchList · Your personal cinematic journey
-    </footer>
 
-    <script src="./data.js"></script>
+            <div class="progress-box">
 
-    <script>
-    const grid = document.getElementById("universeGrid");
-    const search = document.getElementById("search");
-    const empty = document.getElementById("empty");
+                <div class="progress-info">
 
-    const ICONS = {
-        bolt: "⚡",
-        shield: "🛡️",
-        star: "⭐",
-        planet: "🪐",
-        wand: "🪄",
-        ring: "💍",
-        robot: "🤖",
-        gorilla: "🦍",
-        target: "🎯",
-        hero: "🦸",
-        dino: "🦖",
-        pirate: "🏴‍☠️",
-        lion: "🦁",
-        car: "🏎️",
-        gun: "🔫",
-        water: "🌊",
-        ape: "🐒",
-        ghost: "👻",
-        mask: "🎭",
-        diamond: "💎"
-    };
+                    <span id="progressPercent">
+                        0%
+                    </span>
 
-    function allItems(universe) {
-        return universe.groups.flatMap(group => group.items);
-    }
+                    <span id="progressCount">
+                        0 / 0 watched
+                    </span>
 
-    function getStatus(item) {
-        try {
-            const saved = JSON.parse(localStorage.getItem("watchlist-progress") || "{}");
-            return saved[item.id]?.status || "not-watched";
-        } catch {
-            return "not-watched";
-        }
-    }
+                </div>
 
-    function getUniverseStats(universe) {
-        const items = allItems(universe);
 
-        const watched = items.filter(item =>
-            getStatus(item) === "watched"
-        ).length;
+                <div class="progress">
 
-        return {
-            total: items.length,
-            watched
-        };
-    }
-
-    function render(list = UNIVERSES) {
-
-        grid.innerHTML = "";
-
-        if (!list.length) {
-            empty.style.display = "block";
-            return;
-        }
-
-        empty.style.display = "none";
-
-        list.forEach(universe => {
-
-            const stats = getUniverseStats(universe);
-
-            const card = document.createElement("div");
-            card.className = "profile";
-
-            card.style.setProperty("--accent", universe.accent);
-            card.style.setProperty("--accent2", universe.accent2);
-
-            card.innerHTML = `
-                <div class="profile-content">
-
-                    <div>
-                        <div class="profile-icon">
-                            ${ICONS[universe.icon] || "🎬"}
-                        </div>
-
-                        <div class="profile-name">
-                            ${universe.name}
-                        </div>
-
-                        <div class="profile-tagline">
-                            ${universe.tagline}
-                        </div>
-                    </div>
-
-                    <div class="profile-bottom">
-
-                        <div class="count">
-                            ${stats.watched} / ${stats.total} watched
-                        </div>
-
-                        <div class="open">
-                            OPEN →
-                        </div>
-
+                    <div class="progress-fill"
+                         id="progressFill">
                     </div>
 
                 </div>
-            `;
 
-            card.addEventListener("click", () => {
-                window.location.href =
-                    `./universe.html?universe=${encodeURIComponent(universe.id)}`;
-            });
+            </div>
 
-            grid.appendChild(card);
-        });
-    }
+        </div>
 
-    function updateOverallProgress() {
 
-        const items = UNIVERSES.flatMap(allItems);
+        <div id="content"></div>
 
-        const watched = items.filter(item =>
-            getStatus(item) === "watched"
-        ).length;
 
-        const total = items.length;
+    </div>
 
-        const percent = total
-            ? Math.round((watched / total) * 100)
-            : 0;
 
-        document.getElementById("progressPercent").textContent =
-            `${percent}%`;
+    <script src="data.js"></script>
 
-        document.getElementById("progressText").textContent =
-            `${watched} / ${total} titles watched`;
 
-        document.getElementById("progressFill").style.width =
-            `${percent}%`;
-    }
+    <script>
 
-    search.addEventListener("input", () => {
 
-        const value = search.value.toLowerCase().trim();
+function getUniverse() {
 
-        const filtered = UNIVERSES.filter(universe =>
-            universe.name.toLowerCase().includes(value) ||
-            universe.tagline.toLowerCase().includes(value)
+    const params =
+        new URLSearchParams(
+            window.location.search
         );
 
-        render(filtered);
-    });
+    const id =
+        params.get("id");
+
+
+    return universes.find(
+        universe =>
+            universe.id === id
+    );
+
+}
+
+
+function createMovie(movie, number) {
+
+    const savedStatus =
+        localStorage.getItem(
+            "watchlist_" + movie.id
+        ) || "unwatched";
+
+
+    const savedRating =
+        Number(
+            localStorage.getItem(
+                "rating_" + movie.id
+            ) || 0
+        );
+
+
+    const card =
+        document.createElement("div");
+
+    card.className = "movie";
+
+
+    card.innerHTML = `
+
+        <div
+            class="movie-poster"
+            style="
+                background-image:
+                url('${movie.image}');
+            ">
+
+            <div class="movie-number">
+                #${number}
+            </div>
+
+        </div>
+
+
+        <div class="movie-info">
+
+            <div class="movie-title">
+                ${movie.title}
+            </div>
+
+            <div class="movie-year">
+                ${movie.year}
+            </div>
+
+            <div class="description">
+                ${movie.description}
+            </div>
+
+
+            <a
+                class="trailer"
+                href="${movie.trailer}"
+                target="_blank">
+
+                ▶ Watch Trailer
+
+            </a>
+
+
+            <div class="controls">
+
+                <div class="status-buttons">
+
+                    <button
+                        class="status-btn
+                        ${savedStatus === "unwatched" ? "active" : ""}"
+                        onclick="
+                            setStatus(
+                                '${movie.id}',
+                                'unwatched',
+                                this
+                            )">
+
+                        ○ Not Watched
+
+                    </button>
+
+
+                    <button
+                        class="status-btn
+                        ${savedStatus === "half" ? "active" : ""}"
+                        onclick="
+                            setStatus(
+                                '${movie.id}',
+                                'half',
+                                this
+                            )">
+
+                        ◐ Half Completed
+
+                    </button>
+
+
+                    <button
+                        class="status-btn
+                        ${savedStatus === "watched" ? "active" : ""}"
+                        onclick="
+                            setStatus(
+                                '${movie.id}',
+                                'watched',
+                                this
+                            )">
+
+                        ✓ Watched
+
+                    </button>
+
+                </div>
+
+
+                <div class="rating">
+
+                    ${createStars(
+                        movie.id,
+                        savedRating
+                    )}
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+
+    return card;
+
+}
+
+
+function createStars(id, rating) {
+
+    let html = "";
+
+
+    for (
+        let i = 1;
+        i <= 5;
+        i++
+    ) {
+
+        html += `
+
+            <span
+                class="star
+                ${i <= rating ? "active" : ""}"
+                onclick="
+                    setRating(
+                        '${id}',
+                        ${i}
+                    )">
+
+                ★
+
+            </span>
+
+        `;
+
+    }
+
+
+    return html;
+
+}
+
+
+function setStatus(id, status, button) {
+
+    localStorage.setItem(
+        "watchlist_" + id,
+        status
+    );
+
+
+    const parent =
+        button.parentElement;
+
+
+    parent
+        .querySelectorAll(".status-btn")
+        .forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+
+    button.classList.add("active");
+
+
+    updateProgress();
+
+}
+
+
+function setRating(id, rating) {
+
+    localStorage.setItem(
+        "rating_" + id,
+        rating
+    );
+
 
     render();
-    updateOverallProgress();
+
+}
+
+
+function updateProgress() {
+
+    const universe =
+        getUniverse();
+
+
+    if (!universe) return;
+
+
+    let movies = [];
+
+
+    universe.sections.forEach(
+        section => {
+
+            section.items.forEach(
+                movie => {
+
+                    movies.push(movie);
+
+                }
+            );
+
+        }
+    );
+
+
+    let watched = 0;
+
+
+    movies.forEach(
+        movie => {
+
+            if (
+                localStorage.getItem(
+                    "watchlist_" + movie.id
+                ) === "watched"
+            ) {
+
+                watched++;
+
+            }
+
+        }
+    );
+
+
+    const total =
+        movies.length;
+
+
+    const percent =
+        total === 0
+            ? 0
+            : Math.round(
+                watched / total * 100
+            );
+
+
+    document.getElementById(
+        "progressPercent"
+    ).textContent =
+        percent + "%";
+
+
+    document.getElementById(
+        "progressCount"
+    ).textContent =
+        watched +
+        " / " +
+        total +
+        " watched";
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        percent + "%";
+
+}
+
+
+function render() {
+
+    const universe =
+        getUniverse();
+
+
+    if (!universe) {
+
+        document.getElementById(
+            "content"
+        ).innerHTML = `
+
+            <div class="empty">
+
+                Universe not found.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    document.title =
+        universe.name +
+        " · WatchList";
+
+
+    document.getElementById(
+        "universeTitle"
+    ).textContent =
+        universe.name;
+
+
+    document.getElementById(
+        "universeDescription"
+    ).textContent =
+        universe.description;
+
+
+    const content =
+        document.getElementById(
+            "content"
+        );
+
+
+    content.innerHTML = "";
+
+
+    universe.sections.forEach(
+        section => {
+
+            const sectionDiv =
+                document.createElement("div");
+
+
+            sectionDiv.className =
+                "section";
+
+
+            sectionDiv.innerHTML = `
+
+                <h2 class="section-title">
+
+                    ${section.name}
+
+                </h2>
+
+                <div class="movie-grid"></div>
+
+            `;
+
+
+            const grid =
+                sectionDiv.querySelector(
+                    ".movie-grid"
+                );
+
+
+            section.items.forEach(
+                (movie, index) => {
+
+                    grid.appendChild(
+                        createMovie(
+                            movie,
+                            index + 1
+                        )
+                    );
+
+                }
+            );
+
+
+            content.appendChild(
+                sectionDiv
+            );
+
+        }
+    );
+
+
+    updateProgress();
+
+}
+
+
+render();
+
+
     </script>
 
+
 </body>
+
 </html>
