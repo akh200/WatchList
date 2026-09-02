@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>WatchList</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>WatchList — Choose Your Universe</title>
 
     <style>
 
@@ -15,335 +19,716 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
             min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
             color: white;
-            background: radial-gradient(circle at 20% 20%, rgba(255,0,80,.25), transparent 30%), radial-gradient(circle at 80% 30%, rgba(0,100,255,.25), transparent 30%), radial-gradient(circle at 50% 90%, rgba(150,0,255,.25), transparent 30%), #080808;
+            background: radial-gradient( circle at 10% 10%, rgba(229, 9, 20, .25), transparent 30% ), radial-gradient( circle at 90% 20%, rgba(0, 100, 255, .25), transparent 30% ), radial-gradient( circle at 50% 100%, rgba(150, 0, 255, .2), transparent 35% ), #080808;
         }
+
 
         .container {
             width: 92%;
-            max-width: 1400px;
+            max-width: 1500px;
             margin: auto;
-            padding: 50px 0;
+            padding: 60px 0 80px;
         }
+
+
+        /* =========================
+           HERO
+        ========================= */
 
         .hero {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 55px;
         }
 
+
             .hero h1 {
-                font-size: clamp(40px, 7vw, 80px);
+                font-size: clamp( 40px, 7vw, 80px );
                 font-weight: 900;
                 letter-spacing: -3px;
                 background: linear-gradient( 90deg, #ff3b3b, #ff9d00, #ffe600, #00e5ff, #8b5cff, #ff3b9d );
                 -webkit-background-clip: text;
+                background-clip: text;
                 color: transparent;
             }
 
+
             .hero p {
-                margin-top: 15px;
+                margin-top: 18px;
+                color: #aaa;
                 font-size: 20px;
-                color: #bbb;
             }
 
+
+        /* =========================
+           PROGRESS
+        ========================= */
+
         .progress-box {
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 20px;
+            max-width: 750px;
+            margin: 35px auto 0;
+            padding: 22px;
             border-radius: 20px;
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
             backdrop-filter: blur(15px);
         }
+
 
         .progress-text {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             color: #ddd;
         }
 
-        .progress {
-            height: 12px;
-            background: #222;
-            border-radius: 20px;
-            overflow: hidden;
+
+        #progressPercent {
+            font-size: 22px;
+            font-weight: bold;
         }
 
-        .progress-fill {
-            height: 100%;
-            width: 0%;
+
+        .progress {
+            width: 100%;
+            height: 12px;
             border-radius: 20px;
+            overflow: hidden;
+            background: #222;
+        }
+
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
             background: linear-gradient( 90deg, #ff3b3b, #ff9d00, #00e5ff, #8b5cff );
             transition: width .5s ease;
         }
+
+
+        /* =========================
+           PROFILES
+        ========================= */
 
         .section-title {
             text-align: center;
             font-size: 30px;
             margin-bottom: 30px;
+            letter-spacing: 2px;
         }
+
 
         .profiles {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat( auto-fit, minmax( 260px, 1fr ) );
+            gap: 28px;
         }
+
 
         .profile {
             position: relative;
-            height: 300px;
-            border-radius: 25px;
+            height: 360px;
             overflow: hidden;
+            border-radius: 25px;
             cursor: pointer;
-            background: #111;
-            border: 2px solid rgba(255,255,255,.08);
-            transition: transform .3s ease, box-shadow .3s ease, border .3s ease;
+            background: #151515;
+            border: 2px solid rgba(255,255,255,.1);
+            transition: transform .3s ease, box-shadow .3s ease;
         }
+
 
             .profile:hover {
                 transform: translateY(-10px) scale(1.02);
-                border-color: rgba(255,255,255,.4);
-                box-shadow: 0 20px 60px rgba(0,0,0,.6);
+                box-shadow: 0 25px 70px rgba(0,0,0,.7);
             }
+
 
         .profile-bg {
             position: absolute;
             inset: 0;
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient( 135deg, var(--accent), var(--accent2), #111 );
             transition: transform .5s ease;
         }
 
-        .profile:hover .profile-bg {
-            transform: scale(1.08);
+
+        .profile:hover
+        .profile-bg {
+            transform: scale(1.1);
         }
+
 
         .profile-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient( to top, rgba(0,0,0,.95), rgba(0,0,0,.2), rgba(0,0,0,.1) );
+            background: linear-gradient( to bottom, rgba(0,0,0,.05), rgba(0,0,0,.25), rgba(0,0,0,.95) );
         }
+
+
+        .profile-symbol {
+            position: absolute;
+            top: 35px;
+            left: 35px;
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            background: rgba(0,0,0,.35);
+            border: 1px solid rgba(255,255,255,.25);
+            backdrop-filter: blur(10px);
+        }
+
 
         .profile-content {
             position: absolute;
+            left: 0;
             bottom: 0;
-            padding: 25px;
             width: 100%;
+            padding: 28px;
         }
 
+
             .profile-content h2 {
-                font-size: 27px;
-                margin-bottom: 7px;
+                font-size: 30px;
+                margin-bottom: 8px;
             }
 
+
             .profile-content p {
-                color: #ccc;
+                color: #ddd;
+                line-height: 1.5;
                 font-size: 14px;
-                line-height: 1.4;
             }
+
 
         .movie-count {
             display: inline-block;
-            margin-top: 12px;
-            padding: 6px 10px;
+            margin-top: 15px;
+            padding: 7px 13px;
             border-radius: 20px;
             background: rgba(255,255,255,.15);
-            font-size: 12px;
+            font-size: 13px;
         }
+
 
         footer {
             text-align: center;
             margin-top: 70px;
-            color: #777;
+            color: #666;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media(max-width:600px) {
+
+            .container {
+                padding-top: 35px;
+            }
+
+            .profile {
+                height: 320px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .progress-text {
+                font-size: 13px;
+            }
         }
     </style>
+
 </head>
+
 
 <body>
 
+
     <div class="container">
 
-        <div class="hero">
 
-            <h1>YOUR PERSONAL WATCHLIST</h1>
+        <section class="hero">
+
+            <h1>
+                YOUR PERSONAL WATCHLIST
+            </h1>
 
             <p>
                 Choose a universe and continue your cinematic journey.
             </p>
 
+
             <div class="progress-box">
 
                 <div class="progress-text">
-                    <span id="progressPercent">0%</span>
-                    <span id="progressCount">0 / 0 titles watched</span>
+
+                    <span id="progressPercent">
+                        0%
+                    </span>
+
+                    <span id="progressCount">
+                        0 / 0 titles watched
+                    </span>
+
                 </div>
 
+
                 <div class="progress">
-                    <div class="progress-fill"
-                         id="progressFill">
+
+                    <div id="progressFill"
+                         class="progress-fill">
                     </div>
+
                 </div>
 
             </div>
 
-        </div>
+        </section>
 
 
         <h2 class="section-title">
             PROFILES
         </h2>
 
-        <div class="profiles"
-             id="profiles">
-        </div>
+
+        <main id="profiles"
+              class="profiles">
+        </main>
 
 
         <footer>
-            WatchList · Your personal cinematic journey
+
+            WatchList ·
+            Your personal cinematic journey
+
         </footer>
+
 
     </div>
 
 
+    <!-- DATA -->
+
     <script src="data.js"></script>
+
 
     <script>
 
-function getAllMovies() {
 
-    let movies = [];
+/* =========================================
+   GET ALL ITEMS
+========================================= */
 
-    universes.forEach(universe => {
+function getAllItems() {
 
-        if (!universe.sections) return;
+    const items = [];
 
-        universe.sections.forEach(section => {
+    UNIVERSES.forEach(
+        universe => {
 
-            if (!section.items) return;
+            if (!universe.groups) {
+                return;
+            }
 
-            section.items.forEach(movie => {
-                movies.push(movie);
-            });
+            universe.groups.forEach(
+                group => {
 
-        });
+                    if (!group.items) {
+                        return;
+                    }
 
-    });
+                    group.items.forEach(
+                        item => {
 
-    return movies;
+                            items.push(item);
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
+    return items;
+
 }
 
 
-function updateProgress() {
+/* =========================================
+   PROGRESS
+========================================= */
 
-    const movies = getAllMovies();
+function updateOverallProgress() {
+
+    const items =
+        getAllItems();
+
 
     let watched = 0;
 
-    movies.forEach(movie => {
 
-        const status =
-            localStorage.getItem("watchlist_" + movie.id);
+    let halfway = 0;
 
-        if (status === "watched") {
-            watched++;
+
+    items.forEach(
+        item => {
+
+            const status =
+                getStatus(item);
+
+
+            if (
+                status === "watched"
+            ) {
+
+                watched++;
+
+            }
+
+
+            if (
+                status === "halfway"
+            ) {
+
+                halfway++;
+
+            }
+
         }
+    );
 
-    });
 
-    const total = movies.length;
+    const total =
+        items.length;
 
-    const percent =
+
+    const percentage =
         total === 0
-            ? 0
-            : Math.round((watched / total) * 100);
+        ? 0
+        : Math.round(
+            (
+                watched /
+                total
+            ) * 100
+        );
 
-    document.getElementById("progressPercent").textContent =
-        percent + "%";
 
-    document.getElementById("progressCount").textContent =
-        watched + " / " + total + " titles watched";
+    document
+        .getElementById(
+            "progressPercent"
+        )
+        .textContent =
+        percentage + "%";
 
-    document.getElementById("progressFill").style.width =
-        percent + "%";
+
+    document
+        .getElementById(
+            "progressCount"
+        )
+        .textContent =
+        watched +
+        " / " +
+        total +
+        " titles watched";
+
+
+    document
+        .getElementById(
+            "progressFill"
+        )
+        .style.width =
+        percentage + "%";
+
 }
 
+
+/* =========================================
+   STATUS
+========================================= */
+
+function getStatus(item) {
+
+    const saved =
+        localStorage.getItem(
+            "watchlist-" +
+            item.id
+        );
+
+
+    return saved || "not-watched";
+
+}
+
+
+/* =========================================
+   PROFILE ICON
+========================================= */
+
+function getIcon(universe) {
+
+    if (
+        universe.id === "marvel"
+    ) {
+
+        return "⚡";
+
+    }
+
+
+    if (
+        universe.id === "dc"
+    ) {
+
+        return "🦇";
+
+    }
+
+
+    if (
+        universe.id === "hp"
+    ) {
+
+        return "🪄";
+
+    }
+
+
+    return "🎬";
+
+}
+
+
+/* =========================================
+   PROFILE
+========================================= */
 
 function createProfiles() {
 
     const container =
-        document.getElementById("profiles");
+        document.getElementById(
+            "profiles"
+        );
+
 
     container.innerHTML = "";
 
-    universes.forEach(universe => {
 
-        let totalMovies = 0;
-
-        universe.sections.forEach(section => {
-
-            totalMovies += section.items.length;
-
-        });
+    UNIVERSES.forEach(
+        universe => {
 
 
-        const card =
-            document.createElement("div");
-
-        card.className = "profile";
+            let total = 0;
 
 
-        card.innerHTML = `
-
-            <div
-                class="profile-bg"
-                style="
-                    background-image:
-                    url('${universe.background}');
-                ">
-            </div>
-
-            <div class="profile-overlay"></div>
-
-            <div class="profile-content">
-
-                <h2>
-                    ${universe.name}
-                </h2>
-
-                <p>
-                    ${universe.description}
-                </p>
-
-                <span class="movie-count">
-                    ${totalMovies} titles
-                </span>
-
-            </div>
-        `;
+            let watched = 0;
 
 
-        card.onclick = function() {
+            if (
+                universe.groups
+            ) {
 
-            window.location.href =
-                "universe.html?id=" +
-                encodeURIComponent(universe.id);
+                universe.groups.forEach(
+                    group => {
 
-        };
+                        if (
+                            !group.items
+                        ) {
+                            return;
+                        }
 
 
-        container.appendChild(card);
+                        total +=
+                            group.items.length;
 
-    });
+
+                        group.items.forEach(
+                            item => {
+
+                                if (
+                                    getStatus(item)
+                                    ===
+                                    "watched"
+                                ) {
+
+                                    watched++;
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className =
+                "profile";
+
+
+            card.style.setProperty(
+                "--accent",
+                universe.accent ||
+                "#e50914"
+            );
+
+
+            card.style.setProperty(
+                "--accent2",
+                universe.accent2 ||
+                "#ff9900"
+            );
+
+
+            const percentage =
+                total === 0
+                ? 0
+                : Math.round(
+                    watched /
+                    total *
+                    100
+                );
+
+
+            card.innerHTML = `
+
+                <div class="profile-bg"></div>
+
+                <div class="profile-overlay"></div>
+
+                <div class="profile-symbol">
+                    ${getIcon(universe)}
+                </div>
+
+                <div class="profile-content">
+
+                    <h2>
+                        ${escapeHTML(
+                            universe.name
+                        )}
+                    </h2>
+
+                    <p>
+                        ${escapeHTML(
+                            universe.tagline ||
+                            "Your cinematic universe."
+                        )}
+                    </p>
+
+                    <span class="movie-count">
+
+                        ${total} titles
+                        ·
+                        ${percentage}% complete
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            card.addEventListener(
+                "click",
+                function () {
+
+                    /*
+                     * Save selected universe.
+                     * universe.js accepts this.
+                     */
+
+                    localStorage.setItem(
+                        "selected-universe",
+                        universe.id
+                    );
+
+
+                    /*
+                     * Use URL as well.
+                     */
+
+                    window.location.href =
+                        "universe.html?id=" +
+                        encodeURIComponent(
+                            universe.id
+                        );
+
+                }
+            );
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
 }
 
 
+/* =========================================
+   ESCAPE
+========================================= */
+
+function escapeHTML(value) {
+
+    return String(
+        value || ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
 createProfiles();
-updateProgress();
+
+updateOverallProgress();
+
 
     </script>
 
+
 </body>
+
 </html>
